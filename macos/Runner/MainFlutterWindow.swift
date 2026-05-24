@@ -2,14 +2,22 @@ import Cocoa
 import FlutterMacOS
 
 class MainFlutterWindow: NSWindow {
-  override func awakeFromNib() {
-    let flutterViewController = FlutterViewController()
-    let windowFrame = self.frame
-    self.contentViewController = flutterViewController
-    self.setFrame(windowFrame, display: true)
+    private let keyboardHandler = KeyboardStreamHandler()
 
-    RegisterGeneratedPlugins(registry: flutterViewController)
+    override func awakeFromNib() {
+        let flutterViewController = FlutterViewController()
+        let windowFrame = self.frame
+        self.contentViewController = flutterViewController
+        self.setFrame(windowFrame, display: true)
 
-    super.awakeFromNib()
-  }
+        RegisterGeneratedPlugins(registry: flutterViewController)
+
+        let eventChannel = FlutterEventChannel(
+            name: "com.kysy/keyboard_events",
+            binaryMessenger: flutterViewController.engine.binaryMessenger
+        )
+        eventChannel.setStreamHandler(keyboardHandler)
+
+        super.awakeFromNib()
+    }
 }

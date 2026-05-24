@@ -22,8 +22,14 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>LSUIElement</key>
+	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>$(PRODUCT_COPYRIGHT)</string>
+	<key>NSInputMonitoringUsageDescription</key>
+	<string>Kysy monitors keyboard input to record your keystrokes.</string>
+	<key>NSAccessibilityUsageDescription</key>
+	<string>Kysy needs Accessibility access to capture global keyboard events.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
