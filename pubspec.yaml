@@ -37,6 +37,8 @@ dependencies:
   tray_manager: ^0.2.3      # macOS menu bar + Windows system tray
   hotkey_manager: ^0.2.3    # global keyboard shortcut registration
   window_manager: ^0.4.3    # control window visibility/positioning
+  google_generative_ai: ^0.4.7
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:

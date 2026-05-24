@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:tray_manager/tray_manager.dart';
-import 'package:window_manager/window_manager.dart';
 import '../keyboard_service.dart';
 import '../models/key_event.dart';
 
@@ -12,8 +10,7 @@ class KeyboardHistoryPage extends StatefulWidget {
   State<KeyboardHistoryPage> createState() => _KeyboardHistoryPageState();
 }
 
-class _KeyboardHistoryPageState extends State<KeyboardHistoryPage>
-    with TrayListener, WindowListener {
+class _KeyboardHistoryPageState extends State<KeyboardHistoryPage> {
   final List<GlobalKeyEvent> _events = [];
   StreamSubscription<GlobalKeyEvent>? _sub;
   String? _errorMessage;
@@ -21,8 +18,6 @@ class _KeyboardHistoryPageState extends State<KeyboardHistoryPage>
   @override
   void initState() {
     super.initState();
-    trayManager.addListener(this);
-    windowManager.addListener(this);
     _sub = KeyboardService.keyEvents.listen(
       (event) {
         if (!mounted) return;
@@ -41,43 +36,8 @@ class _KeyboardHistoryPageState extends State<KeyboardHistoryPage>
   @override
   void dispose() {
     _sub?.cancel();
-    trayManager.removeListener(this);
-    windowManager.removeListener(this);
     super.dispose();
   }
-
-  @override
-  void onTrayIconMouseDown() {
-    windowManager.isVisible().then((visible) {
-      if (visible) {
-        windowManager.hide();
-      } else {
-        windowManager.show();
-        windowManager.focus();
-      }
-    });
-  }
-
-  @override
-  void onTrayIconRightMouseDown() {
-    trayManager.popUpContextMenu();
-  }
-
-  @override
-  void onMenuItemClick(MenuItem item) {
-    switch (item.key) {
-      case 'show_history':
-        windowManager.show();
-        windowManager.focus();
-      case 'clear_history':
-        setState(() => _events.clear());
-      case 'quit':
-        windowManager.destroy();
-    }
-  }
-
-  @override
-  void onWindowClose() => windowManager.hide();
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +55,7 @@ class _KeyboardHistoryPageState extends State<KeyboardHistoryPage>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.2),
+                  color: Colors.blue.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -211,13 +171,13 @@ class _KeyEventTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDown
             ? (isMod
-                ? Colors.purple.withOpacity(0.12)
-                : Colors.blue.withOpacity(0.10))
+                ? Colors.purple.withValues(alpha: 0.12)
+                : Colors.blue.withValues(alpha: 0.10))
             : const Color(0xFF111111),
         borderRadius: BorderRadius.circular(5),
         border: Border.all(
           color: isDown
-              ? (isMod ? Colors.purple.withOpacity(0.35) : Colors.blue.withOpacity(0.3))
+              ? (isMod ? Colors.purple.withValues(alpha: 0.35) : Colors.blue.withValues(alpha: 0.3))
               : const Color(0xFF1E1E1E),
         ),
       ),
@@ -287,10 +247,10 @@ class _KeyBadge extends StatelessWidget {
       height: 34,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: isDown ? color.withOpacity(0.25) : const Color(0xFF181818),
+        color: isDown ? color.withValues(alpha: 0.25) : const Color(0xFF181818),
         borderRadius: BorderRadius.circular(5),
         border: Border.all(
-          color: isDown ? color.withOpacity(0.5) : const Color(0xFF2A2A2A),
+          color: isDown ? color.withValues(alpha: 0.5) : const Color(0xFF2A2A2A),
         ),
       ),
       child: Text(
