@@ -1,0 +1,68 @@
+<Window x:Class="Kysy.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Kysy" Width="460" Height="640"
+        Background="#0D0D0D" WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False">
+    <Window.Resources>
+        <Style TargetType="TextBlock"><Setter Property="Foreground" Value="#DDDDDD"/></Style>
+    </Window.Resources>
+
+    <TabControl x:Name="Tabs" Background="#0D0D0D" BorderThickness="0">
+
+        <!-- DETECT -->
+        <TabItem Header="Detect">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="14">
+                <StackPanel>
+                    <TextBlock Text="FOCUSED FIELD" FontWeight="Bold" FontSize="11" Foreground="#777"/>
+                    <TextBlock x:Name="AppLabel" Margin="0,4,0,10" Foreground="#999"/>
+
+                    <Border Background="#161616" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="WRONG-LAYOUT FIX" FontWeight="Bold" FontSize="11" Foreground="#888"/>
+                            <TextBlock x:Name="TypedText" Margin="0,6,0,0" Foreground="#CCC"/>
+                            <TextBlock x:Name="ConvertedText" Margin="0,4,0,0" FontSize="18"
+                                       FontWeight="Bold" Foreground="#FFD166"/>
+                            <Button x:Name="ReplaceButton" Content="Replace in field" Margin="0,10,0,0"
+                                    HorizontalAlignment="Left" Click="ReplaceButton_Click"/>
+                            <TextBlock x:Name="ReplaceResult" Margin="0,6,0,0" FontSize="11"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="LANGUAGES" FontWeight="Bold" FontSize="11" Foreground="#777"/>
+                    <TextBlock x:Name="LanguagesText" Margin="0,4,0,0" Foreground="#CCC"/>
+
+                    <TextBlock Text="DETECTED TYPE" FontWeight="Bold" FontSize="11" Foreground="#777" Margin="0,12,0,0"/>
+                    <TextBlock x:Name="GuessText" Margin="0,4,0,0" FontSize="15" FontWeight="Bold" Foreground="#88CC88"/>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- SETTINGS -->
+        <TabItem Header="Settings">
+            <StackPanel Margin="16">
+                <TextBlock Text="Fix-layout shortcut" FontWeight="SemiBold"/>
+                <TextBlock Text="Press this anywhere to fix the focused field's last word."
+                           Foreground="#888" FontSize="11" Margin="0,2,0,6" TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal">
+                    <Border Background="#1F1F1F" CornerRadius="6" Padding="10,5">
+                        <TextBlock x:Name="HotkeyText" FontFamily="Consolas" Foreground="White"/>
+                    </Border>
+                    <Button x:Name="RecordButton" Content="Change…" Margin="8,0,0,0" Click="RecordButton_Click"/>
+                </StackPanel>
+
+                <Separator Margin="0,12"/>
+
+                <TextBlock Text="Auto keyboard language" FontWeight="SemiBold"/>
+                <CheckBox x:Name="AutoLangCheck" Margin="0,6,0,0" Foreground="#CCC"
+                          Content="Switch to English on email / URL / password fields"
+                          Click="AutoLangCheck_Click"/>
+                <TextBlock x:Name="AutoLangStatus" Foreground="#88CC88" FontSize="11" Margin="0,4,0,0"/>
+
+                <Separator Margin="0,12"/>
+
+                <Button Content="Quit Kysy" HorizontalAlignment="Left" Click="Quit_Click"/>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</Window>

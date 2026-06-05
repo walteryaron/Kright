@@ -1,0 +1,372 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0292D7845CED948BE847C0B5 /* KysyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC838CCCDC9275D710CD1463 /* KysyApp.swift */; };
+		1EFFDF931D4A1B29CC2612E9 /* KeyLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC3B109C1D83585B2A3EF3C /* KeyLogView.swift */; };
+		24758AA5E9E7D418775F4CEE /* FieldInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AE6D2619313066EE785E86 /* FieldInspector.swift */; };
+		289233D25A45E1CF4B4A29EA /* AXInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAD54BDF5E9A69CDCB045E5 /* AXInspector.swift */; };
+		2B02EE2420153E30E11E68F6 /* KeyboardLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97E0B7EE8614C3011522365 /* KeyboardLanguage.swift */; };
+		2B67A8905124BF55E8516911 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 090220458B4596D6AC952585 /* SettingsView.swift */; };
+		3C1265B10C9F515056E7DFB5 /* KeyboardLayoutMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07E34776F01801DD71210EF /* KeyboardLayoutMap.swift */; };
+		4BB3457C987EFDB0ABC16EEB /* KeyboardMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0EA6623956F8F9B8B3E3C6 /* KeyboardMonitor.swift */; };
+		66B0CC137645C7716715C40C /* DetectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51119E9F323AB99F1027BA73 /* DetectView.swift */; };
+		8EEFF4914011C538B5FB3FCA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CA4F84C570071A96E339A5 /* ContentView.swift */; };
+		91D9F94DD86564776F35B117 /* KeystrokeReplacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E88E64F508B0AC88FBA9A7 /* KeystrokeReplacer.swift */; };
+		9F7455FCA9C8B1F8071B7323 /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83372CA6FDAB4644AE6057A6 /* GeminiService.swift */; };
+		B94EC5851A72DBAA5BAC7B16 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B151E3907D7C02480C183C /* Models.swift */; };
+		BBA81A347EC3AE05BC82A397 /* LayoutConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A69AB9FB6A849310A80C3B /* LayoutConverter.swift */; };
+		DE2761F71AE4591E5630E28C /* FocusLanguageEnforcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91530ABC6C05602093B9562 /* FocusLanguageEnforcer.swift */; };
+		E1067FD689784FCFDDC87B5F /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AF7A13D7B93718DD1DC388 /* HotkeyManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		090220458B4596D6AC952585 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		15AE6D2619313066EE785E86 /* FieldInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldInspector.swift; sourceTree = "<group>"; };
+		19A69AB9FB6A849310A80C3B /* LayoutConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutConverter.swift; sourceTree = "<group>"; };
+		48B151E3907D7C02480C183C /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		51119E9F323AB99F1027BA73 /* DetectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectView.swift; sourceTree = "<group>"; };
+		6E0EA6623956F8F9B8B3E3C6 /* KeyboardMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardMonitor.swift; sourceTree = "<group>"; };
+		72E460A8BE4ABB21AC6B2E7A /* Kysy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Kysy.entitlements; sourceTree = "<group>"; };
+		77CA4F84C570071A96E339A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		83372CA6FDAB4644AE6057A6 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
+		88AF7A13D7B93718DD1DC388 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		9EAD54BDF5E9A69CDCB045E5 /* AXInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXInspector.swift; sourceTree = "<group>"; };
+		A07E34776F01801DD71210EF /* KeyboardLayoutMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutMap.swift; sourceTree = "<group>"; };
+		A97E0B7EE8614C3011522365 /* KeyboardLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLanguage.swift; sourceTree = "<group>"; };
+		B2C9DE627548202A714AAE4B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B3E88E64F508B0AC88FBA9A7 /* KeystrokeReplacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeystrokeReplacer.swift; sourceTree = "<group>"; };
+		B91530ABC6C05602093B9562 /* FocusLanguageEnforcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusLanguageEnforcer.swift; sourceTree = "<group>"; };
+		CC838CCCDC9275D710CD1463 /* KysyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KysyApp.swift; sourceTree = "<group>"; };
+		DEC3B109C1D83585B2A3EF3C /* KeyLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyLogView.swift; sourceTree = "<group>"; };
+		E2F98A9621190BE472181A74 /* Kysy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kysy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		237FC0BBFDA064FBBBC33E12 = {
+			isa = PBXGroup;
+			children = (
+				A51A0842FF98670415C63741 /* Sources */,
+				9627039BA0D3E5F3AD6692EA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9627039BA0D3E5F3AD6692EA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E2F98A9621190BE472181A74 /* Kysy.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A51A0842FF98670415C63741 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				9EAD54BDF5E9A69CDCB045E5 /* AXInspector.swift */,
+				15AE6D2619313066EE785E86 /* FieldInspector.swift */,
+				B91530ABC6C05602093B9562 /* FocusLanguageEnforcer.swift */,
+				83372CA6FDAB4644AE6057A6 /* GeminiService.swift */,
+				88AF7A13D7B93718DD1DC388 /* HotkeyManager.swift */,
+				B2C9DE627548202A714AAE4B /* Info.plist */,
+				A97E0B7EE8614C3011522365 /* KeyboardLanguage.swift */,
+				A07E34776F01801DD71210EF /* KeyboardLayoutMap.swift */,
+				6E0EA6623956F8F9B8B3E3C6 /* KeyboardMonitor.swift */,
+				B3E88E64F508B0AC88FBA9A7 /* KeystrokeReplacer.swift */,
+				72E460A8BE4ABB21AC6B2E7A /* Kysy.entitlements */,
+				CC838CCCDC9275D710CD1463 /* KysyApp.swift */,
+				19A69AB9FB6A849310A80C3B /* LayoutConverter.swift */,
+				48B151E3907D7C02480C183C /* Models.swift */,
+				AA5E840C5871EE866BCDFC1A /* Views */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		AA5E840C5871EE866BCDFC1A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				77CA4F84C570071A96E339A5 /* ContentView.swift */,
+				51119E9F323AB99F1027BA73 /* DetectView.swift */,
+				DEC3B109C1D83585B2A3EF3C /* KeyLogView.swift */,
+				090220458B4596D6AC952585 /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6687E6D4879B38E14D537F9C /* Kysy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D82937D167A40BE780451A67 /* Build configuration list for PBXNativeTarget "Kysy" */;
+			buildPhases = (
+				92B9BEA7AB322D6E82119D32 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Kysy;
+			packageProductDependencies = (
+			);
+			productName = Kysy;
+			productReference = E2F98A9621190BE472181A74 /* Kysy.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6AB5BF80331D9D77C0EB4DCE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					6687E6D4879B38E14D537F9C = {
+						DevelopmentTeam = V3275SDA78;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 9B8BC7832DFF0FF456AC4AE8 /* Build configuration list for PBXProject "Kysy" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 237FC0BBFDA064FBBBC33E12;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 9627039BA0D3E5F3AD6692EA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6687E6D4879B38E14D537F9C /* Kysy */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		92B9BEA7AB322D6E82119D32 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				289233D25A45E1CF4B4A29EA /* AXInspector.swift in Sources */,
+				8EEFF4914011C538B5FB3FCA /* ContentView.swift in Sources */,
+				66B0CC137645C7716715C40C /* DetectView.swift in Sources */,
+				24758AA5E9E7D418775F4CEE /* FieldInspector.swift in Sources */,
+				DE2761F71AE4591E5630E28C /* FocusLanguageEnforcer.swift in Sources */,
+				9F7455FCA9C8B1F8071B7323 /* GeminiService.swift in Sources */,
+				E1067FD689784FCFDDC87B5F /* HotkeyManager.swift in Sources */,
+				1EFFDF931D4A1B29CC2612E9 /* KeyLogView.swift in Sources */,
+				2B02EE2420153E30E11E68F6 /* KeyboardLanguage.swift in Sources */,
+				3C1265B10C9F515056E7DFB5 /* KeyboardLayoutMap.swift in Sources */,
+				4BB3457C987EFDB0ABC16EEB /* KeyboardMonitor.swift in Sources */,
+				91D9F94DD86564776F35B117 /* KeystrokeReplacer.swift in Sources */,
+				0292D7845CED948BE847C0B5 /* KysyApp.swift in Sources */,
+				BBA81A347EC3AE05BC82A397 /* LayoutConverter.swift in Sources */,
+				B94EC5851A72DBAA5BAC7B16 /* Models.swift in Sources */,
+				2B67A8905124BF55E8516911 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		15513813474B5B2CCD66702D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = D1429C0F8B8121EEC4B463D2EA6CF36130C80B84;
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = V3275SDA78;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4FBC7AC851C71879A344298F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Sources/Kysy.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Sources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kysy.native;
+				PRODUCT_NAME = Kysy;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		5D86F56F3DB507ACB431AA70 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = D1429C0F8B8121EEC4B463D2EA6CF36130C80B84;
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = V3275SDA78;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F455EC858DFB22073D7A4107 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Sources/Kysy.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Sources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kysy.native;
+				PRODUCT_NAME = Kysy;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B8BC7832DFF0FF456AC4AE8 /* Build configuration list for PBXProject "Kysy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15513813474B5B2CCD66702D /* Debug */,
+				5D86F56F3DB507ACB431AA70 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D82937D167A40BE780451A67 /* Build configuration list for PBXNativeTarget "Kysy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F455EC858DFB22073D7A4107 /* Debug */,
+				4FBC7AC851C71879A344298F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6AB5BF80331D9D77C0EB4DCE /* Project object */;
+}
