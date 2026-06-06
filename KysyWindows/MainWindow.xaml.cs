@@ -95,7 +95,7 @@ public partial class MainWindow : Window
         HotkeyText.Text = _recording ? "…" : App.Hotkey.DisplayString;
     }
 
-    protected override void OnPreviewKeyDown(KeyEventArgs e)
+    protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
     {
         if (!_recording) { base.OnPreviewKeyDown(e); return; }
         e.Handled = true;

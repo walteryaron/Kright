@@ -15,8 +15,8 @@ public static class KeystrokeReplacer
 
         for (int i = 0; i < originalLength; i++)
         {
-            SendKey(NativeMethods.VK_BACK, 0, keyUp: false);
-            SendKey(NativeMethods.VK_BACK, 0, keyUp: true);
+            SendKey(NativeMethods.VK_BACK, '\0', keyUp: false);
+            SendKey(NativeMethods.VK_BACK, '\0', keyUp: true);
             Thread.Sleep(6);
         }
         Thread.Sleep(10);
