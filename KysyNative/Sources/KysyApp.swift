@@ -64,8 +64,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Self.privacy.start()
     }
 
-    /// Convert the focused field's last word from the wrong layout and replace it
-    /// in place — triggered by the global hotkey, no panel needed.
+    /// Convert the focused field's just-typed phrase from the wrong layout and
+    /// replace it in place — triggered by the global hotkey, no panel needed.
+    /// Handles a whole multi-word run ("nrhu dktexh"), not only the last word.
     static func fixFocusedLayout() {
         // Blind mode: never read or touch a password field.
         if privacy.sensitive { NSSound.beep(); return }
@@ -73,8 +74,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Use the exact characters the user just typed (tracked by the keyboard
         // monitor), NOT the field's AX value — terminals expose their whole
         // buffer as the value, which made us delete far too much.
-        let typed = keyboard.currentWord
-        guard let s = LayoutConverter.suggest(typed), s.isMeaningful else {
+        let typed = keyboard.currentPhrase
+        guard let s = LayoutConverter.suggestPhrase(typed), s.isMeaningful else {
             NSSound.beep()
             return
         }

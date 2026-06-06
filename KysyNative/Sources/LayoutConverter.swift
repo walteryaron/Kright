@@ -42,12 +42,27 @@ enum LayoutConverter {
     /// Returns a wrong-layout correction candidate, or nil if nothing to fix.
     /// Operates on the LAST whitespace-delimited word, so it works even when the
     /// field value is a whole buffer (e.g. Terminal). Requires ≥3 letters.
+    /// Used by the panel, which reads a raw AX value of unknown extent.
     static func suggest(_ fullText: String) -> LayoutSuggestion? {
         guard let token = fullText.split(whereSeparator: { $0.isWhitespace }).last else { return nil }
-        let word = String(token)
-        guard word.count <= 120 else { return nil }
+        return build(unit: String(token), within: fullText)
+    }
 
-        let letters = word.filter { isHebrew($0) || isLatin($0) }
+    /// Converts an ENTIRE typed phrase (which may span several words separated by
+    /// spaces), not just the last word — for the layout-fix hotkey, where we hold
+    /// the precise run of characters the user just typed. Spaces are preserved.
+    static func suggestPhrase(_ phrase: String) -> LayoutSuggestion? {
+        guard !phrase.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
+        return build(unit: phrase, within: phrase)
+    }
+
+    /// Shared core: decide the conversion direction from the letters in `unit`,
+    /// convert the whole `unit` (spaces and other non-mapped chars pass through),
+    /// and rebuild `fullText` with `unit` swapped in place.
+    private static func build(unit: String, within fullText: String) -> LayoutSuggestion? {
+        guard unit.count <= 240 else { return nil }
+
+        let letters = unit.filter { isHebrew($0) || isLatin($0) }
         guard letters.count >= 3 else { return nil }
         let he = letters.filter(isHebrew).count
         let en = letters.filter(isLatin).count
@@ -64,23 +79,23 @@ enum LayoutConverter {
         if hebrewDominant {
             from = other?.name ?? "Hebrew"; to = english?.name ?? "English"
             converted = (english != nil && other != nil
-                ? KeyboardLayoutMap.convert(word, fromID: other!.id, toID: english!.id) : nil)
-                ?? heToEnglish(word)
+                ? KeyboardLayoutMap.convert(unit, fromID: other!.id, toID: english!.id) : nil)
+                ?? heToEnglish(unit)
         } else {
             from = english?.name ?? "English"; to = other?.name ?? "Hebrew"
             converted = (english != nil && other != nil
-                ? KeyboardLayoutMap.convert(word, fromID: english!.id, toID: other!.id) : nil)
-                ?? enToHebrew(word)
+                ? KeyboardLayoutMap.convert(unit, fromID: english!.id, toID: other!.id) : nil)
+                ?? enToHebrew(unit)
         }
 
-        // Rebuild the full value with only the last word swapped, so Replace
+        // Rebuild the full value with only the converted unit swapped, so Replace
         // doesn't wipe the rest of the field.
         var fullReplacement = converted
-        if let range = fullText.range(of: word, options: .backwards) {
+        if unit != fullText, let range = fullText.range(of: unit, options: .backwards) {
             fullReplacement = fullText.replacingCharacters(in: range, with: converted)
         }
 
-        return LayoutSuggestion(original: word, converted: converted,
+        return LayoutSuggestion(original: unit, converted: converted,
                                 fullReplacement: fullReplacement,
                                 fromLayout: from, toLayout: to)
     }

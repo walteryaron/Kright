@@ -8,14 +8,16 @@ final class KeyboardMonitor: ObservableObject {
     @Published var trusted: Bool = AXIsProcessTrusted()
     @Published var lastError: String?
 
-    /// The word the user is currently typing — the exact characters the OS
-    /// produced (e.g. "קסןא"), so the layout-fix hotkey knows precisely what to
-    /// convert and how many characters to delete. Independent of any AX value,
-    /// which is why it works in Terminal/consoles.
-    private(set) var currentWord = ""
+    /// The contiguous run of text the user is currently typing — the exact
+    /// characters the OS produced (e.g. "קסןא getz"), INCLUDING the spaces
+    /// between words, so the layout-fix hotkey can convert a whole multi-word
+    /// phrase and knows precisely how many characters to delete. Resets on hard
+    /// boundaries (Enter/Tab/Esc/arrows), not on Space. Independent of any AX
+    /// value, which is why it works in Terminal/consoles.
+    private(set) var currentPhrase = ""
 
     /// Call after a fix so the buffer reflects what's now in the field.
-    func resetWord(to value: String = "") { currentWord = value }
+    func resetWord(to value: String = "") { currentPhrase = value }
 
     /// Blind mode: while true (set by PrivacyMonitor when a password field is
     /// focused), the tap records nothing — no word buffer, no key log.
@@ -124,19 +126,22 @@ final class KeyboardMonitor: ObservableObject {
         }
     }
 
-    /// Maintains `currentWord` from real keystrokes.
+    /// Maintains `currentPhrase` from real keystrokes.
     private func updateWordBuffer(event: CGEvent, keyCode: Int, flags: CGEventFlags) {
         // Shortcuts (incl. our ⌃⌥K hotkey) aren't typing — don't record them.
         if flags.contains(.maskCommand) || flags.contains(.maskControl) { return }
 
         switch keyCode {
         case 51:                                   // delete/backspace
-            if !currentWord.isEmpty { currentWord.removeLast() }
+            if !currentPhrase.isEmpty { currentPhrase.removeLast() }
             return
-        case 49, 36, 76, 48, 53,                   // space, return, enter, tab, esc
+        case 49:                                   // space — keep it so words stay joined
+            appendSpace()
+            return
+        case 36, 76, 48, 53,                       // return, enter, tab, esc
              123, 124, 125, 126,                   // arrows (cursor moved)
              115, 119, 116, 121:                   // home/end/page up/down
-            currentWord = ""
+            currentPhrase = ""
             return
         default:
             break
@@ -149,9 +154,15 @@ final class KeyboardMonitor: ObservableObject {
         let sourceID = KeyboardLanguage.currentSourceID()
         guard let ch = KeyboardLayoutMap.forwardMap(sourceID)[UInt16(keyCode)],
               let c = ch.first else { return }
-        if c.isWhitespace { currentWord = "" }
-        else if c.isLetter { currentWord += String(c) }   // only letters matter for layout fixes
-        else { currentWord = "" }                          // punctuation ends the word
+        if c.isWhitespace { appendSpace() }
+        else if c.isLetter { currentPhrase += String(c) }  // letters build up the phrase
+        else { currentPhrase = "" }                        // punctuation ends the phrase
+    }
+
+    /// Append a single space between words, never leading or doubled — keeps the
+    /// phrase a clean run of "word word word".
+    private func appendSpace() {
+        if !currentPhrase.isEmpty, currentPhrase.last != " " { currentPhrase += " " }
     }
 
     private func modifierIsDown(keyCode: Int, flags: CGEventFlags) -> Bool {

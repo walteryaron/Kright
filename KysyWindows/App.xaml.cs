@@ -88,7 +88,10 @@ public partial class App : Application
         // Blind mode: never read or touch a password field.
         if (field.IsPassword) { SystemSounds.Beep.Play(); return; }
 
-        var s = LayoutConverter.Suggest(field.Value);
+        // Convert the whole just-typed phrase (all words, e.g. "nrhu dktexh"),
+        // falling back to the last word for long values (a console/document
+        // buffer we shouldn't rewrite wholesale).
+        var s = LayoutConverter.SuggestPhrase(field.Value) ?? LayoutConverter.Suggest(field.Value);
         if (s is null || !s.IsMeaningful) { SystemSounds.Beep.Play(); return; }
 
         if (FocusInspector.TrySetFocusedValue(s.FullReplacement)) return;
