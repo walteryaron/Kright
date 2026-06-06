@@ -156,23 +156,24 @@ final class KeyboardMonitor: ObservableObject {
               let c = ch.first else { return }
         if c.isWhitespace { appendSpace() }
         else if c.isLetter { currentPhrase += String(c) }  // letters build up the phrase
-        else if isLetterKeyInOtherLayout(keyCode: keyCode) {
-            // The current layout emits punctuation here, but the SAME physical key
-            // is a letter in the other layout — so it's really part of a word the
-            // layout-fix should convert: Hebrew "/" / "'" are the "q" / "w" keys,
-            // and English "," "." ";" are the Hebrew letters ת ץ ף. Keep it.
+        else if isLayoutDependentKey(keyCode: keyCode, current: c) {
+            // The key prints punctuation here but a DIFFERENT character in the other
+            // layout, so it's part of a token the layout-fix converts — e.g. typing
+            // "/deep" in Hebrew yields ".גקקפ" ("/" key → "."), and "ac," → "שבת"
+            // (Hebrew "," is ת). Keep it. Genuine layout-independent punctuation
+            // (digits, "-", "=") is the same in both layouts and ends the word.
             currentPhrase += String(c)
         } else {
-            currentPhrase = ""                             // real punctuation ends the phrase
+            currentPhrase = ""
         }
     }
 
-    /// Whether `keyCode` types a letter in EITHER the English or the non-English
-    /// layout — used to tell "a key that prints punctuation in this layout but is
-    /// a letter in the other" (keep it) from genuine punctuation (ends the word).
-    private func isLetterKeyInOtherLayout(keyCode: Int) -> Bool {
+    /// Whether `keyCode` produces a different character in the English or the
+    /// non-English layout than it does now — i.e. it's a remapped, convertible key
+    /// (a letter, or punctuation like "/" ↔ "." that a layout mistake swaps).
+    private func isLayoutDependentKey(keyCode: Int, current c: Character) -> Bool {
         for id in [KeyboardLanguage.firstEnglish()?.id, KeyboardLanguage.firstNonEnglish()?.id] {
-            if let id, KeyboardLayoutMap.forwardMap(id)[UInt16(keyCode)]?.first?.isLetter == true {
+            if let id, let other = KeyboardLayoutMap.forwardMap(id)[UInt16(keyCode)]?.first, other != c {
                 return true
             }
         }
