@@ -75,14 +75,14 @@ enum LayoutConverter {
         let english = KeyboardLanguage.firstEnglish()
         let other = KeyboardLanguage.firstNonEnglish()
 
-        let converted: String, from: String, to: String
+        let converted: String, from: String, to: String, toID: String?
         if hebrewDominant {
-            from = other?.name ?? "Hebrew"; to = english?.name ?? "English"
+            from = other?.name ?? "Hebrew"; to = english?.name ?? "English"; toID = english?.id
             converted = (english != nil && other != nil
                 ? KeyboardLayoutMap.convert(unit, fromID: other!.id, toID: english!.id) : nil)
                 ?? heToEnglish(unit)
         } else {
-            from = english?.name ?? "English"; to = other?.name ?? "Hebrew"
+            from = english?.name ?? "English"; to = other?.name ?? "Hebrew"; toID = other?.id
             converted = (english != nil && other != nil
                 ? KeyboardLayoutMap.convert(unit, fromID: english!.id, toID: other!.id) : nil)
                 ?? enToHebrew(unit)
@@ -97,7 +97,7 @@ enum LayoutConverter {
 
         return LayoutSuggestion(original: unit, converted: converted,
                                 fullReplacement: fullReplacement,
-                                fromLayout: from, toLayout: to)
+                                fromLayout: from, toLayout: to, toLayoutID: toID)
     }
 }
 
@@ -107,6 +107,10 @@ struct LayoutSuggestion {
     let fullReplacement: String
     let fromLayout: String
     let toLayout: String
+    /// Input-source id of the corrected text's layout, so the caller can switch
+    /// the keyboard to it (continue typing in the right language). nil if the real
+    /// layouts weren't available and the built-in table was used.
+    var toLayoutID: String? = nil
 
     var isMeaningful: Bool {
         converted != original && !converted.trimmingCharacters(in: .whitespaces).isEmpty

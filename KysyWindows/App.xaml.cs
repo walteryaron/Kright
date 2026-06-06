@@ -94,6 +94,10 @@ public partial class App : Application
         var s = LayoutConverter.SuggestPhrase(field.Value) ?? LayoutConverter.Suggest(field.Value);
         if (s is null || !s.IsMeaningful) { SystemSounds.Beep.Play(); return; }
 
+        // After fixing, switch the keyboard to the corrected text's language so the
+        // user keeps typing in the right layout instead of more gibberish.
+        if (s.ToHkl != IntPtr.Zero) LanguageManager.Switch(s.ToHkl);
+
         if (FocusInspector.TrySetFocusedValue(s.FullReplacement)) return;
 
         // Read-only (console/terminal) → keystroke fallback on a background thread.

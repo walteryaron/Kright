@@ -3,6 +3,10 @@ namespace Kysy.Services;
 public record LayoutSuggestion(string Original, string Converted, string FromLayout, string ToLayout, string FullReplacement)
 {
     public bool IsMeaningful => Converted != Original && Converted.Trim().Length > 0;
+
+    /// <summary>Keyboard layout (HKL) of the corrected text, so the caller can
+    /// switch the input language to it and the user keeps typing correctly.</summary>
+    public IntPtr ToHkl { get; init; } = IntPtr.Zero;
 }
 
 /// <summary>Detects text typed in the wrong keyboard layout and produces the
@@ -56,6 +60,7 @@ public static class LayoutConverter
 
         string from = hebrewDominant ? other.Name : english.Name;
         string to = hebrewDominant ? english.Name : other.Name;
+        IntPtr toHkl = hebrewDominant ? english.Hkl : other.Hkl;
 
         // Splice the converted unit back in place, so we don't wipe the rest of
         // the field (no-op when the unit IS the whole text).
@@ -64,7 +69,7 @@ public static class LayoutConverter
             ? fullText.Remove(idx, unit.Length).Insert(idx, converted!)
             : converted!;
 
-        return new LayoutSuggestion(unit, converted!, from, to, full);
+        return new LayoutSuggestion(unit, converted!, from, to, full) { ToHkl = toHkl };
     }
 
     public static bool IsHebrew(char c) => c >= 0x0590 && c <= 0x05FF;

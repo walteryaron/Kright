@@ -89,6 +89,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                let s = LayoutConverter.suggestPhrase(token), s.isMeaningful,
                AXInspector.setValue(s.converted, on: element).ok {
                 keyboard.resetWord(to: s.converted)
+                switchKeyboard(to: s)
                 return
             }
         }
@@ -108,6 +109,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let full = value.replacingCharacters(in: range, with: s.converted)
             if AXInspector.setValue(full, on: element).ok {
                 keyboard.resetWord(to: s.converted)
+                switchKeyboard(to: s)
                 return
             }
         }
@@ -120,6 +122,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             KeystrokeReplacer.replaceLastWord(originalLength: deleteCount, replacement: replacement)
         }
         keyboard.resetWord(to: s.converted)
+        switchKeyboard(to: s)
+    }
+
+    /// After a fix, switch the keyboard to the corrected text's language so the
+    /// user keeps typing in the right layout instead of producing more gibberish.
+    private static func switchKeyboard(to s: LayoutSuggestion) {
+        guard let id = s.toLayoutID else { return }
+        KeyboardLanguage.select(id: id)
     }
 
     // MARK: - Status item
