@@ -59,8 +59,23 @@ mkdir -p "$STAGE"
 cp -R "$APP" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"   # drag-to-install target
 
-echo "▸ Creating DMG…"
-hdiutil create -volname "Kysy" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
+echo "▸ Creating styled DMG…"
+export KYSY_APP="$APP"
+export KYSY_DMG_BG="/tmp/kysy-dmg-bg.png"
+swift scripts/gen-dmg-bg.swift "$KYSY_DMG_BG" >/dev/null
+
+# dmgbuild lays out the "drag to Applications" window headlessly (no Finder /
+# Automation permission needed). Falls back to a plain DMG if it isn't installed
+# (pip3 install --user dmgbuild).
+DMGBUILD="$(python3 -m site --user-base 2>/dev/null)/bin/dmgbuild"
+[ -x "$DMGBUILD" ] || DMGBUILD="$(command -v dmgbuild || true)"
+rm -f "$DMG"
+if [ -n "$DMGBUILD" ] && [ -x "$DMGBUILD" ]; then
+  "$DMGBUILD" -s scripts/dmgbuild-settings.py "Kysy" "$DMG" >/dev/null
+else
+  echo "  (dmgbuild not found — plain DMG. Install: pip3 install --user dmgbuild)"
+  hdiutil create -volname "Kysy" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
+fi
 
 if [ -n "$DEVID" ] && xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1; then
   echo "▸ Signing DMG…"

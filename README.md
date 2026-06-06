@@ -52,9 +52,14 @@ dotnet run
 
 **macOS — `.dmg`** (run on a Mac with Xcode):
 ```sh
+pip3 install --user dmgbuild   # one-time: styled "drag to Applications" window
 cd KysyNative
-./scripts/build-dmg.sh        # → build/Kysy.dmg
+./scripts/build-dmg.sh         # → build/Kysy.dmg
 ```
+The DMG shows a custom background with the app icon and an arrow to the
+Applications folder (`scripts/gen-dmg-bg.swift` renders it;
+`scripts/dmgbuild-settings.py` lays out the window). Without `dmgbuild`
+installed it falls back to a plain (unstyled) DMG.
 If a **Developer ID Application** certificate and a stored notary profile
 (`kysy-notary`) are present, the script automatically signs (hardened runtime),
 **notarizes**, and **staples** the DMG, so it opens with a normal double-click
