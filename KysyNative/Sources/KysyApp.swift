@@ -7,12 +7,43 @@ final class PanelState: ObservableObject {
     @Published var tab: AppTab = .detect
 }
 
+/// Always-on watcher that flips Kysy into "blind mode" while a password (secure)
+/// field is focused: the menu-bar icon becomes a slashed eye and keystroke
+/// capture is paused, so it's visibly clear Kysy isn't reading the password.
+final class PrivacyMonitor {
+    private(set) var sensitive = false
+
+    /// Called on the main thread whenever `sensitive` flips.
+    var onChange: ((Bool) -> Void)?
+
+    private var timer: Timer?
+    private let ownPid = getpid()
+
+    func start() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] _ in
+            self?.tick()
+        }
+    }
+
+    private func tick() {
+        guard AXIsProcessTrusted() else { return }
+        // A focused secure field reports the "Password" guess (AXSecureTextField).
+        let s = AXInspector.focusedFieldLight(ignoring: ownPid)?.guess.label == "Password"
+        if s != sensitive {
+            sensitive = s
+            onChange?(s)
+        }
+    }
+}
+
 /// Owns the status-bar item, the floating panel, and the long-lived managers.
 final class AppDelegate: NSObject, NSApplicationDelegate {
     static let keyboard = KeyboardMonitor()
     static let inspector = FieldInspector()
     static let panel = PanelState()
     static let enforcer = FocusLanguageEnforcer()
+    static let privacy = PrivacyMonitor()
 
     private var statusItem: NSStatusItem!
     private var panelWindow: NSPanel!
@@ -23,11 +54,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         HotkeyManager.shared.onTrigger = { Self.fixFocusedLayout() }
         setupPanelWindow()
         setupStatusItem()
+
+        // Blind mode: pause capture and show a slashed-eye icon on password fields.
+        Self.privacy.onChange = { [weak self] sensitive in
+            Self.keyboard.paused = sensitive
+            if sensitive { Self.keyboard.resetWord() }
+            self?.updateStatusIcon(sensitive: sensitive)
+        }
+        Self.privacy.start()
     }
 
     /// Convert the focused field's last word from the wrong layout and replace it
     /// in place — triggered by the global hotkey, no panel needed.
     static func fixFocusedLayout() {
+        // Blind mode: never read or touch a password field.
+        if privacy.sensitive { NSSound.beep(); return }
+
         // Use the exact characters the user just typed (tracked by the keyboard
         // monitor), NOT the field's AX value — terminals expose their whole
         // buffer as the value, which made us delete far too much.
@@ -62,11 +104,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "Kysy")
             button.target = self
             button.action = #selector(handleClick)
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
+        updateStatusIcon(sensitive: false)
+    }
+
+    /// Swaps the menu-bar glyph between the normal keyboard and the blind-mode
+    /// slashed eye that signals Kysy isn't reading the focused (password) field.
+    private func updateStatusIcon(sensitive: Bool) {
+        guard let button = statusItem?.button else { return }
+        let name = sensitive ? "eye.slash" : "keyboard"
+        let image = NSImage(systemSymbolName: name,
+                            accessibilityDescription: sensitive ? "Kysy paused" : "Kysy")
+        image?.isTemplate = true
+        button.image = image
+        button.toolTip = sensitive
+            ? "Blind mode — Kysy isn't reading this password field"
+            : "Kysy"
     }
 
     @objc private func handleClick() {

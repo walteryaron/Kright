@@ -14,6 +14,7 @@ public partial class App : Application
 
     public static HotkeyManager Hotkey { get; private set; } = null!;
     public static FocusLanguageEnforcer Enforcer { get; private set; } = null!;
+    public static PrivacyMonitor Privacy { get; private set; } = null!;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -26,6 +27,18 @@ public partial class App : Application
         Enforcer.StartIfEnabled();
 
         SetupTray();
+
+        // Blind mode: when a password field is focused, show a slashed-eye icon
+        // and stop Kysy reading the field (see FixFocusedLayout).
+        Privacy = new PrivacyMonitor();
+        Privacy.SensitiveChanged += OnSensitiveChanged;
+        Privacy.Start();
+    }
+
+    private void OnSensitiveChanged(bool sensitive)
+    {
+        _tray.Icon = sensitive ? TrayIcons.Blind : TrayIcons.Normal;
+        _tray.Text = sensitive ? "Kysy — not reading (password field)" : "Kysy";
     }
 
     // ---- Tray ----
@@ -40,7 +53,7 @@ public partial class App : Application
 
         _tray = new NotifyIcon
         {
-            Icon = SystemIcons.Application,   // TODO: replace with a real .ico
+            Icon = TrayIcons.Normal,
             Visible = true,
             Text = "Kysy",
             ContextMenuStrip = menu
@@ -71,6 +84,9 @@ public partial class App : Application
     {
         var field = FocusInspector.Focused();
         if (field is null) { SystemSounds.Beep.Play(); return; }
+
+        // Blind mode: never read or touch a password field.
+        if (field.IsPassword) { SystemSounds.Beep.Play(); return; }
 
         var s = LayoutConverter.Suggest(field.Value);
         if (s is null || !s.IsMeaningful) { SystemSounds.Beep.Play(); return; }

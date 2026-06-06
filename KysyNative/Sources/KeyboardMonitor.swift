@@ -17,6 +17,10 @@ final class KeyboardMonitor: ObservableObject {
     /// Call after a fix so the buffer reflects what's now in the field.
     func resetWord(to value: String = "") { currentWord = value }
 
+    /// Blind mode: while true (set by PrivacyMonitor when a password field is
+    /// focused), the tap records nothing — no word buffer, no key log.
+    var paused = false
+
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
     private var retryTimer: Timer?
@@ -87,6 +91,8 @@ final class KeyboardMonitor: ObservableObject {
     }
 
     private func handle(event: CGEvent, type: CGEventType) {
+        // Blind mode: a password field is focused — record nothing at all.
+        if paused { return }
         // Ignore Kysy's own synthetic keystrokes (the Terminal/iTerm replacer).
         if event.getIntegerValueField(.eventSourceUserData) == KeystrokeReplacer.marker { return }
 
