@@ -156,22 +156,27 @@ final class KeyboardMonitor: ObservableObject {
               let c = ch.first else { return }
         if c.isWhitespace { appendSpace() }
         else if c.isLetter { currentPhrase += String(c) }  // letters build up the phrase
-        else if producesLetterInLatin(keyCode: keyCode) {
+        else if isLetterKeyInOtherLayout(keyCode: keyCode) {
             // The current layout emits punctuation here, but the SAME physical key
-            // is a letter in the Latin layout (e.g. Hebrew "/" and "'" are the
-            // "q" and "w" keys). Keep it so the layout-fix can convert it.
+            // is a letter in the other layout — so it's really part of a word the
+            // layout-fix should convert: Hebrew "/" / "'" are the "q" / "w" keys,
+            // and English "," "." ";" are the Hebrew letters ת ץ ף. Keep it.
             currentPhrase += String(c)
         } else {
             currentPhrase = ""                             // real punctuation ends the phrase
         }
     }
 
-    /// Whether `keyCode` types a letter in the first English/Latin layout — used
-    /// to tell "a key that happens to print punctuation in this layout" (keep it)
-    /// from genuine punctuation (ends the word).
-    private func producesLetterInLatin(keyCode: Int) -> Bool {
-        guard let en = KeyboardLanguage.firstEnglish() else { return false }
-        return KeyboardLayoutMap.forwardMap(en.id)[UInt16(keyCode)]?.first?.isLetter == true
+    /// Whether `keyCode` types a letter in EITHER the English or the non-English
+    /// layout — used to tell "a key that prints punctuation in this layout but is
+    /// a letter in the other" (keep it) from genuine punctuation (ends the word).
+    private func isLetterKeyInOtherLayout(keyCode: Int) -> Bool {
+        for id in [KeyboardLanguage.firstEnglish()?.id, KeyboardLanguage.firstNonEnglish()?.id] {
+            if let id, KeyboardLayoutMap.forwardMap(id)[UInt16(keyCode)]?.first?.isLetter == true {
+                return true
+            }
+        }
+        return false
     }
 
     /// Append a single space between words, never leading or doubled — keeps the
