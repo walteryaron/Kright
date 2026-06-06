@@ -43,12 +43,14 @@ public sealed class FocusLanguageEnforcer
 
         if (!LatinKinds.Contains(field.Guess)) return;
 
+        // Already on a Latin layout (English, French, Spanish…)? Leave it — only
+        // a non-Latin script (Hebrew, Arabic, Cyrillic…) garbles these fields.
         var current = LanguageManager.Current();
-        if (current is null || current.IsEnglish) return;
-        var english = LanguageManager.FirstEnglish();
-        if (english is null) return;
+        if (current is null || LanguageManager.IsLatin(current.Hkl)) return;
+        var target = LanguageManager.FirstLatin();
+        if (target is null) return;
 
-        LanguageManager.Switch(english.Hkl);
-        LastAction = $"Switched to {english.Name} for {field.Guess} field";
+        LanguageManager.Switch(target.Hkl);
+        LastAction = $"Switched to {target.Name} for {field.Guess} field";
     }
 }

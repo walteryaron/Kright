@@ -50,13 +50,16 @@ final class FocusLanguageEnforcer: ObservableObject {
         let kind = field.guess.label
         guard latinKinds.contains(kind) else { return }
 
-        // Already on English? Nothing to do.
-        guard let current = KeyboardLanguage.current(), !current.lang.hasPrefix("en") else { return }
-        guard let english = KeyboardLanguage.firstEnglish() else { return }
+        // Already on a Latin layout (English, French, Spanish…)? Leave it —
+        // only a non-Latin script (Hebrew, Arabic, Cyrillic…) garbles an
+        // email / URL / password, so that's the only case worth switching.
+        let sourceID = KeyboardLanguage.currentSourceID()
+        guard !sourceID.isEmpty, !KeyboardLanguage.isLatinLayout(sourceID) else { return }
+        guard let target = KeyboardLanguage.firstLatin() else { return }
 
-        _ = KeyboardLanguage.select(id: english.id)
+        _ = KeyboardLanguage.select(id: target.id)
         DispatchQueue.main.async {
-            self.lastAction = "Switched to \(english.name) for \(kind) field"
+            self.lastAction = "Switched to \(target.name) for \(kind) field"
         }
     }
 }

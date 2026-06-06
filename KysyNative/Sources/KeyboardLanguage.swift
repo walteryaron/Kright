@@ -41,6 +41,25 @@ enum KeyboardLanguage {
         enabledSources().first { !$0.lang.hasPrefix("en") }
     }
 
+    /// Whether a layout types Latin letters (English, French, Spanish, German…)
+    /// rather than a non-Latin script (Hebrew, Arabic, Cyrillic…). Decided from
+    /// the characters the layout actually produces, so it's language-agnostic.
+    static func isLatinLayout(_ sourceID: String) -> Bool {
+        let map = KeyboardLayoutMap.forwardMap(sourceID)
+        let keys: [UInt16] = [0, 1, 2, 3, 4, 5, 38, 40, 37]   // A S D F H G J K L
+        let letters = keys.compactMap { map[$0]?.first }.filter { $0.isLetter }
+        guard !letters.isEmpty else { return true }            // unknown → don't disrupt
+        let latin = letters.filter { LayoutConverter.isLatin($0) }.count
+        return latin * 2 >= letters.count                      // majority Latin
+    }
+
+    /// First enabled Latin-script input source (prefers English), if any.
+    static func firstLatin() -> InputSource? {
+        let sources = enabledSources()
+        return sources.first { $0.lang.hasPrefix("en") && isLatinLayout($0.id) }
+            ?? sources.first { isLatinLayout($0.id) }
+    }
+
     @discardableResult
     static func select(id: String) -> String {
         for src in keyboardSources() where stringProp(src, kTISPropertyInputSourceID) == id {
