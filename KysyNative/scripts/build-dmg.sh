@@ -20,6 +20,8 @@ DD="$BUILD/dd"
 STAGE="$BUILD/dmg"
 DMG="$BUILD/Kysy.dmg"
 NOTARY_PROFILE="${KYSY_NOTARY_PROFILE:-kysy-notary}"
+APPLE_ID="${KYSY_APPLE_ID:-walter_yaron@hotmail.com}"   # Apple Developer account
+TEAM_ID="${KYSY_TEAM_ID:-NFQL267669}"
 
 # Auto-detect a Developer ID Application identity (for notarized distribution).
 DEVID="$(security find-identity -v -p codesigning \
@@ -61,7 +63,12 @@ if [ -n "$DEVID" ] && xcrun notarytool history --keychain-profile "$NOTARY_PROFI
   echo "✓ Done (notarized): $DMG"
 else
   echo "✓ Done (not notarized): $DMG"
-  [ -z "$DEVID" ] && echo "  → To produce a notarized DMG, see the setup steps in this script."
+  if [ -z "$DEVID" ]; then
+    echo "  → No Developer ID cert: create one in Xcode → Settings → Accounts → Manage Certificates → + → Developer ID Application."
+  else
+    echo "  → No notary profile '$NOTARY_PROFILE'. Create an app-specific password at appleid.apple.com, then run:"
+    echo "      xcrun notarytool store-credentials $NOTARY_PROFILE --apple-id $APPLE_ID --team-id $TEAM_ID --password <app-specific-password>"
+  fi
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -74,7 +81,7 @@ fi
 # 2) Create an app-specific password at https://appleid.apple.com
 #    (Sign-In and Security → App-Specific Passwords), then store notary creds:
 #      xcrun notarytool store-credentials kysy-notary \
-#        --apple-id <your-apple-id-email> \
+#        --apple-id walter_yaron@hotmail.com \
 #        --team-id NFQL267669 \
 #        --password <the-app-specific-password>
 #
