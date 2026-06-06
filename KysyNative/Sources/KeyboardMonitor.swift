@@ -156,7 +156,22 @@ final class KeyboardMonitor: ObservableObject {
               let c = ch.first else { return }
         if c.isWhitespace { appendSpace() }
         else if c.isLetter { currentPhrase += String(c) }  // letters build up the phrase
-        else { currentPhrase = "" }                        // punctuation ends the phrase
+        else if producesLetterInLatin(keyCode: keyCode) {
+            // The current layout emits punctuation here, but the SAME physical key
+            // is a letter in the Latin layout (e.g. Hebrew "/" and "'" are the
+            // "q" and "w" keys). Keep it so the layout-fix can convert it.
+            currentPhrase += String(c)
+        } else {
+            currentPhrase = ""                             // real punctuation ends the phrase
+        }
+    }
+
+    /// Whether `keyCode` types a letter in the first English/Latin layout — used
+    /// to tell "a key that happens to print punctuation in this layout" (keep it)
+    /// from genuine punctuation (ends the word).
+    private func producesLetterInLatin(keyCode: Int) -> Bool {
+        guard let en = KeyboardLanguage.firstEnglish() else { return false }
+        return KeyboardLayoutMap.forwardMap(en.id)[UInt16(keyCode)]?.first?.isLetter == true
     }
 
     /// Append a single space between words, never leading or doubled — keeps the
