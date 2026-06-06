@@ -56,11 +56,20 @@ public partial class MainWindow : Window
             TypedText.Text = $"Typed: {s.Original}   ({s.FromLayout} → {s.ToLayout})";
             ConvertedText.Text = s.Converted;
             ReplaceButton.IsEnabled = true;
+
+            var v = GibberishDetector.LooksWrongLayout(s.Original, s.Converted);
+            GibberishText.Text = v.Wrong
+                ? $"🧠 Likely wrong layout — {(int)(v.Confidence * 100)}% confident"
+                : "🧠 Looks intentional — probably not a layout mistake";
+            GibberishText.Foreground = v.Wrong
+                ? System.Windows.Media.Brushes.LightGreen
+                : System.Windows.Media.Brushes.Gray;
         }
         else
         {
             TypedText.Text = "Type ≥3 letters in a field to see a suggestion.";
             ConvertedText.Text = "";
+            GibberishText.Text = "";
             ReplaceButton.IsEnabled = false;
         }
 

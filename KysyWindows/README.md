@@ -67,6 +67,9 @@ Native/NativeMethods.cs  all P/Invoke
 Services/
   KeyboardLayoutMap.cs   ToUnicodeEx layout reading
   LayoutConverter.cs     last-word wrong-layout detection
+  GibberishDetector.cs   local English+Hebrew bigram models (is this gibberish?)
+  BigramModel.cs         the bigram scorer
+  ModelData.cs           precomputed model tables (regenerate via tools/gen_models_cs.swift on a Mac)
   LanguageManager.cs     enumerate / switch input languages
   FocusInspector.cs      UIA focused-field read/write + type guess
   KeystrokeReplacer.cs   SendInput fallback
