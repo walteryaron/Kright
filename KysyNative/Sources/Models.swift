@@ -56,7 +56,10 @@ struct FocusedField {
             return FieldGuess(label: "Password", basis: "AXSecureTextField subrole", confidence: 1.0)
         }
         let isTextish = ["AXTextField", "AXTextArea", "AXComboBox", "AXSearchField"].contains(role ?? "")
-        let hay = [placeholder, title, fieldDescription, help, attributes["AXRoleDescription"]]
+        // Web inputs frequently expose their purpose only via id/name (e.g.
+        // id="email"), so fold those identifiers into the keyword haystack too.
+        let hay = [placeholder, title, fieldDescription, help,
+                   attributes["AXRoleDescription"], attributes["AXIdentifier"], attributes["AXDOMIdentifier"]]
             .compactMap { $0 }.joined(separator: " ").lowercased()
 
         func any(_ needles: [String]) -> Bool { needles.contains { hay.contains($0) } }
@@ -67,7 +70,7 @@ struct FocusedField {
         if any(["phone", "tel", "mobile", "cell"]) {
             return FieldGuess(label: "Phone number", basis: "label keyword", confidence: 0.7)
         }
-        if any(["email", "e-mail"]) {
+        if any(["email", "e-mail", "mail"]) {
             return FieldGuess(label: "Email", basis: "label keyword", confidence: 0.7)
         }
         if any(["first name", "last name", "full name", "name"]) {

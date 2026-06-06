@@ -3,7 +3,8 @@ using System.Windows.Automation;
 namespace Kysy.Services;
 
 public record FocusedField(
-    string ControlType, string Name, string HelpText, bool IsPassword, string Value)
+    string ControlType, string Name, string HelpText, bool IsPassword, string Value,
+    string AutomationId = "")
 {
     /// <summary>Best-effort field-type inference (mirrors the macOS guess).</summary>
     public string Guess
@@ -11,11 +12,13 @@ public record FocusedField(
         get
         {
             if (IsPassword) return "Password";
-            string hay = (Name + " " + HelpText).ToLowerInvariant();
+            // Web inputs often expose their purpose only via the id (AutomationId),
+            // e.g. id="email", so fold it into the keyword haystack too.
+            string hay = (Name + " " + HelpText + " " + AutomationId).ToLowerInvariant();
             bool Any(params string[] n) => n.Any(hay.Contains);
             if (Any("search")) return "Search";
             if (Any("phone", "tel", "mobile")) return "Phone number";
-            if (Any("email", "e-mail")) return "Email";
+            if (Any("email", "e-mail", "mail")) return "Email";
             if (Any("url", "website", "http")) return "URL";
             if (Any("card", "cvv", "expiry")) return "Payment";
             if (Any("address", "street", "city", "zip", "postal")) return "Address";
@@ -50,7 +53,8 @@ public static class FocusInspector
                 Name: info.Name ?? "",
                 HelpText: info.HelpText ?? "",
                 IsPassword: info.IsPassword,
-                Value: value);
+                Value: value,
+                AutomationId: info.AutomationId ?? "");
         }
         catch { return null; }
     }

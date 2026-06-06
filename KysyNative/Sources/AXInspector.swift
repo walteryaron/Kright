@@ -83,7 +83,9 @@ enum AXInspector {
 
         var attrs: [String: String] = [:]
         let keys = ["AXRole", "AXSubrole", "AXPlaceholderValue", "AXTitle",
-                    "AXDescription", "AXHelp", "AXRoleDescription"]
+                    "AXDescription", "AXHelp", "AXRoleDescription",
+                    // Web inputs often carry their purpose only here (id="email").
+                    "AXIdentifier", "AXDOMIdentifier"]
         for key in keys {
             var v: CFTypeRef?
             if AXUIElementCopyAttributeValue(element, key as CFString, &v) == .success,

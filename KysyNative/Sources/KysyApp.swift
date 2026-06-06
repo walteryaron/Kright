@@ -71,6 +71,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Blind mode: never read or touch a password field.
         if privacy.sensitive { NSSound.beep(); return }
 
+        // Single-token fields (email / URL / username): the keystroke buffer
+        // breaks on '@' and '.', so it can't represent the whole value — that's
+        // why an email only converted the part after '@'. Convert the field's
+        // actual value instead. The layout map round-trips the real characters,
+        // so '@' and '.' stay correct. Skipped for fields with spaces (handled by
+        // the phrase path below) and long buffers (suggestPhrase caps length).
+        if let (element, value) = AXInspector.focusedValue() {
+            let token = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !token.isEmpty, !token.contains(where: { $0.isWhitespace }),
+               let s = LayoutConverter.suggestPhrase(token), s.isMeaningful,
+               AXInspector.setValue(s.converted, on: element).ok {
+                keyboard.resetWord(to: s.converted)
+                return
+            }
+        }
+
         // Use the exact characters the user just typed (tracked by the keyboard
         // monitor), NOT the field's AX value — terminals expose their whole
         // buffer as the value, which made us delete far too much.
