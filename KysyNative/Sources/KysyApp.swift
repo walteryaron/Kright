@@ -140,7 +140,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let button = statusItem?.button else { return }
         let name: String, tip: String
         if Self.isDisabled {
-            name = "pause.circle"; tip = "Kysy is disabled — right-click to enable"
+            name = "pause.circle"; tip = "Kysy is disabled — click to enable"
         } else if Self.privacy.sensitive {
             name = "eye.slash"; tip = "Blind mode — Kysy isn't reading this password field"
         } else {
@@ -152,21 +152,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         button.toolTip = tip
     }
 
+    /// Either mouse button opens the menu; "Settings" then shows the panel.
     @objc private func handleClick() {
-        guard let event = NSApp.currentEvent else { return togglePanel() }
-        if event.type == .rightMouseUp {
-            showContextMenu()
-        } else {
-            togglePanel()
-        }
+        showMenu()
     }
 
-    private func showContextMenu() {
+    private func showMenu() {
         let menu = NSMenu()
         let toggle = NSMenuItem(title: Self.isDisabled ? "Enable Kysy" : "Disable Kysy",
                                 action: #selector(toggleActive), keyEquivalent: "")
         toggle.target = self
-        let settings = NSMenuItem(title: "Settings", action: #selector(openSettings), keyEquivalent: ",")
+        let settings = NSMenuItem(title: "Settings…", action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         let quit = NSMenuItem(title: "Quit Kysy", action: #selector(quit), keyEquivalent: "q")
         quit.target = self
@@ -176,8 +172,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(.separator())
         menu.addItem(quit)
 
-        // Temporarily attach the menu so a click pops it, then detach so the
-        // next left-click still toggles the panel instead of opening the menu.
+        // Temporarily attach the menu so the click pops it, then detach so a
+        // later click still routes through handleClick.
         statusItem.menu = menu
         statusItem.button?.performClick(nil)
         statusItem.menu = nil
@@ -204,7 +200,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApplication.shared.terminate(nil)
     }
 
-    // MARK: - Floating panel
+    // MARK: - Settings panel
+
+    /// Compact size for the Settings-only panel, and the larger size used when
+    /// Debug mode adds the Detect / Key Log tabs.
+    private static let settingsSize = NSSize(width: 360, height: 420)
+    private static let debugSize = NSSize(width: 460, height: 680)
 
     private func setupPanelWindow() {
         // Use NSHostingView directly (not NSHostingController) as the panel's
@@ -222,36 +223,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hostingView.sizingOptions = []
 
         let panel = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 460, height: 680),
-            styleMask: [.titled, .closable, .nonactivatingPanel, .fullSizeContentView],
+            contentRect: NSRect(origin: .zero, size: Self.settingsSize),
+            styleMask: [.titled, .closable, .fullSizeContentView],
             backing: .buffered, defer: false)
         panel.titleVisibility = .hidden
         panel.titlebarAppearsTransparent = true
         panel.isMovableByWindowBackground = false
-        panel.isFloatingPanel = true
-        panel.level = .floating
-        panel.hidesOnDeactivate = false
+        // A normal, non-floating window that dismisses when you click away —
+        // standard menu-bar-app behavior (it no longer hovers over everything).
+        panel.isFloatingPanel = false
+        panel.level = .normal
+        panel.hidesOnDeactivate = true
         panel.isReleasedWhenClosed = false
         panel.standardWindowButton(.closeButton)?.isHidden = true
         panel.standardWindowButton(.miniaturizeButton)?.isHidden = true
         panel.standardWindowButton(.zoomButton)?.isHidden = true
         panel.contentView = hostingView
+        panel.delegate = self
         panelWindow = panel
     }
 
-    private func togglePanel() {
-        if panelWindow.isVisible {
-            panelWindow.orderOut(nil)
-            Self.inspector.stopPolling()
-        } else {
-            showPanel()
-        }
-    }
-
     private func showPanel() {
+        // Size to fit: just Settings normally, larger when Debug tabs are shown.
+        let debug = UserDefaults.standard.bool(forKey: "debug_mode")
+        panelWindow.setContentSize(debug ? Self.debugSize : Self.settingsSize)
         positionPanelUnderStatusItem()
-        panelWindow.orderFront(nil)
-        Self.inspector.startPolling()
+        NSApp.activate(ignoringOtherApps: true)
+        panelWindow.makeKeyAndOrderFront(nil)
+        if debug { Self.inspector.startPolling() } else { Self.inspector.stopPolling() }
     }
 
     private func positionPanelUnderStatusItem() {
@@ -264,6 +263,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             x = min(max(screen.visibleFrame.minX + 8, x), maxX)
         }
         panelWindow.setFrameTopLeftPoint(NSPoint(x: x, y: y))
+    }
+}
+
+extension AppDelegate: NSWindowDelegate {
+    // The panel auto-hides on deactivate (hidesOnDeactivate); stop any polling.
+    func windowDidResignKey(_ notification: Notification) {
+        Self.inspector.stopPolling()
     }
 }
 
