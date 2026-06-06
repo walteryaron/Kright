@@ -45,12 +45,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     static let enforcer = FocusLanguageEnforcer()
     static let privacy = PrivacyMonitor()
 
+    /// Master on/off switch (right-click menu). While disabled, the fix hotkey is
+    /// inert and the auto-language enforcer is paused — handy for A/B demos.
+    static var isDisabled = UserDefaults.standard.bool(forKey: "kysy_disabled")
+
     private var statusItem: NSStatusItem!
     private var panelWindow: NSPanel!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Self.keyboard.start()
-        Self.enforcer.startIfEnabled()
+        if !Self.isDisabled { Self.enforcer.startIfEnabled() }
         HotkeyManager.shared.onTrigger = { Self.fixFocusedLayout() }
         setupPanelWindow()
         setupStatusItem()
@@ -59,7 +63,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Self.privacy.onChange = { [weak self] sensitive in
             Self.keyboard.paused = sensitive
             if sensitive { Self.keyboard.resetWord() }
-            self?.updateStatusIcon(sensitive: sensitive)
+            self?.refreshStatusIcon()
         }
         Self.privacy.start()
     }
@@ -68,6 +72,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// replace it in place — triggered by the global hotkey, no panel needed.
     /// Handles a whole multi-word run ("nrhu dktexh"), not only the last word.
     static func fixFocusedLayout() {
+        // Master switch off → do nothing (for recording the before/after).
+        if isDisabled { NSSound.beep(); return }
         // Blind mode: never read or touch a password field.
         if privacy.sensitive { NSSound.beep(); return }
 
@@ -125,21 +131,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.action = #selector(handleClick)
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
-        updateStatusIcon(sensitive: false)
+        refreshStatusIcon()
     }
 
-    /// Swaps the menu-bar glyph between the normal keyboard and the blind-mode
-    /// slashed eye that signals Kysy isn't reading the focused (password) field.
-    private func updateStatusIcon(sensitive: Bool) {
+    /// Picks the menu-bar glyph from the current state: disabled (paused), blind
+    /// mode (password field), or normal.
+    private func refreshStatusIcon() {
         guard let button = statusItem?.button else { return }
-        let name = sensitive ? "eye.slash" : "keyboard"
-        let image = NSImage(systemSymbolName: name,
-                            accessibilityDescription: sensitive ? "Kysy paused" : "Kysy")
+        let name: String, tip: String
+        if Self.isDisabled {
+            name = "pause.circle"; tip = "Kysy is disabled — right-click to enable"
+        } else if Self.privacy.sensitive {
+            name = "eye.slash"; tip = "Blind mode — Kysy isn't reading this password field"
+        } else {
+            name = "keyboard"; tip = "Kysy"
+        }
+        let image = NSImage(systemSymbolName: name, accessibilityDescription: tip)
         image?.isTemplate = true
         button.image = image
-        button.toolTip = sensitive
-            ? "Blind mode — Kysy isn't reading this password field"
-            : "Kysy"
+        button.toolTip = tip
     }
 
     @objc private func handleClick() {
@@ -153,10 +163,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showContextMenu() {
         let menu = NSMenu()
+        let toggle = NSMenuItem(title: Self.isDisabled ? "Enable Kysy" : "Disable Kysy",
+                                action: #selector(toggleActive), keyEquivalent: "")
+        toggle.target = self
         let settings = NSMenuItem(title: "Settings", action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         let quit = NSMenuItem(title: "Quit Kysy", action: #selector(quit), keyEquivalent: "q")
         quit.target = self
+        menu.addItem(toggle)
+        menu.addItem(.separator())
         menu.addItem(settings)
         menu.addItem(.separator())
         menu.addItem(quit)
@@ -166,6 +181,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.menu = menu
         statusItem.button?.performClick(nil)
         statusItem.menu = nil
+    }
+
+    @objc private func toggleActive() {
+        Self.isDisabled.toggle()
+        UserDefaults.standard.set(Self.isDisabled, forKey: "kysy_disabled")
+        if Self.isDisabled {
+            Self.enforcer.stop()
+            Self.keyboard.resetWord()
+        } else {
+            Self.enforcer.startIfEnabled()
+        }
+        refreshStatusIcon()
     }
 
     @objc private func openSettings() {
