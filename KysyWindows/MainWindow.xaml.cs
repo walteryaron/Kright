@@ -22,9 +22,23 @@ public partial class MainWindow : Window
 
         HotkeyText.Text = App.Hotkey.DisplayString;
         AutoLangCheck.IsChecked = App.Enforcer.Enabled;
+
+        DebugCheck.IsChecked = AppSettings.Current.DebugMode;
+        ApplyDebugMode(AppSettings.Current.DebugMode);
     }
 
-    public void SelectTab(int index) => Tabs.SelectedIndex = index;
+    public void SelectTab(int index)
+    {
+        // Detect (index 0) may be hidden — fall back to Settings.
+        if (index == 0 && DetectTab.Visibility != Visibility.Visible) index = 1;
+        Tabs.SelectedIndex = index;
+    }
+
+    private void ApplyDebugMode(bool on)
+    {
+        DetectTab.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+        if (!on && ReferenceEquals(Tabs.SelectedItem, DetectTab)) Tabs.SelectedIndex = 1; // Settings
+    }
 
     // Keep the app alive (tray) when the window is closed.
     protected override void OnClosing(CancelEventArgs e)
@@ -140,6 +154,14 @@ public partial class MainWindow : Window
 
     private void AutoLangCheck_Click(object sender, RoutedEventArgs e)
         => App.Enforcer.Enabled = AutoLangCheck.IsChecked == true;
+
+    private void DebugCheck_Click(object sender, RoutedEventArgs e)
+    {
+        bool on = DebugCheck.IsChecked == true;
+        AppSettings.Current.DebugMode = on;
+        AppSettings.Save();
+        ApplyDebugMode(on);
+    }
 
     private void Quit_Click(object sender, RoutedEventArgs e)
         => System.Windows.Application.Current.Shutdown();

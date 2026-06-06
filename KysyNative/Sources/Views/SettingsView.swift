@@ -4,8 +4,7 @@ import AppKit
 struct SettingsView: View {
     @EnvironmentObject var enforcer: FocusLanguageEnforcer
     @EnvironmentObject var hotkey: HotkeyManager
-    @State private var key: String = GeminiService.apiKey
-    @State private var status: String?
+    @AppStorage("debug_mode") private var debugMode = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -51,22 +50,13 @@ struct SettingsView: View {
 
                 Divider().padding(.vertical, 4)
 
-                Text("Gemini API Key").font(.system(size: 12, weight: .semibold))
-                Text("Stored locally on this Mac. Get a free key at aistudio.google.com/apikey.")
-                    .font(.system(size: 11)).foregroundColor(Color(white: 0.5))
-                SecureField("AIza…", text: $key)
-                    .textFieldStyle(.roundedBorder)
-                HStack {
-                    Button {
-                        GeminiService.apiKey = key
-                        status = GeminiService.isReady ? "Saved ✓" : "Cleared"
-                    } label: { Text("Save") }
-                    if let status {
-                        Text(status).font(.system(size: 11))
-                            .foregroundColor(status.hasPrefix("Saved") ? .green : Color(white: 0.5))
-                    }
-                    Spacer()
+                Text("Developer").font(.system(size: 12, weight: .semibold))
+                Toggle(isOn: $debugMode) {
+                    Text("Debug mode — show the Detect and Key Log tabs")
+                        .font(.system(size: 11)).foregroundColor(Color(white: 0.75))
                 }
+                .toggleStyle(.switch)
+
                 Spacer()
                 Divider()
                 Button(role: .destructive) {

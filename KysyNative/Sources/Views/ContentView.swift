@@ -14,16 +14,24 @@ enum AppTab: String, CaseIterable {
     }
 }
 
-/// Root panel UI shown from the menu bar: a tab strip over the three views.
+/// Root panel UI shown from the menu bar. Normally just Settings; the Detect and
+/// Key Log tabs (developer tools) appear only when Debug mode is enabled.
 struct ContentView: View {
     @EnvironmentObject var panel: PanelState
+    @AppStorage("debug_mode") private var debugMode = false
+
+    /// Detect and Key Log are debug-only; Settings is always shown.
+    private var tabs: [AppTab] { debugMode ? AppTab.allCases : [.settings] }
+    private var current: AppTab { tabs.contains(panel.tab) ? panel.tab : .settings }
 
     var body: some View {
         VStack(spacing: 0) {
-            tabBar
-            Divider()
+            if debugMode {
+                tabBar
+                Divider()
+            }
             Group {
-                switch panel.tab {
+                switch current {
                 case .detect: DetectView()
                 case .keyLog: KeyLogView()
                 case .settings: SettingsView()
@@ -38,20 +46,20 @@ struct ContentView: View {
 
     private var tabBar: some View {
         HStack(spacing: 0) {
-            ForEach(AppTab.allCases, id: \.self) { t in
+            ForEach(tabs, id: \.self) { t in
                 Button {
                     panel.tab = t
                 } label: {
                     VStack(spacing: 3) {
                         HStack(spacing: 6) {
                             Image(systemName: t.icon).font(.system(size: 12))
-                            Text(t.rawValue).font(.system(size: 12, weight: panel.tab == t ? .semibold : .regular))
+                            Text(t.rawValue).font(.system(size: 12, weight: current == t ? .semibold : .regular))
                         }
                         Rectangle()
-                            .fill(panel.tab == t ? Color.blue : Color.clear)
+                            .fill(current == t ? Color.blue : Color.clear)
                             .frame(height: 2)
                     }
-                    .foregroundColor(panel.tab == t ? .blue : Color(white: 0.4))
+                    .foregroundColor(current == t ? .blue : Color(white: 0.4))
                     .frame(maxWidth: .infinity)
                     .padding(.top, 10)
                 }
