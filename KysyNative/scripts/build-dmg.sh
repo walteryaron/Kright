@@ -27,6 +27,15 @@ TEAM_ID="${KYSY_TEAM_ID:-NFQL267669}"
 DEVID="$(security find-identity -v -p codesigning \
           | sed -n 's/.*"\(Developer ID Application: .*\)"/\1/p' | head -1)"
 
+# Common gotcha: the cert is installed but its PRIVATE KEY isn't on this Mac, so
+# it's not a usable signing identity. Detect that and explain.
+if [ -z "$DEVID" ] && security find-certificate -a -c "Developer ID Application" >/dev/null 2>&1; then
+  echo "⚠ A 'Developer ID Application' certificate is in your keychain but has no"
+  echo "  matching private key, so it can't sign. Recreate it via Xcode (which"
+  echo "  generates the key locally): Xcode → Settings → Accounts → Manage"
+  echo "  Certificates → + → Developer ID Application. Continuing un-notarized…"
+fi
+
 echo "▸ Building Release…"
 xcodebuild -project Kysy.xcodeproj -scheme Kysy -configuration Release \
   -derivedDataPath "$DD" build >/dev/null
