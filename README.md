@@ -47,3 +47,27 @@ cd KysyWindows
 dotnet build
 dotnet run
 ```
+
+## Packaging installers
+
+**macOS — `.dmg`** (run on a Mac with Xcode):
+```sh
+cd KysyNative
+./scripts/build-dmg.sh        # → build/Kysy.dmg
+```
+The app is signed with an *Apple Development* identity but **not notarized**, so
+the first launch on another Mac needs a **right-click → Open** (or
+`xattr -dr com.apple.quarantine /Applications/Kysy.app`). Frictionless
+distribution would require a *Developer ID* certificate + notarization.
+
+**Windows — installer `.exe`** (run on Windows; needs the
+[.NET 8 SDK](https://dotnet.microsoft.com/download) and
+[Inno Setup 6](https://jrsoftware.org/isdl.php)):
+```powershell
+cd KysyWindows
+powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
+# → installer\output\KysySetup-1.0.0.exe
+```
+This publishes a **self-contained** x64 build (the .NET runtime is bundled, so
+end users install nothing extra) and wraps it in a per-user installer (no UAC),
+with optional "start at login".

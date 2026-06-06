@@ -19,5 +19,7 @@ DerivedData/
 # ── Windows native app (KysyWindows, .NET / WPF) ──
 KysyWindows/bin/
 KysyWindows/obj/
+KysyWindows/publish/
+KysyWindows/installer/output/
 [Bb]in/
 [Oo]bj/
