@@ -10,7 +10,8 @@ public sealed class AppSettings
     // Default hotkey: Ctrl+Alt+K (avoids clobbering single-modifier shortcuts).
     public uint HotkeyModifiers { get; set; } = NativeMethods.MOD_CONTROL | NativeMethods.MOD_ALT;
     public uint HotkeyVk { get; set; } = 0x4B; // 'K'
-    public bool AutoEnglishOnLatinFields { get; set; } = false;
+    // On by default: switch to English on email / URL / password fields.
+    public bool AutoEnglishOnLatinFields { get; set; } = true;
 
     /// <summary>Show the Detect tab (developer tool). Hidden by default.</summary>
     public bool DebugMode { get; set; } = false;

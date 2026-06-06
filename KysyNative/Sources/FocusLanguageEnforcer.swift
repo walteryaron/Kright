@@ -4,9 +4,10 @@ import Combine
 /// Watches which field is focused (system-wide) and, when it lands on a field
 /// that must be typed in English (email / URL / password / payment), switches
 /// the keyboard to an English input source. Runs in the background regardless of
-/// whether the panel is open. Opt-in via Settings.
+/// whether the panel is open. On by default; toggleable via Settings.
 final class FocusLanguageEnforcer: ObservableObject {
-    @Published var enabled: Bool = UserDefaults.standard.bool(forKey: "auto_lang_enabled") {
+    // Default ON: true unless the user has explicitly turned it off before.
+    @Published var enabled: Bool = (UserDefaults.standard.object(forKey: "auto_lang_enabled") as? Bool) ?? true {
         didSet {
             UserDefaults.standard.set(enabled, forKey: "auto_lang_enabled")
             enabled ? start() : stop()
