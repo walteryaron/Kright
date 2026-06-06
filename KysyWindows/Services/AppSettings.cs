@@ -12,6 +12,9 @@ public sealed class AppSettings
     public uint HotkeyVk { get; set; } = 0x4B; // 'K'
     public bool AutoEnglishOnLatinFields { get; set; } = false;
 
+    /// <summary>Show the Detect tab (developer tool). Hidden by default.</summary>
+    public bool DebugMode { get; set; } = false;
+
     private static readonly string Dir =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Kysy");
     private static readonly string FilePath = Path.Combine(Dir, "settings.json");

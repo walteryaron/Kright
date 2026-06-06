@@ -4,7 +4,7 @@ import AppKit
 /// Shared routing state so the right-click "Settings" item can switch the panel
 /// to the Settings tab.
 final class PanelState: ObservableObject {
-    @Published var tab: AppTab = .detect
+    @Published var tab: AppTab = .settings
 }
 
 /// Always-on watcher that flips Kysy into "blind mode" while a password (secure)

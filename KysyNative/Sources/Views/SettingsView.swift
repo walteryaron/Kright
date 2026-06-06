@@ -4,6 +4,7 @@ import AppKit
 struct SettingsView: View {
     @EnvironmentObject var enforcer: FocusLanguageEnforcer
     @EnvironmentObject var hotkey: HotkeyManager
+    @AppStorage("debug_mode") private var debugMode = false
     @State private var key: String = GeminiService.apiKey
     @State private var status: String?
 
@@ -67,6 +68,15 @@ struct SettingsView: View {
                     }
                     Spacer()
                 }
+                Divider().padding(.vertical, 4)
+
+                Text("Developer").font(.system(size: 12, weight: .semibold))
+                Toggle(isOn: $debugMode) {
+                    Text("Debug mode — show the Detect and Key Log tabs")
+                        .font(.system(size: 11)).foregroundColor(Color(white: 0.75))
+                }
+                .toggleStyle(.switch)
+
                 Spacer()
                 Divider()
                 Button(role: .destructive) {

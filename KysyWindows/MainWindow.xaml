@@ -10,8 +10,8 @@
 
     <TabControl x:Name="Tabs" Background="#0D0D0D" BorderThickness="0">
 
-        <!-- DETECT -->
-        <TabItem Header="Detect">
+        <!-- DETECT (developer tool — hidden unless Debug mode is on) -->
+        <TabItem x:Name="DetectTab" Header="Detect">
             <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="14">
                 <StackPanel>
                     <TextBlock Text="FOCUSED FIELD" FontWeight="Bold" FontSize="11" Foreground="#777"/>
@@ -59,6 +59,12 @@
                           Content="Switch to English on email / URL / password fields"
                           Click="AutoLangCheck_Click"/>
                 <TextBlock x:Name="AutoLangStatus" Foreground="#88CC88" FontSize="11" Margin="0,4,0,0"/>
+
+                <Separator Margin="0,12"/>
+
+                <TextBlock Text="Developer" FontWeight="SemiBold"/>
+                <CheckBox x:Name="DebugCheck" Margin="0,6,0,0" Foreground="#CCC"
+                          Content="Debug mode — show the Detect tab" Click="DebugCheck_Click"/>
 
                 <Separator Margin="0,12"/>
 
