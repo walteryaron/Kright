@@ -19,7 +19,6 @@
 		8EEFF4914011C538B5FB3FCA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CA4F84C570071A96E339A5 /* ContentView.swift */; };
 		91D9F94DD86564776F35B117 /* KeystrokeReplacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E88E64F508B0AC88FBA9A7 /* KeystrokeReplacer.swift */; };
 		9BEB5317920D21B2A164C9BC /* HebrewModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A65534A08C83AF36F2D4F0 /* HebrewModelData.swift */; };
-		9F7455FCA9C8B1F8071B7323 /* GeminiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83372CA6FDAB4644AE6057A6 /* GeminiService.swift */; };
 		B94EC5851A72DBAA5BAC7B16 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B151E3907D7C02480C183C /* Models.swift */; };
 		BBA81A347EC3AE05BC82A397 /* LayoutConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A69AB9FB6A849310A80C3B /* LayoutConverter.swift */; };
 		CC5AC3EF241DF48470822B73 /* GibberishDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1804DDF7DF80BF67CD21DC90 /* GibberishDetector.swift */; };
@@ -38,7 +37,6 @@
 		6E0EA6623956F8F9B8B3E3C6 /* KeyboardMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardMonitor.swift; sourceTree = "<group>"; };
 		72E460A8BE4ABB21AC6B2E7A /* Kysy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Kysy.entitlements; sourceTree = "<group>"; };
 		77CA4F84C570071A96E339A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		83372CA6FDAB4644AE6057A6 /* GeminiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiService.swift; sourceTree = "<group>"; };
 		88AF7A13D7B93718DD1DC388 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
 		9EAD54BDF5E9A69CDCB045E5 /* AXInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXInspector.swift; sourceTree = "<group>"; };
 		A07E34776F01801DD71210EF /* KeyboardLayoutMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutMap.swift; sourceTree = "<group>"; };
@@ -74,7 +72,6 @@
 				9EAD54BDF5E9A69CDCB045E5 /* AXInspector.swift */,
 				15AE6D2619313066EE785E86 /* FieldInspector.swift */,
 				B91530ABC6C05602093B9562 /* FocusLanguageEnforcer.swift */,
-				83372CA6FDAB4644AE6057A6 /* GeminiService.swift */,
 				1804DDF7DF80BF67CD21DC90 /* GibberishDetector.swift */,
 				67A65534A08C83AF36F2D4F0 /* HebrewModelData.swift */,
 				88AF7A13D7B93718DD1DC388 /* HotkeyManager.swift */,
@@ -167,7 +164,6 @@
 				66B0CC137645C7716715C40C /* DetectView.swift in Sources */,
 				24758AA5E9E7D418775F4CEE /* FieldInspector.swift in Sources */,
 				DE2761F71AE4591E5630E28C /* FocusLanguageEnforcer.swift in Sources */,
-				9F7455FCA9C8B1F8071B7323 /* GeminiService.swift in Sources */,
 				CC5AC3EF241DF48470822B73 /* GibberishDetector.swift in Sources */,
 				9BEB5317920D21B2A164C9BC /* HebrewModelData.swift in Sources */,
 				E1067FD689784FCFDDC87B5F /* HotkeyManager.swift in Sources */,
