@@ -100,22 +100,33 @@ public partial class MainWindow : Window
         if (!_recording) { base.OnPreviewKeyDown(e); return; }
         e.Handled = true;
 
-        if (e.Key == Key.Escape) { StopRecording(); return; }
+        // When Alt is held, the key arrives as Key.System with the real key in
+        // SystemKey — resolve that first so the guard below sees the actual key.
+        Key key = e.Key == Key.System ? e.SystemKey : e.Key;
 
-        // Ignore lone modifier presses.
-        if (e.Key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt
-            or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin) return;
+        if (key == Key.Escape) { StopRecording(); return; }
 
-        var mods = Keyboard.Modifiers;
-        if (mods == ModifierKeys.None) return; // require a modifier
+        // Ignore lone modifier presses (incl. when they arrive via Key.System).
+        if (key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt
+            or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin
+            or Key.System or Key.None) return;
 
+        // Read each modifier's physical key state directly (both L/R variants).
+        // This is more reliable than Keyboard.Modifiers when Alt routes the event
+        // through Key.System, and on layouts where AltGr reports as Ctrl+Alt.
         uint fs = 0;
-        if (mods.HasFlag(ModifierKeys.Control)) fs |= NativeMethods.MOD_CONTROL;
-        if (mods.HasFlag(ModifierKeys.Alt)) fs |= NativeMethods.MOD_ALT;
-        if (mods.HasFlag(ModifierKeys.Shift)) fs |= NativeMethods.MOD_SHIFT;
-        if (mods.HasFlag(ModifierKeys.Windows)) fs |= NativeMethods.MOD_WIN;
+        bool ctrl = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+        bool alt = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
+        bool shift = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
+        bool win = Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin);
+        if (ctrl) fs |= NativeMethods.MOD_CONTROL;
+        if (alt) fs |= NativeMethods.MOD_ALT;
+        if (shift) fs |= NativeMethods.MOD_SHIFT;
+        if (win) fs |= NativeMethods.MOD_WIN;
 
-        uint vk = (uint)KeyInterop.VirtualKeyFromKey(e.Key == Key.System ? e.SystemKey : e.Key);
+        uint vk = (uint)KeyInterop.VirtualKeyFromKey(key);
+
+        if (fs == 0) return; // require a modifier
         App.Hotkey.Update(fs, vk);
         StopRecording();
     }

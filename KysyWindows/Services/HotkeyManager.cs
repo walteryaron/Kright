@@ -43,10 +43,12 @@ public sealed class HotkeyManager : IDisposable
         Register();
     }
 
-    private void Register()
+    /// <summary>Registers the current combo. Returns false if the OS rejected it
+    /// (e.g. another app already owns that hotkey).</summary>
+    public bool Register()
     {
         NativeMethods.UnregisterHotKey(_source.Handle, HotkeyId);
-        NativeMethods.RegisterHotKey(_source.Handle, HotkeyId,
+        return NativeMethods.RegisterHotKey(_source.Handle, HotkeyId,
             Modifiers | NativeMethods.MOD_NOREPEAT, VirtualKey);
     }
 
