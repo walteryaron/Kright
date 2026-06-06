@@ -6,6 +6,13 @@ struct SettingsView: View {
     @EnvironmentObject var hotkey: HotkeyManager
     @AppStorage("debug_mode") private var debugMode = false
 
+    private var appVersion: String {
+        let info = Bundle.main.infoDictionary
+        let v = info?["CFBundleShortVersionString"] as? String ?? "—"
+        let b = info?["CFBundleVersion"] as? String ?? ""
+        return b.isEmpty ? v : "\(v) (\(b))"
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 8) {
@@ -56,6 +63,19 @@ struct SettingsView: View {
                         .font(.system(size: 11)).foregroundColor(Color(white: 0.75))
                 }
                 .toggleStyle(.switch)
+
+                Divider().padding(.vertical, 4)
+
+                Text("About").font(.system(size: 12, weight: .semibold))
+                HStack(spacing: 8) {
+                    Image(systemName: "keyboard").foregroundColor(.blue).font(.system(size: 16))
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Kysy \(appVersion)")
+                            .font(.system(size: 11, weight: .medium)).foregroundColor(Color(white: 0.8))
+                        Text("Fixes text typed in the wrong keyboard layout.")
+                            .font(.system(size: 10)).foregroundColor(Color(white: 0.45))
+                    }
+                }
 
                 Spacer()
                 Divider()

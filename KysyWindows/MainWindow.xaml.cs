@@ -25,6 +25,9 @@ public partial class MainWindow : Window
 
         DebugCheck.IsChecked = AppSettings.Current.DebugMode;
         ApplyDebugMode(AppSettings.Current.DebugMode);
+
+        var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        VersionText.Text = $"Kysy {v?.ToString(3) ?? "1.0.0"}";
     }
 
     public void SelectTab(int index)

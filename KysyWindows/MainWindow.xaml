@@ -68,6 +68,13 @@
 
                 <Separator Margin="0,12"/>
 
+                <TextBlock Text="About" FontWeight="SemiBold"/>
+                <TextBlock x:Name="VersionText" Foreground="#CCC" Margin="0,6,0,0"/>
+                <TextBlock Text="Fixes text typed in the wrong keyboard layout."
+                           Foreground="#888" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"/>
+
+                <Separator Margin="0,12"/>
+
                 <Button Content="Quit Kysy" HorizontalAlignment="Left" Click="Quit_Click"/>
             </StackPanel>
         </TabItem>
