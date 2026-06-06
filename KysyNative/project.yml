@@ -24,6 +24,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.kysy.native
         PRODUCT_NAME: Kysy
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     info:
       path: Sources/Info.plist
       properties:

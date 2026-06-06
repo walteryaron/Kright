@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0292D7845CED948BE847C0B5 /* KysyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC838CCCDC9275D710CD1463 /* KysyApp.swift */; };
 		1EFFDF931D4A1B29CC2612E9 /* KeyLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC3B109C1D83585B2A3EF3C /* KeyLogView.swift */; };
+		239B9EA446509B0483DD9A38 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D3EC81F3EC50B9592308A7FA /* Assets.xcassets */; };
 		24758AA5E9E7D418775F4CEE /* FieldInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AE6D2619313066EE785E86 /* FieldInspector.swift */; };
 		289233D25A45E1CF4B4A29EA /* AXInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EAD54BDF5E9A69CDCB045E5 /* AXInspector.swift */; };
 		2B02EE2420153E30E11E68F6 /* KeyboardLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97E0B7EE8614C3011522365 /* KeyboardLanguage.swift */; };
@@ -45,6 +46,7 @@
 		B3E88E64F508B0AC88FBA9A7 /* KeystrokeReplacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeystrokeReplacer.swift; sourceTree = "<group>"; };
 		B91530ABC6C05602093B9562 /* FocusLanguageEnforcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusLanguageEnforcer.swift; sourceTree = "<group>"; };
 		CC838CCCDC9275D710CD1463 /* KysyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KysyApp.swift; sourceTree = "<group>"; };
+		D3EC81F3EC50B9592308A7FA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DEC3B109C1D83585B2A3EF3C /* KeyLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyLogView.swift; sourceTree = "<group>"; };
 		E2F98A9621190BE472181A74 /* Kysy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kysy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -69,6 +71,7 @@
 		A51A0842FF98670415C63741 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				D3EC81F3EC50B9592308A7FA /* Assets.xcassets */,
 				9EAD54BDF5E9A69CDCB045E5 /* AXInspector.swift */,
 				15AE6D2619313066EE785E86 /* FieldInspector.swift */,
 				B91530ABC6C05602093B9562 /* FocusLanguageEnforcer.swift */,
@@ -108,6 +111,7 @@
 			buildConfigurationList = D82937D167A40BE780451A67 /* Build configuration list for PBXNativeTarget "Kysy" */;
 			buildPhases = (
 				92B9BEA7AB322D6E82119D32 /* Sources */,
+				EBFF4C5AFE862F11B5673BA9 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -153,6 +157,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EBFF4C5AFE862F11B5673BA9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				239B9EA446509B0483DD9A38 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		92B9BEA7AB322D6E82119D32 /* Sources */ = {
