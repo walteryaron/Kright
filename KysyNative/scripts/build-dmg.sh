@@ -63,18 +63,48 @@ echo "▸ Creating styled DMG…"
 export KYSY_APP="$APP"
 export KYSY_DMG_BG="/tmp/kysy-dmg-bg.png"
 swift scripts/gen-dmg-bg.swift "$KYSY_DMG_BG" >/dev/null
-
-# dmgbuild lays out the "drag to Applications" window headlessly (no Finder /
-# Automation permission needed). Falls back to a plain DMG if it isn't installed
-# (pip3 install --user dmgbuild).
-DMGBUILD="$(python3 -m site --user-base 2>/dev/null)/bin/dmgbuild"
-[ -x "$DMGBUILD" ] || DMGBUILD="$(command -v dmgbuild || true)"
 rm -f "$DMG"
-if [ -n "$DMGBUILD" ] && [ -x "$DMGBUILD" ]; then
-  "$DMGBUILD" -s scripts/dmgbuild-settings.py "Kysy" "$DMG" >/dev/null
-else
-  echo "  (dmgbuild not found — plain DMG. Install: pip3 install --user dmgbuild)"
-  hdiutil create -volname "Kysy" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
+STYLED=0
+
+# Preferred: create-dmg drives Finder, which writes a .DS_Store with a modern
+# bookmark that macOS resolves (dmgbuild's classic alias no longer renders on
+# macOS 26+). NOTE: the first run prompts "Terminal wants to control Finder" —
+# you must approve it, so run this script in YOUR Terminal at least once.
+if command -v create-dmg >/dev/null 2>&1; then
+  # create-dmg wants a source FOLDER containing just the app (it adds the
+  # Applications drop-link itself).
+  SRC="$BUILD/src"
+  rm -rf "$SRC"; mkdir -p "$SRC"
+  cp -R "$APP" "$SRC/"
+  if create-dmg \
+       --volname "Kysy" \
+       --background "$KYSY_DMG_BG" \
+       --window-pos 200 120 \
+       --window-size 660 440 \
+       --icon-size 128 --text-size 13 \
+       --icon "Kysy.app" 180 250 \
+       --app-drop-link 480 250 \
+       --hide-extension "Kysy.app" \
+       --no-internet-enable \
+       "$DMG" "$SRC" >/dev/null 2>&1 && [ -f "$DMG" ]; then
+    STYLED=1
+  else
+    echo "  (create-dmg couldn't style — likely needs Finder Automation permission;"
+    echo "   run this script in your own Terminal and approve the prompt.)"
+    rm -f "$DMG"
+  fi
+fi
+
+# Fallback: dmgbuild (headless, no permission) — lays out icons but its
+# background may not render on macOS 26.
+if [ "$STYLED" = 0 ]; then
+  DMGBUILD="$(python3 -m site --user-base 2>/dev/null)/bin/dmgbuild"
+  [ -x "$DMGBUILD" ] || DMGBUILD="$(command -v dmgbuild || true)"
+  if [ -n "$DMGBUILD" ] && [ -x "$DMGBUILD" ]; then
+    "$DMGBUILD" -s scripts/dmgbuild-settings.py "Kysy" "$DMG" >/dev/null
+  else
+    hdiutil create -volname "Kysy" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
+  fi
 fi
 
 if [ -n "$DEVID" ] && xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1; then
