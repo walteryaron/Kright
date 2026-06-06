@@ -206,6 +206,7 @@ struct LayoutFixCard: View {
                 Text("\(s.fromLayout) → \(s.toLayout)").font(.system(size: 10))
                     .foregroundColor(Color(white: 0.53))
                 Text(s.converted).font(.system(size: 18, weight: .bold)).foregroundColor(.yellow)
+                gibberishVerdict(s)
                 Button { onReplace(s.fullReplacement) } label: {
                     HStack(spacing: 6) {
                         if busy { ProgressView().controlSize(.small) }
@@ -226,6 +227,21 @@ struct LayoutFixCard: View {
         .overlay(RoundedRectangle(cornerRadius: 10)
             .stroke(hasFix ? Color.yellow.opacity(0.5) : Color(white: 0.15)))
         .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+
+    @ViewBuilder
+    private func gibberishVerdict(_ s: LayoutSuggestion) -> some View {
+        if !GibberishDetector.shared.ready {
+            Text("Analyzing… (building language model)")
+                .font(.system(size: 11)).foregroundColor(Color(white: 0.45))
+        } else {
+            let v = GibberishDetector.shared.looksWrongLayout(typed: s.original, converted: s.converted)
+            Text(v.wrong
+                 ? "🧠 Likely wrong layout — \(Int(v.confidence * 100))% confident"
+                 : "🧠 Looks intentional — probably not a layout mistake")
+                .font(.system(size: 11))
+                .foregroundColor(v.wrong ? .green : Color(white: 0.55))
+        }
     }
 
     private func kv(_ k: String, _ v: String) -> some View {

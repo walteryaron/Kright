@@ -8,6 +8,15 @@ final class KeyboardMonitor: ObservableObject {
     @Published var trusted: Bool = AXIsProcessTrusted()
     @Published var lastError: String?
 
+    /// The word the user is currently typing — the exact characters the OS
+    /// produced (e.g. "קסןא"), so the layout-fix hotkey knows precisely what to
+    /// convert and how many characters to delete. Independent of any AX value,
+    /// which is why it works in Terminal/consoles.
+    private(set) var currentWord = ""
+
+    /// Call after a fix so the buffer reflects what's now in the field.
+    func resetWord(to value: String = "") { currentWord = value }
+
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
     private var retryTimer: Timer?
@@ -84,6 +93,8 @@ final class KeyboardMonitor: ObservableObject {
         let keyCode = Int(event.getIntegerValueField(.keyboardEventKeycode))
         let flags = event.flags
 
+        if type == .keyDown { updateWordBuffer(event: event, keyCode: keyCode, flags: flags) }
+
         let isDown: Bool
         switch type {
         case .keyDown: isDown = true
@@ -105,6 +116,36 @@ final class KeyboardMonitor: ObservableObject {
             self.events.insert(ev, at: 0)
             if self.events.count > Self.maxEvents { self.events.removeLast() }
         }
+    }
+
+    /// Maintains `currentWord` from real keystrokes.
+    private func updateWordBuffer(event: CGEvent, keyCode: Int, flags: CGEventFlags) {
+        // Shortcuts (incl. our ⌃⌥K hotkey) aren't typing — don't record them.
+        if flags.contains(.maskCommand) || flags.contains(.maskControl) { return }
+
+        switch keyCode {
+        case 51:                                   // delete/backspace
+            if !currentWord.isEmpty { currentWord.removeLast() }
+            return
+        case 49, 36, 76, 48, 53,                   // space, return, enter, tab, esc
+             123, 124, 125, 126,                   // arrows (cursor moved)
+             115, 119, 116, 121:                   // home/end/page up/down
+            currentWord = ""
+            return
+        default:
+            break
+        }
+
+        // Translate the keycode with OUR OWN cached layout map. Crucially we do
+        // NOT call keyboardGetUnicodeString on the live event — doing that inside
+        // a tap corrupts the OS translation state and makes the user's actual
+        // typed characters come out wrong (garbage/<ffff>).
+        let sourceID = KeyboardLanguage.currentSourceID()
+        guard let ch = KeyboardLayoutMap.forwardMap(sourceID)[UInt16(keyCode)],
+              let c = ch.first else { return }
+        if c.isWhitespace { currentWord = "" }
+        else if c.isLetter { currentWord += String(c) }   // only letters matter for layout fixes
+        else { currentWord = "" }                          // punctuation ends the word
     }
 
     private func modifierIsDown(keyCode: Int, flags: CGEventFlags) -> Bool {

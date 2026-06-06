@@ -28,22 +28,33 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Convert the focused field's last word from the wrong layout and replace it
     /// in place — triggered by the global hotkey, no panel needed.
     static func fixFocusedLayout() {
-        guard let (element, value) = AXInspector.focusedValue(),
-              let suggestion = LayoutConverter.suggest(value),
-              suggestion.isMeaningful else {
+        // Use the exact characters the user just typed (tracked by the keyboard
+        // monitor), NOT the field's AX value — terminals expose their whole
+        // buffer as the value, which made us delete far too much.
+        let typed = keyboard.currentWord
+        guard let s = LayoutConverter.suggest(typed), s.isMeaningful else {
             NSSound.beep()
             return
         }
-        // Prefer a clean Accessibility write (preserves cursor, no clipboard use).
-        let result = AXInspector.setValue(suggestion.fullReplacement, on: element)
-        if !result.ok {
-            // Read-only AX (Terminal / iTerm) → simulate keystrokes instead.
-            DispatchQueue.global(qos: .userInitiated).async {
-                KeystrokeReplacer.replaceLastWord(
-                    originalLength: suggestion.original.count,
-                    replacement: suggestion.converted)
+
+        // Editable fields: a clean AX write that swaps the word inside the value.
+        if let (element, value) = AXInspector.focusedValue(),
+           let range = value.range(of: typed, options: .backwards) {
+            let full = value.replacingCharacters(in: range, with: s.converted)
+            if AXInspector.setValue(full, on: element).ok {
+                keyboard.resetWord(to: s.converted)
+                return
             }
         }
+
+        // Read-only AX (Terminal / iTerm / consoles) → simulate keystrokes.
+        // We know the exact length to delete from the typed buffer.
+        let deleteCount = typed.count
+        let replacement = s.converted
+        DispatchQueue.global(qos: .userInitiated).async {
+            KeystrokeReplacer.replaceLastWord(originalLength: deleteCount, replacement: replacement)
+        }
+        keyboard.resetWord(to: s.converted)
     }
 
     // MARK: - Status item
