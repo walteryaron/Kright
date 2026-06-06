@@ -55,10 +55,13 @@ dotnet run
 cd KysyNative
 ./scripts/build-dmg.sh        # → build/Kysy.dmg
 ```
-The app is signed with an *Apple Development* identity but **not notarized**, so
-the first launch on another Mac needs a **right-click → Open** (or
-`xattr -dr com.apple.quarantine /Applications/Kysy.app`). Frictionless
-distribution would require a *Developer ID* certificate + notarization.
+If a **Developer ID Application** certificate and a stored notary profile
+(`kysy-notary`) are present, the script automatically signs (hardened runtime),
+**notarizes**, and **staples** the DMG, so it opens with a normal double-click
+anywhere. The one-time setup (create the cert in Xcode; `notarytool
+store-credentials`) is documented at the bottom of `scripts/build-dmg.sh`.
+Without them it falls back to a dev-signed DMG whose first launch needs a
+right-click → Open.
 
 **Windows — installer `.exe`** (run on Windows; needs the
 [.NET 8 SDK](https://dotnet.microsoft.com/download) and
