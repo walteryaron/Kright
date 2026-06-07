@@ -1,4 +1,4 @@
-# Kysy
+# Kright
 
 A lightweight **native desktop keyboard utility** for **macOS and Windows** that
 runs from the menu bar / system tray. Its main job: fix text you typed in the
@@ -11,8 +11,8 @@ There is **no shared/cross-platform code** — each OS has its own native app:
 
 | Platform | Stack | Folder |
 |----------|-------|--------|
-| macOS    | Swift + SwiftUI | [`KysyNative/`](KysyNative/) |
-| Windows  | C# + WPF (.NET 8) | [`KysyWindows/`](KysyWindows/) |
+| macOS    | Swift + SwiftUI | [`KrightNative/`](KrightNative/) |
+| Windows  | C# + WPF (.NET 8) | [`KrightWindows/`](KrightWindows/) |
 
 ## Features
 
@@ -33,17 +33,17 @@ There is **no shared/cross-platform code** — each OS has its own native app:
 
 **macOS** (needs Xcode + [XcodeGen](https://github.com/yonaskolb/XcodeGen)):
 ```sh
-cd KysyNative
+cd KrightNative
 xcodegen generate
-xcodebuild -project Kysy.xcodeproj -scheme Kysy -configuration Debug -derivedDataPath build build
-open build/Build/Products/Debug/Kysy.app
+xcodebuild -project Kright.xcodeproj -scheme Kright -configuration Debug -derivedDataPath build build
+open build/Build/Products/Debug/Kright.app
 ```
 Grant **Accessibility** permission (System Settings → Privacy & Security →
-Accessibility → enable Kysy).
+Accessibility → enable Kright).
 
-**Windows** (needs the .NET 8 SDK — see [`KysyWindows/README.md`](KysyWindows/README.md)):
+**Windows** (needs the .NET 8 SDK — see [`KrightWindows/README.md`](KrightWindows/README.md)):
 ```powershell
-cd KysyWindows
+cd KrightWindows
 dotnet build
 dotnet run
 ```
@@ -53,8 +53,8 @@ dotnet run
 **macOS — `.dmg`** (run on a Mac with Xcode):
 ```sh
 brew install create-dmg       # one-time: styled "drag to Applications" window
-cd KysyNative
-./scripts/build-dmg.sh        # → build/Kysy.dmg
+cd KrightNative
+./scripts/build-dmg.sh        # → build/Kright.dmg
 ```
 The DMG shows a custom background (`scripts/gen-dmg-bg.swift`: light panel + a
 "›" chevron) with the app icon left and Applications right. `create-dmg` drives
@@ -74,9 +74,9 @@ right-click → Open.
 [.NET 8 SDK](https://dotnet.microsoft.com/download) and
 [Inno Setup 6](https://jrsoftware.org/isdl.php)):
 ```powershell
-cd KysyWindows
+cd KrightWindows
 powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
-# → installer\output\KysySetup-1.0.0.exe
+# → installer\output\KrightSetup-1.0.0.exe
 ```
 This publishes a **self-contained** x64 build (the .NET runtime is bundled, so
 end users install nothing extra) and wraps it in a per-user installer (no UAC),

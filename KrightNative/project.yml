@@ -1,0 +1,38 @@
+name: Kright
+options:
+  bundleIdPrefix: com.kright
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "D1429C0F8B8121EEC4B463D2EA6CF36130C80B84"
+    PROVISIONING_PROFILE_SPECIFIER: ""
+    DEVELOPMENT_TEAM: "V3275SDA78"
+    ENABLE_HARDENED_RUNTIME: "NO"
+targets:
+  Kright:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kright.native
+        PRODUCT_NAME: Kright
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    info:
+      path: Sources/Info.plist
+      properties:
+        LSUIElement: true
+        CFBundleName: Kright
+        CFBundleDisplayName: Kright
+        NSHumanReadableCopyright: ""
+    entitlements:
+      path: Sources/Kright.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
