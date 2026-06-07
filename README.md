@@ -26,10 +26,54 @@ There is **no shared/cross-platform code** — each OS has its own native app:
   `Ctrl+Alt+K` on Windows), configurable in Settings.
 - **Terminal / console support** — when a field rejects accessibility writes
   (Terminal, iTerm, cmd, PowerShell), it falls back to simulated keystrokes.
-- **Auto keyboard language** — optionally switch to English on email / URL /
-  password fields, detected via the OS accessibility tree.
-- **Live field inspector** — a Detect tab showing the focused field's type and
-  attributes.
+- **Switches the keyboard after a fix** — so you keep typing in the corrected
+  language instead of producing more gibberish.
+- **Auto-fix mode** (opt-in) — convert wrong-layout words automatically as you
+  finish them (on Space / Tab), no hotkey needed.
+- **Auto keyboard language** — optionally switch to a Latin layout on email / URL
+  / password fields (only when the current layout is non-Latin).
+- **Private by design** — no network, nothing stored, and password / secure
+  fields are never read (you can watch capture pause in the Key Log).
+
+## How the App Works
+
+Kright runs quietly in the **menu bar** (macOS) / **system tray** (Windows) and
+starts when you log in. It passively watches the keys you type — never recording
+them — only so it knows the exact characters of the word you're typing right now.
+When you press the magic key combination, it converts that text from the wrong
+layout to the right one, **in place**, and switches your keyboard to the corrected
+language so you can keep going.
+
+The basic steps:
+
+1. Type some text using an incorrect layout (you meant Hebrew, but English was
+   active → gibberish — or the other way around).
+2. Realize your mistake.
+3. Press the magic key combination (default **⌃⌥K** on macOS, **Ctrl+Alt+K** on
+   Windows — configurable in Settings).
+4. Kright replaces the wrong-layout text with the correct text **and switches the
+   keyboard** to match.
+5. Keep typing — you're now in the right layout. Profit.
+
+**No need to select the text first** — Kright already knows what you just typed,
+so there's no Ctrl+A / ⌘A step. It uses your *real* installed keyboard layouts to
+translate, so the result matches exactly what your keyboard produces, for any
+language pair. It looks at the current layout to decide how to convert, so don't
+change the layout before pressing the hotkey — Kright changes it for you.
+
+**How it puts the text back:** in normal editable fields it writes the correction
+directly through the OS accessibility API — the clipboard is never touched. In
+terminals / consoles that don't allow that, it falls back to simulating
+keystrokes: it deletes the wrong text and pastes the correction, saving and
+restoring whatever was on your clipboard around it. (It can't guarantee
+restoration, and non-text clipboard data — a file or a picture — isn't restored.)
+
+**Auto-fix mode** (opt-in): instead of pressing the hotkey, turn this on and
+Kright checks each word as you finish it (on Space / Tab). If it looks like
+wrong-layout gibberish, it converts it and switches the keyboard automatically.
+
+Everything happens **on your device** — no network, nothing stored, and
+password / secure fields are never read. See the [changelog](CHANGELOG.md).
 
 ## Build & run
 
