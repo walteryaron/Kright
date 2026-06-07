@@ -214,7 +214,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Compact size for the Settings-only panel, and the larger size used when
     /// Debug mode adds the Detect / Key Log tabs.
-    private static let settingsSize = NSSize(width: 360, height: 580)
+    private static let settingsSize = NSSize(width: 360, height: 670)
     private static let debugSize = NSSize(width: 460, height: 680)
 
     private func setupPanelWindow() {
