@@ -48,9 +48,35 @@ enum KeyboardLanguage {
         let map = KeyboardLayoutMap.forwardMap(sourceID)
         let keys: [UInt16] = [0, 1, 2, 3, 4, 5, 38, 40, 37]   // A S D F H G J K L
         let letters = keys.compactMap { map[$0]?.first }.filter { $0.isLetter }
-        guard !letters.isEmpty else { return true }            // unknown → don't disrupt
-        let latin = letters.filter { LayoutConverter.isLatin($0) }.count
-        return latin * 2 >= letters.count                      // majority Latin
+        if !letters.isEmpty {
+            let latin = letters.filter { LayoutConverter.isLatin($0) }.count
+            return latin * 2 >= letters.count                  // majority Latin
+        }
+        // No usable letters in the map (e.g. an IME-backed source like Pinyin or
+        // Kana) — fall back to the source's language code, otherwise a non-Latin
+        // IME would be misread as Latin and the enforcer would never switch.
+        let lang = enabledSources().first { $0.id == sourceID }?.lang ?? ""
+        return isLatinLanguage(lang)
+    }
+
+    /// Best-effort: does this BCP-47 language code use Latin script? Defaults to
+    /// true for unknown codes (don't disrupt), but recognises the common
+    /// non-Latin scripts. Only used as a fallback when a layout exposes no
+    /// character map.
+    static func isLatinLanguage(_ lang: String) -> Bool {
+        let code = String(lang.lowercased().prefix(2))
+        let nonLatin: Set<String> = [
+            "he", "iw",                                              // Hebrew
+            "ar", "fa", "ur", "ps", "sd",                           // Arabic script
+            "ru", "uk", "be", "bg", "sr", "mk", "kk", "ky", "mn", "tg", // Cyrillic
+            "el",                                                    // Greek
+            "hy", "ka",                                              // Armenian, Georgian
+            "zh", "ja", "ko", "yi",                                  // CJK, Yiddish
+            "th", "lo", "km", "my",                                  // SE Asian
+            "hi", "bn", "ta", "te", "kn", "ml", "gu", "pa", "si", "mr", "ne", // Indic
+            "am", "ti",                                              // Ethiopic
+        ]
+        return code.isEmpty || !nonLatin.contains(code)
     }
 
     /// First enabled Latin-script input source (prefers English), if any.

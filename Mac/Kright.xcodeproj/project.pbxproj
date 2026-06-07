@@ -10,6 +10,7 @@
 		023E3BACD72C2DCF8462C150 /* KeyboardMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295B9D1BC4296D8066586A59 /* KeyboardMonitor.swift */; };
 		0CE29D7A6F0070505B1FA182 /* KeyboardLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C896CE3DA7E2A1AD144C399 /* KeyboardLanguage.swift */; };
 		0CE92DB4BE3F621B3EB6D14B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370B1FD94FF6D2849A1CF02B /* Assets.xcassets */; };
+		1E2D7F44DB43027341A853FB /* KrightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EBBB61C25E67A73DF393C9 /* KrightTests.swift */; };
 		245ECCF533EBD963B72C9BF6 /* KrightApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3CDE9CB3FE330665F8E794 /* KrightApp.swift */; };
 		257C0CFED5153DE0276D5F43 /* KeystrokeReplacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95326BE6EDD6C037DF8D03FF /* KeystrokeReplacer.swift */; };
 		389E54A993E3A3B49F8D2A5B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199A66F7153919B38F5B79BF /* Models.swift */; };
@@ -28,14 +29,26 @@
 		F5D370FA6257C6846A3B42E9 /* DetectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A8D1161755B3512C7093A /* DetectView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		EC94F8E6383BC3A4A5AB9BF3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3E008B90FF9DA613D6FF75E6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 63D3041CAD7D610CFFBDE16B;
+			remoteInfo = Kright;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		08F61F0D0D195B3E40CCD603 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		17C38DDC1D7688E11AA81B8C /* LayoutConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutConverter.swift; sourceTree = "<group>"; };
 		199A66F7153919B38F5B79BF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		26C0B933D8FEDD59B3C25F67 /* FieldInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldInspector.swift; sourceTree = "<group>"; };
+		283528CF70AF50E9497C1A66 /* KrightTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KrightTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		295B9D1BC4296D8066586A59 /* KeyboardMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardMonitor.swift; sourceTree = "<group>"; };
 		2C896CE3DA7E2A1AD144C399 /* KeyboardLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLanguage.swift; sourceTree = "<group>"; };
 		370B1FD94FF6D2849A1CF02B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		43EBBB61C25E67A73DF393C9 /* KrightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KrightTests.swift; sourceTree = "<group>"; };
 		4BEA40490A8D7357B85B6177 /* Kright.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kright.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68839C81696380630476E0A4 /* KeyLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyLogView.swift; sourceTree = "<group>"; };
 		95326BE6EDD6C037DF8D03FF /* KeystrokeReplacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeystrokeReplacer.swift; sourceTree = "<group>"; };
@@ -66,6 +79,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		9EE1051886842C48CA9FAF66 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				43EBBB61C25E67A73DF393C9 /* KrightTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 		A5B01654D6F380DECAF3FC2F /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -94,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				A5B01654D6F380DECAF3FC2F /* Sources */,
+				9EE1051886842C48CA9FAF66 /* Tests */,
 				F85FB36DD8124BF315CFC87D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				4BEA40490A8D7357B85B6177 /* Kright.app */,
+				283528CF70AF50E9497C1A66 /* KrightTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -109,6 +132,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3146BC327C741AB1391F5586 /* KrightTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 952B722E2DBD9E5BFA71CB82 /* Build configuration list for PBXNativeTarget "KrightTests" */;
+			buildPhases = (
+				295C5EF9123C678CB5436F55 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				41A5E92FFAB883CC7D8ABB40 /* PBXTargetDependency */,
+			);
+			name = KrightTests;
+			packageProductDependencies = (
+			);
+			productName = KrightTests;
+			productReference = 283528CF70AF50E9497C1A66 /* KrightTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		63D3041CAD7D610CFFBDE16B /* Kright */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8A51680A91F66355BCBB0D03 /* Build configuration list for PBXNativeTarget "Kright" */;
@@ -136,6 +177,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					3146BC327C741AB1391F5586 = {
+						DevelopmentTeam = V3275SDA78;
+						ProvisioningStyle = Manual;
+					};
 					63D3041CAD7D610CFFBDE16B = {
 						DevelopmentTeam = V3275SDA78;
 						ProvisioningStyle = Manual;
@@ -157,6 +202,7 @@
 			projectRoot = "";
 			targets = (
 				63D3041CAD7D610CFFBDE16B /* Kright */,
+				3146BC327C741AB1391F5586 /* KrightTests */,
 			);
 		};
 /* End PBXProject section */
@@ -173,6 +219,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		295C5EF9123C678CB5436F55 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E2D7F44DB43027341A853FB /* KrightTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		515C40354810A5F746360127 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -200,12 +254,19 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		41A5E92FFAB883CC7D8ABB40 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 63D3041CAD7D610CFFBDE16B /* Kright */;
+			targetProxy = EC94F8E6383BC3A4A5AB9BF3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		33E9DE569600A42D4D224324 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Sources/Kright.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -222,7 +283,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Sources/Kright.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -232,6 +292,44 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.kright.native;
 				PRODUCT_NAME = Kright;
 				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		AFB0EED9F5FAD354D77978B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_ENTITLEMENTS = Sources/Kright.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Sources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kright.native.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kright.app/Contents/MacOS/Kright";
+			};
+			name = Debug;
+		};
+		C66781A00C3A0705E75EE345 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_ENTITLEMENTS = Sources/Kright.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Sources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kright.native.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kright.app/Contents/MacOS/Kright";
 			};
 			name = Release;
 		};
@@ -376,6 +474,15 @@
 			buildConfigurations = (
 				33E9DE569600A42D4D224324 /* Debug */,
 				5942CA474C114DBD9AD33372 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		952B722E2DBD9E5BFA71CB82 /* Build configuration list for PBXNativeTarget "KrightTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AFB0EED9F5FAD354D77978B1 /* Debug */,
+				C66781A00C3A0705E75EE345 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

@@ -25,6 +25,20 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.kright.native
         PRODUCT_NAME: Kright
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    scheme:
+      testTargets:
+        - KrightTests
+  KrightTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: Kright
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kright.native.tests
+        GENERATE_INFOPLIST_FILE: "YES"
     info:
       path: Sources/Info.plist
       properties:

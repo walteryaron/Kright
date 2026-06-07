@@ -49,8 +49,40 @@ public static class LanguageManager
         var letters = keys
             .Select(vk => map.TryGetValue(vk, out var s) && s.Length > 0 ? s[0] : '\0')
             .Where(char.IsLetter).ToList();
-        if (letters.Count == 0) return true;                     // unknown → don't disrupt
-        return letters.Count(LayoutConverter.IsLatin) * 2 >= letters.Count;
+        if (letters.Count > 0)
+            return letters.Count(LayoutConverter.IsLatin) * 2 >= letters.Count;
+        // No usable letters (e.g. an IME-backed layout) — fall back to the
+        // language code so a non-Latin IME isn't misread as Latin.
+        return IsLatinLanguage(IsoCode(hkl));
+    }
+
+    private static string IsoCode(IntPtr hkl)
+    {
+        try
+        {
+            return new System.Globalization.CultureInfo((int)((long)hkl & 0xFFFF))
+                .TwoLetterISOLanguageName.ToLowerInvariant();
+        }
+        catch { return ""; }
+    }
+
+    /// <summary>Best-effort: does this ISO language code use Latin script?
+    /// Defaults to true for unknown codes; recognises common non-Latin scripts.
+    /// Only used as a fallback when a layout exposes no character map.</summary>
+    public static bool IsLatinLanguage(string lang)
+    {
+        var code = (lang ?? "").ToLowerInvariant();
+        if (code.Length > 2) code = code.Substring(0, 2);
+        var nonLatin = new HashSet<string>
+        {
+            "he", "iw", "ar", "fa", "ur", "ps", "sd",
+            "ru", "uk", "be", "bg", "sr", "mk", "kk", "ky", "mn", "tg",
+            "el", "hy", "ka", "zh", "ja", "ko", "yi",
+            "th", "lo", "km", "my",
+            "hi", "bn", "ta", "te", "kn", "ml", "gu", "pa", "si", "mr", "ne",
+            "am", "ti",
+        };
+        return code.Length == 0 || !nonLatin.Contains(code);
     }
 
     /// <summary>First enabled Latin-script layout (prefers English), if any.</summary>

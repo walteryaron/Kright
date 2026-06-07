@@ -56,6 +56,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var cancellables = Set<AnyCancellable>()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Under unit tests the app is only a host for pure-logic tests — don't
+        // start the event tap, timers, status item, or onboarding.
+        if NSClassFromString("XCTestCase") != nil { return }
+
         Self.keyboard.start()
         if !Self.isDisabled { Self.enforcer.startIfEnabled() }
         HotkeyManager.shared.onTrigger = { Self.fixFocusedLayout() }
