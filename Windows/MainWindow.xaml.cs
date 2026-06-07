@@ -74,7 +74,7 @@ public partial class MainWindow : Window
             ConvertedText.Text = s.Converted;
             ReplaceButton.IsEnabled = true;
 
-            var v = GibberishDetector.LooksWrongLayout(s.Original, s.Converted);
+            var v = GibberishDetector.LooksWrongLayout(s.Original, s.Converted, s.FromLang, s.ToLang);
             GibberishText.Text = v.Wrong
                 ? $"🧠 Likely wrong layout — {(int)(v.Confidence * 100)}% confident"
                 : "🧠 Looks intentional — probably not a layout mistake";

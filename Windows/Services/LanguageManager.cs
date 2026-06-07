@@ -5,6 +5,8 @@ namespace Kright.Services;
 public record InputLanguage(IntPtr Hkl, string Name, int LangId, bool IsCurrent)
 {
     public bool IsEnglish => (LangId & 0xFF) == 0x09;   // LANG_ENGLISH
+    /// <summary>2-letter ISO code (lowercased) — Name is already the ISO code.</summary>
+    public string Lang => Name.ToLowerInvariant();
 }
 
 /// <summary>Enumerates installed keyboard layouts and switches the foreground

@@ -27,6 +27,34 @@ public class LayoutConverterTests
         => Assert.Equal(expected, LayoutConverter.IsLatin(c));
 }
 
+public class LanguageModelTests
+{
+    [Theory]
+    [InlineData("en")]
+    [InlineData("he")]
+    [InlineData("ru")]
+    [InlineData("uk")]
+    [InlineData("bg")]
+    [InlineData("sr")]
+    [InlineData("mk")]
+    [InlineData("el")]
+    [InlineData("fa")]
+    [InlineData("hy")]
+    [InlineData("ka")]
+    public void BundledModel_Exists(string code)
+        => Assert.True(LanguageModelData.ByLang.ContainsKey(code));
+
+    [Fact]
+    public void Models_ScoreRealWordsHigherThanRandom()
+    {
+        var ru = BigramModel.FromEntry(LanguageModelData.ByLang["ru"]);
+        Assert.True(ru.Score("мама") > ru.Score("ъыь"));
+
+        var he = BigramModel.FromEntry(LanguageModelData.ByLang["he"]);
+        Assert.True(he.Score("שלום") > he.Score("ךךךך"));
+    }
+}
+
 public class LanguageManagerTests
 {
     [Theory]

@@ -53,11 +53,7 @@ public sealed class BigramModel
         return Math.Clamp((p - AnchorLow) / (AnchorHigh - AnchorLow), 0, 1);
     }
 
-    public static BigramModel English() => new(
-        ModelData.EnglishAlphabet, ModelData.EnglishN, ModelData.EnglishLogProb,
-        ModelData.EnglishAnchorHigh, ModelData.EnglishAnchorLow, ModelData.EnglishThreshold);
-
-    public static BigramModel Hebrew() => new(
-        ModelData.HebrewAlphabet, ModelData.HebrewN, ModelData.HebrewLogProb,
-        ModelData.HebrewAnchorHigh, ModelData.HebrewAnchorLow, ModelData.HebrewThreshold);
+    /// <summary>Build a model from generated data (see tools/gen_models_cs.swift).</summary>
+    public static BigramModel FromEntry(LanguageModelData.Entry e) =>
+        new(e.Alphabet, e.Alphabet.Length + 1, e.LogProb, e.AnchorHigh, e.AnchorLow, e.Threshold);
 }

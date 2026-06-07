@@ -1,86 +1,81 @@
 import Foundation
 
-struct Model {
-    let alphabet: [Character]
-    let n: Int
-    let logProb: [Double]
-    let anchorHigh: Double
-    let anchorLow: Double
-    let threshold: Double
+// Builds character-bigram models and emits Services/LanguageModelData.cs.
+// English is baked from /usr/share/dict/words (Windows has no such list);
+// non-Latin languages come from Hunspell .dic files.
+//
+//   swift gen_models_cs.swift he=/tmp/dics/he.dic ru=/tmp/dics/ru.dic …
+
+func isLatin(_ c: Character) -> Bool {
+    guard let u = Character(c.lowercased()).unicodeScalars.first?.value else { return false }
+    return u >= 0x61 && u <= 0x7A
 }
 
-func train(words: [String], alphabet: [Character]) -> Model {
-    var index: [Character: Int] = [:]
-    for (i, c) in alphabet.enumerated() { index[c] = i }
-    let boundary = alphabet.count
-    let n = alphabet.count + 1
-    var counts = Array(repeating: 5.0, count: n * n)
+struct Model { let alphabet: String; let logProb: [Double]; let high, low, threshold: Double }
 
-    func add(_ w: String) {
-        let chars = w.lowercased().filter { index[$0] != nil }
-        guard !chars.isEmpty else { return }
+func train(words: [String], alphabet: String) -> Model {
+    var index: [Character: Int] = [:]
+    for (i, c) in Array(alphabet).enumerated() { index[c] = i }
+    let n = alphabet.count + 1, boundary = alphabet.count
+    var counts = Array(repeating: 5.0, count: n * n)
+    for w in words {
         var prev = boundary
-        for c in chars { let cur = index[c]!; counts[prev * n + cur] += 1; prev = cur }
+        for c in w.lowercased() { guard let cur = index[c] else { continue }; counts[prev * n + cur] += 1; prev = cur }
         counts[prev * n + boundary] += 1
     }
-    for w in words { add(w) }
-
     var logProb = Array(repeating: 0.0, count: n * n)
     for i in 0..<n {
-        let sum = (0..<n).reduce(0.0) { $0 + counts[i * n + $1] }
+        var sum = 0.0; for j in 0..<n { sum += counts[i * n + j] }
         for j in 0..<n { logProb[i * n + j] = log(counts[i * n + j] / sum) }
     }
     func score(_ w: String) -> Double {
-        let chars = w.lowercased().filter { index[$0] != nil }
-        guard !chars.isEmpty else { return 0 }
         var prev = boundary, s = 0.0, c = 0
-        for ch in chars { let cur = index[ch]!; s += logProb[prev * n + cur]; c += 1; prev = cur }
+        for ch in w.lowercased() { let cur = index[ch] ?? boundary; s += logProb[prev * n + cur]; c += 1; prev = cur }
         s += logProb[prev * n + boundary]; c += 1
-        return exp(s / Double(c))
+        return c == 0 ? 0 : exp(s / Double(c))
     }
-    let good = words.shuffled().prefix(8000).map { score($0) }.sorted()
-    let bad = (0..<3000).map { _ -> Double in
-        let len = Int.random(in: 3...8)
-        return score(String((0..<len).map { _ in alphabet.randomElement()! }))
-    }.sorted()
-    func pct(_ a: [Double], _ q: Double) -> Double { a[min(a.count-1, max(0, Int(Double(a.count-1)*q)))] }
+    let good = words.shuffled().prefix(8000).map(score).sorted()
+    let chars = Array(alphabet)
+    let bad = (0..<3000).map { _ in score(String((0..<Int.random(in: 3...8)).map { _ in chars.randomElement()! })) }.sorted()
+    func pct(_ a: [Double], _ q: Double) -> Double { a.isEmpty ? 0 : a[min(a.count - 1, max(0, Int(Double(a.count - 1) * q)))] }
     let high = pct(good, 0.10), low = pct(bad, 0.90)
-    return Model(alphabet: alphabet, n: n, logProb: logProb, anchorHigh: high, anchorLow: low, threshold: (high + low) / 2)
+    return Model(alphabet: alphabet, logProb: logProb, high: high, low: low, threshold: (high + low) / 2)
 }
 
-// English
-let enText = (try? String(contentsOfFile: "/usr/share/dict/words", encoding: .utf8)) ?? ""
-let enWords = enText.split(separator: "\n").map(String.init)
-let en = train(words: enWords, alphabet: Array("abcdefghijklmnopqrstuvwxyz"))
-
-// Hebrew
-let heAlphabet: [Character] = (0x05D0...0x05EA).compactMap { UnicodeScalar($0).map(Character.init) }
-var heIdx: [Character: Int] = [:]; for (i,c) in heAlphabet.enumerated() { heIdx[c] = i }
-let heText = (try? String(contentsOfFile: "/tmp/he.dic", encoding: .utf8)) ?? ""
-let heWords = heText.split(separator: "\n").map { line -> String in
-    let w = line.split(separator: "/").first.map(String.init) ?? String(line)
-    return String(w.filter { heIdx[$0] != nil })
-}.filter { $0.count >= 2 }
-let he = train(words: heWords, alphabet: heAlphabet)
+func nonLatinWords(_ path: String) -> (String, [String])? {
+    guard let text = try? String(contentsOfFile: path, encoding: .utf8) else { return nil }
+    var words: [String] = []; var alpha = Set<Character>()
+    for line in text.split(separator: "\n") {
+        let raw = line.split(separator: "/").first.map(String.init) ?? String(line)
+        let w = String(raw.lowercased().filter { $0.isLetter && !isLatin($0) })
+        if w.count >= 2 { words.append(w); for c in w { alpha.insert(c) } }
+    }
+    return alpha.isEmpty ? nil : (String(alpha.sorted()), words)
+}
 
 func arr(_ a: [Double]) -> String { a.map { String(format: "%.4f", $0) }.joined(separator: ", ") }
 
-var out = "// Auto-generated bigram models (English: /usr/share/dict/words, Hebrew: LibreOffice he_IL).\n"
-out += "// Regenerate with tools/gen_models_cs.swift. Do not edit by hand.\n"
+var entries: [(String, Model)] = []
+// English (baked).
+let enText = (try? String(contentsOfFile: "/usr/share/dict/words", encoding: .utf8)) ?? ""
+entries.append(("en", train(words: enText.split(separator: "\n").map(String.init), alphabet: "abcdefghijklmnopqrstuvwxyz")))
+// Non-Latin from .dic files.
+for arg in CommandLine.arguments.dropFirst() {
+    let p = arg.split(separator: "=", maxSplits: 1); let code = String(p[0]), path = String(p[1])
+    guard let (alpha, words) = nonLatinWords(path), words.count > 500 else { FileHandle.standardError.write("skip \(code)\n".data(using:.utf8)!); continue }
+    entries.append((code, train(words: words, alphabet: alpha)))
+    FileHandle.standardError.write("\(code): \(alpha.count) letters, \(words.count) words\n".data(using: .utf8)!)
+}
+
+var out = "// Auto-generated by tools/gen_models_cs.swift — do not edit by hand.\n"
 out += "namespace Kright.Services;\n\n"
-out += "public static class ModelData\n{\n"
-out += "    public const string EnglishAlphabet = \"abcdefghijklmnopqrstuvwxyz\";\n"
-out += "    public const int EnglishN = \(en.n);\n"
-out += "    public const double EnglishAnchorHigh = \(en.anchorHigh);\n"
-out += "    public const double EnglishAnchorLow = \(en.anchorLow);\n"
-out += "    public const double EnglishThreshold = \(en.threshold);\n"
-out += "    public static readonly double[] EnglishLogProb = { \(arr(en.logProb)) };\n\n"
-out += "    public const string HebrewAlphabet = \"\(String(heAlphabet))\";\n"
-out += "    public const int HebrewN = \(he.n);\n"
-out += "    public const double HebrewAnchorHigh = \(he.anchorHigh);\n"
-out += "    public const double HebrewAnchorLow = \(he.anchorLow);\n"
-out += "    public const double HebrewThreshold = \(he.threshold);\n"
-out += "    public static readonly double[] HebrewLogProb = { \(arr(he.logProb)) };\n"
-out += "}\n"
-try! out.write(toFile: "Services/ModelData.cs", atomically: true, encoding: .utf8)
-FileHandle.standardError.write("en n=\(en.n) thr=\(en.threshold)  he n=\(he.n) thr=\(he.threshold)\n".data(using: .utf8)!)
+out += "public static class LanguageModelData\n{\n"
+out += "    public sealed record Entry(string Alphabet, double AnchorHigh, double AnchorLow, double Threshold, double[] LogProb);\n\n"
+out += "    public static readonly Dictionary<string, Entry> ByLang = new()\n    {\n"
+for (code, m) in entries {
+    out += "        [\"\(code)\"] = new(\"\(m.alphabet)\", \(m.high), \(m.low), \(m.threshold),\n"
+    out += "            new double[] { \(arr(m.logProb)) }),\n"
+}
+out += "    };\n}\n"
+try out.write(toFile: "Services/LanguageModelData.cs", atomically: true, encoding: .utf8)
+print("Wrote Services/LanguageModelData.cs (\(entries.count) models)")
