@@ -34,6 +34,31 @@ final class LayoutConverterTests: XCTestCase {
     }
 }
 
+final class LanguageModelTests: XCTestCase {
+
+    func testBundledModelsPresent() {
+        for code in ["he", "ru", "uk", "bg", "sr", "mk", "el", "fa", "hy", "ka"] {
+            XCTAssertNotNil(LanguageModelData.byLang[code], "missing bundled model: \(code)")
+        }
+    }
+
+    /// Each model should score real words of its language well above random
+    /// strings from the same alphabet — that's what powers the detector.
+    func testModelsScoreRealWordsHigher() {
+        func model(_ code: String) -> BigramModel { BigramModel(entry: LanguageModelData.byLang[code]!) }
+
+        let ru = model("ru")
+        XCTAssertGreaterThan(ru.score("мама"), ru.score("ъыь"))
+        XCTAssertGreaterThan(ru.score("россия"), ru.score("щщщщ"))
+
+        let he = model("he")
+        XCTAssertGreaterThan(he.score("שלום"), he.score("ךךךך"))
+
+        let el = model("el")
+        XCTAssertGreaterThan(el.score("καλη"), el.score("ψψψψ"))
+    }
+}
+
 final class KeyboardLanguageTests: XCTestCase {
 
     func testLatinLanguages() {

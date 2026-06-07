@@ -6,7 +6,13 @@ All notable changes to **Kright** are documented here. The format is based on
 
 ## [Unreleased]
 
-- Multi-language gibberish detection (beyond Hebrew ⇄ English).
+### Added
+- **Multi-language detection** — the converter now fixes any non-Latin ⇄ Latin
+  layout pair, and bundled on-device bigram models cover English, Hebrew,
+  Russian, Ukrainian, Bulgarian, Serbian, Macedonian, Greek, Persian, Armenian,
+  and Georgian (built from Hunspell dictionaries via `tools/gen_models.swift`).
+
+### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 
 ## [1.0.0] — 2026-06-07

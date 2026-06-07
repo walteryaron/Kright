@@ -169,9 +169,11 @@ Yes — browsers, native apps, and terminals/consoles (it falls back to simulate
 keystrokes where direct edits aren't allowed).
 
 **Which languages does it support?**
-The wrong-layout fix works for any installed keyboard-layout pair (it reads your
-real layouts). The smart "is this gibberish?" detection currently covers
-**Hebrew ⇄ English**.
+The wrong-layout fix works for any installed non-Latin ⇄ Latin layout pair (it
+reads your real layouts). The smart "is this gibberish?" detection (used by the
+confidence verdict and Auto-fix mode) ships on-device models for **English,
+Hebrew, Russian, Ukrainian, Bulgarian, Serbian, Macedonian, Greek, Persian,
+Armenian, and Georgian** — adding a language is just bundling one more table.
 
 **Is it open source?**
 Yes — the entire app is in this repository, so you can confirm the privacy claims

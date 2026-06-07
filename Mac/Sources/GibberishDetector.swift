@@ -31,17 +31,6 @@ struct BigramModel {
         return min(1, max(0, (p - anchorLow) / (anchorHigh - anchorLow)))
     }
 
-    static func hebrew() -> BigramModel {
-        let alphabet = Array(HebrewModelData.alphabet)
-        var idx: [Character: Int] = [:]
-        for (i, c) in alphabet.enumerated() { idx[c] = i }
-        return BigramModel(index: idx, boundary: alphabet.count, n: HebrewModelData.n,
-                           logProb: HebrewModelData.logProb,
-                           anchorHigh: HebrewModelData.anchorHigh,
-                           anchorLow: HebrewModelData.anchorLow,
-                           threshold: HebrewModelData.threshold)
-    }
-
     /// Train an English model at runtime from the system word list.
     static func trainEnglish() -> BigramModel {
         let alphabet = Array("abcdefghijklmnopqrstuvwxyz")
@@ -87,40 +76,54 @@ struct BigramModel {
     }
 }
 
-/// Detects wrong-layout / gibberish locally using two bigram models (English +
-/// Hebrew). No network, no neural net. Symmetric: it confirms both that the
-/// typed word is *not* a real word in its own script and that the converted form
-/// *is* a real word in the other.
+extension BigramModel {
+    /// Build a baked model from generated data (see tools/gen_models.swift).
+    init(entry: LanguageModelData.Entry) {
+        var idx: [Character: Int] = [:]
+        for (i, c) in Array(entry.alphabet).enumerated() { idx[c] = i }
+        self.init(index: idx, boundary: entry.alphabet.count, n: entry.alphabet.count + 1,
+                  logProb: entry.logProb, anchorHigh: entry.anchorHigh,
+                  anchorLow: entry.anchorLow, threshold: entry.threshold)
+    }
+}
+
+/// Detects wrong-layout / gibberish locally with per-language bigram models.
+/// No network, no neural net. Symmetric: it confirms both that the typed word is
+/// *not* a real word in its source language and that the converted form *is* a
+/// real word in the target language. Non-Latin languages are bundled (Hebrew,
+/// Russian, Greek, …); English is trained at runtime from the system word list.
 final class GibberishDetector {
     static let shared = GibberishDetector()
 
-    private let hebrew = BigramModel.hebrew()
-    private var english: BigramModel?
+    private var models: [String: BigramModel] = [:]   // baked, keyed by 2-letter code
+    private var english: BigramModel?                 // trained at runtime
     private(set) var ready = false
 
     private init() {
+        for (code, entry) in LanguageModelData.byLang { models[code] = BigramModel(entry: entry) }
         DispatchQueue.global(qos: .utility).async { [weak self] in
             let en = BigramModel.trainEnglish()
             DispatchQueue.main.async { self?.english = en; self?.ready = true }
         }
     }
 
-    func looksWrongLayout(typed: String, converted: String) -> (wrong: Bool, confidence: Double) {
-        guard ready, let en = english else { return (false, 0) }
-        let typedIsHebrew = typed.contains { LayoutConverter.isHebrew($0) }
+    /// The model for a BCP-47 language code (English is the runtime-trained one).
+    private func model(for lang: String) -> BigramModel? {
+        let code = String(lang.lowercased().prefix(2))
+        return code == "en" ? english : models[code]
+    }
 
-        if typedIsHebrew {
-            let he = hebrew.score(typed)        // is typed real Hebrew?
-            let ascii = en.score(converted)     // is the conversion real English?
-            let wrong = ascii > en.threshold && he < hebrew.threshold
-            let conf = (en.confidence(ascii) + (1 - hebrew.confidence(he))) / 2
-            return (wrong, conf)
-        } else {
-            let ascii = en.score(typed)         // is typed real English?
-            let he = hebrew.score(converted)    // is the conversion real Hebrew?
-            let wrong = he > hebrew.threshold && ascii < en.threshold
-            let conf = (hebrew.confidence(he) + (1 - en.confidence(ascii))) / 2
-            return (wrong, conf)
-        }
+    /// Whether `typed` (produced in `fromLang`) looks like wrong-layout gibberish
+    /// whose conversion is a real `toLang` word. Returns (false, 0) when either
+    /// language has no model yet (e.g. English still training, or an unsupported
+    /// language).
+    func looksWrongLayout(typed: String, converted: String,
+                          fromLang: String, toLang: String) -> (wrong: Bool, confidence: Double) {
+        guard let src = model(for: fromLang), let dst = model(for: toLang) else { return (false, 0) }
+        let typedScore = src.score(typed)        // is `typed` a real word in its language?
+        let convScore = dst.score(converted)     // is the conversion a real word in the other?
+        let wrong = convScore > dst.threshold && typedScore < src.threshold
+        let conf = (dst.confidence(convScore) + (1 - src.confidence(typedScore))) / 2
+        return (wrong, conf)
     }
 }

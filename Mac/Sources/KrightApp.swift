@@ -192,7 +192,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard UserDefaults.standard.bool(forKey: "auto_fix") else { return }
         guard !isDisabled, !privacy.sensitive, word.count >= 2 else { return }
         guard let s = LayoutConverter.suggest(word), s.isMeaningful else { return }
-        guard GibberishDetector.shared.looksWrongLayout(typed: word, converted: s.converted).wrong
+        guard GibberishDetector.shared.looksWrongLayout(
+                typed: word, converted: s.converted, fromLang: s.fromLang, toLang: s.toLang).wrong
         else { return }
 
         // Editable field: swap the just-typed word in the value (space untouched).

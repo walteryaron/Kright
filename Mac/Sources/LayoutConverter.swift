@@ -62,31 +62,41 @@ enum LayoutConverter {
     private static func build(unit: String, within fullText: String) -> LayoutSuggestion? {
         guard unit.count <= 240 else { return nil }
 
-        let letters = unit.filter { isHebrew($0) || isLatin($0) }
+        // Direction is decided by Latin vs ANY non-Latin script (Hebrew, Cyrillic,
+        // Greek, Arabic…), so it works for any installed layout pair — not just
+        // Hebrew. (For Hebrew/Latin input the counts are identical to before.)
+        let letters = unit.filter { $0.isLetter }
         guard letters.count >= 3 else { return nil }
-        let he = letters.filter(isHebrew).count
-        let en = letters.filter(isLatin).count
-        guard he != en else { return nil }
-        let hebrewDominant = he > en
+        let latinCount = letters.filter(isLatin).count
+        let otherCount = letters.count - latinCount
+        guard latinCount != otherCount else { return nil }
+        let typedIsLatin = latinCount > otherCount
+        let hebrewScript = letters.contains(where: isHebrew)
 
-        // Prefer the REAL installed layouts (handles quirks like Hebrew w → ׳,
-        // and any language pair). Fall back to the built-in table if a source
-        // isn't available.
+        // Prefer the REAL installed layouts (any language pair, incl. quirks like
+        // Hebrew w → ׳). The built-in table is a Hebrew-only fallback for when a
+        // source's layout data can't be read.
         let english = KeyboardLanguage.firstEnglish()
         let other = KeyboardLanguage.firstNonEnglish()
 
-        let converted: String, from: String, to: String, toID: String?
-        if hebrewDominant {
-            from = other?.name ?? "Hebrew"; to = english?.name ?? "English"; toID = english?.id
-            converted = (english != nil && other != nil
-                ? KeyboardLayoutMap.convert(unit, fromID: other!.id, toID: english!.id) : nil)
-                ?? heToEnglish(unit)
+        let convertedOpt: String?
+        let from: String, to: String, toID: String?, fromLang: String, toLang: String
+        if typedIsLatin {
+            // Latin was typed but the other language was meant → convert to it.
+            from = english?.name ?? "English"; to = other?.name ?? "—"; toID = other?.id
+            fromLang = english?.lang ?? "en"; toLang = other?.lang ?? ""
+            let real = (english != nil && other != nil)
+                ? KeyboardLayoutMap.convert(unit, fromID: english!.id, toID: other!.id) : nil
+            convertedOpt = real ?? ((other?.lang.hasPrefix("he") ?? false) ? enToHebrew(unit) : nil)
         } else {
-            from = english?.name ?? "English"; to = other?.name ?? "Hebrew"; toID = other?.id
-            converted = (english != nil && other != nil
-                ? KeyboardLayoutMap.convert(unit, fromID: english!.id, toID: other!.id) : nil)
-                ?? enToHebrew(unit)
+            // A non-Latin script was typed but English was meant → convert to it.
+            from = other?.name ?? "—"; to = english?.name ?? "English"; toID = english?.id
+            fromLang = other?.lang ?? ""; toLang = english?.lang ?? "en"
+            let real = (english != nil && other != nil)
+                ? KeyboardLayoutMap.convert(unit, fromID: other!.id, toID: english!.id) : nil
+            convertedOpt = real ?? (hebrewScript ? heToEnglish(unit) : nil)
         }
+        guard let converted = convertedOpt else { return nil }
 
         // Rebuild the full value with only the converted unit swapped, so Replace
         // doesn't wipe the rest of the field.
@@ -97,7 +107,8 @@ enum LayoutConverter {
 
         return LayoutSuggestion(original: unit, converted: converted,
                                 fullReplacement: fullReplacement,
-                                fromLayout: from, toLayout: to, toLayoutID: toID)
+                                fromLayout: from, toLayout: to, toLayoutID: toID,
+                                fromLang: fromLang, toLang: toLang)
     }
 }
 
@@ -111,6 +122,10 @@ struct LayoutSuggestion {
     /// the keyboard to it (continue typing in the right language). nil if the real
     /// layouts weren't available and the built-in table was used.
     var toLayoutID: String? = nil
+    /// BCP-47 language codes of the text as typed (`fromLang`) and as corrected
+    /// (`toLang`) — used to pick the right gibberish-detection model.
+    var fromLang: String = ""
+    var toLang: String = ""
 
     var isMeaningful: Bool {
         converted != original && !converted.trimmingCharacters(in: .whitespaces).isEmpty

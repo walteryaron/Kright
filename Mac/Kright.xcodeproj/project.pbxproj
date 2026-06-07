@@ -25,8 +25,8 @@
 		BF4B313F94B8BFC70A09C158 /* GibberishDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA65DBC99E6FA0457DF0254 /* GibberishDetector.swift */; };
 		C5EB03878E31693AD1197782 /* FocusLanguageEnforcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E125DAE68F36CF54DC8FE61F /* FocusLanguageEnforcer.swift */; };
 		D8A11173C5D3ACFDF9E4BCBC /* AXInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC172C52E21BA67991FF288B /* AXInspector.swift */; };
-		E8054AB80BFC0511E187821D /* HebrewModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB767337EDC292C9D49F77B /* HebrewModelData.swift */; };
 		F5D370FA6257C6846A3B42E9 /* DetectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A8D1161755B3512C7093A /* DetectView.swift */; };
+		F68C94D269F7BEF95245EF0A /* LanguageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C07F10F43A4E76EAF2EF901 /* LanguageModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,10 +50,10 @@
 		370B1FD94FF6D2849A1CF02B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		43EBBB61C25E67A73DF393C9 /* KrightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KrightTests.swift; sourceTree = "<group>"; };
 		4BEA40490A8D7357B85B6177 /* Kright.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kright.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C07F10F43A4E76EAF2EF901 /* LanguageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageModels.swift; sourceTree = "<group>"; };
 		68839C81696380630476E0A4 /* KeyLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyLogView.swift; sourceTree = "<group>"; };
 		95326BE6EDD6C037DF8D03FF /* KeystrokeReplacer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeystrokeReplacer.swift; sourceTree = "<group>"; };
 		9AFF03A265943550B489E799 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		ADB767337EDC292C9D49F77B /* HebrewModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HebrewModelData.swift; sourceTree = "<group>"; };
 		B744EDC6DCA0DD0C594E69A8 /* Kright.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Kright.entitlements; sourceTree = "<group>"; };
 		BB1F694D64E68D7427009B19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C1C513C356FD98364D21AE87 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
@@ -95,7 +95,6 @@
 				26C0B933D8FEDD59B3C25F67 /* FieldInspector.swift */,
 				E125DAE68F36CF54DC8FE61F /* FocusLanguageEnforcer.swift */,
 				EBA65DBC99E6FA0457DF0254 /* GibberishDetector.swift */,
-				ADB767337EDC292C9D49F77B /* HebrewModelData.swift */,
 				C1C513C356FD98364D21AE87 /* HotkeyManager.swift */,
 				BB1F694D64E68D7427009B19 /* Info.plist */,
 				2C896CE3DA7E2A1AD144C399 /* KeyboardLanguage.swift */,
@@ -104,6 +103,7 @@
 				95326BE6EDD6C037DF8D03FF /* KeystrokeReplacer.swift */,
 				B744EDC6DCA0DD0C594E69A8 /* Kright.entitlements */,
 				FF3CDE9CB3FE330665F8E794 /* KrightApp.swift */,
+				4C07F10F43A4E76EAF2EF901 /* LanguageModels.swift */,
 				17C38DDC1D7688E11AA81B8C /* LayoutConverter.swift */,
 				199A66F7153919B38F5B79BF /* Models.swift */,
 				584F81E4752CC45FB6AB3F40 /* Views */,
@@ -237,7 +237,6 @@
 				8F89E9ACC4C27F175A457305 /* FieldInspector.swift in Sources */,
 				C5EB03878E31693AD1197782 /* FocusLanguageEnforcer.swift in Sources */,
 				BF4B313F94B8BFC70A09C158 /* GibberishDetector.swift in Sources */,
-				E8054AB80BFC0511E187821D /* HebrewModelData.swift in Sources */,
 				4C81B09F31C698DD05DF3906 /* HotkeyManager.swift in Sources */,
 				8D250C8CB83316FB0BD341EA /* KeyLogView.swift in Sources */,
 				0CE29D7A6F0070505B1FA182 /* KeyboardLanguage.swift in Sources */,
@@ -245,6 +244,7 @@
 				023E3BACD72C2DCF8462C150 /* KeyboardMonitor.swift in Sources */,
 				257C0CFED5153DE0276D5F43 /* KeystrokeReplacer.swift in Sources */,
 				245ECCF533EBD963B72C9BF6 /* KrightApp.swift in Sources */,
+				F68C94D269F7BEF95245EF0A /* LanguageModels.swift in Sources */,
 				9B77A3F68C82619F33C53B75 /* LayoutConverter.swift in Sources */,
 				389E54A993E3A3B49F8D2A5B /* Models.swift in Sources */,
 				5801487F22302CA954EA8374 /* OnboardingView.swift in Sources */,

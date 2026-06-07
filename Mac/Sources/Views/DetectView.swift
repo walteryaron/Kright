@@ -235,7 +235,8 @@ struct LayoutFixCard: View {
             Text("Analyzing… (building language model)")
                 .font(.system(size: 11)).foregroundColor(Color(white: 0.45))
         } else {
-            let v = GibberishDetector.shared.looksWrongLayout(typed: s.original, converted: s.converted)
+            let v = GibberishDetector.shared.looksWrongLayout(
+                typed: s.original, converted: s.converted, fromLang: s.fromLang, toLang: s.toLang)
             Text(v.wrong
                  ? "🧠 Likely wrong layout — \(Int(v.confidence * 100))% confident"
                  : "🧠 Looks intentional — probably not a layout mistake")
