@@ -94,6 +94,18 @@ dotnet build
 dotnet run
 ```
 
+### Tests
+
+Pure-logic unit tests (conversion tables, script + language detection):
+```sh
+# macOS (XCTest)
+cd Mac && xcodebuild test -project Kright.xcodeproj -scheme Kright -destination 'platform=macOS'
+```
+```powershell
+# Windows (xUnit) — run on Windows; the WPF app only builds there
+dotnet test Windows/Tests/Kright.Tests.csproj
+```
+
 ## Packaging installers
 
 **macOS — `.dmg`** (run on a Mac with Xcode):

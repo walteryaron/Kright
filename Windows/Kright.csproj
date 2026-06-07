@@ -22,4 +22,13 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
 
+  <!-- The test project lives under Tests/; keep its files out of the app build
+       (the SDK globs **/*.cs recursively from this directory). -->
+  <ItemGroup>
+    <Compile Remove="Tests/**" />
+    <Content Remove="Tests/**" />
+    <None Remove="Tests/**" />
+    <Page Remove="Tests/**" />
+  </ItemGroup>
+
 </Project>
