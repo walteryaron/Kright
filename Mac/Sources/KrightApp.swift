@@ -51,7 +51,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     static var isDisabled = UserDefaults.standard.bool(forKey: "kright_disabled")
 
     private var statusItem: NSStatusItem!
-    private var panelWindow: NSPanel!
+    private var settingsPopover: NSPopover?
     private var onboardingWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
 
@@ -64,7 +64,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Self.keyboard.onWordCompleted = { word in
             DispatchQueue.main.async { Self.autoFixWord(word) }
         }
-        setupPanelWindow()
         setupStatusItem()
 
         // Blind mode: pause capture and show a slashed-eye icon on password fields.
@@ -281,83 +280,47 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func openSettings() {
         Self.panel.tab = .settings
-        showPanel()
+        showSettingsPopover()
     }
 
     @objc private func quit() {
         NSApplication.shared.terminate(nil)
     }
 
-    // MARK: - Settings panel
+    // MARK: - Settings popover
 
-    /// Compact size for the Settings-only panel, and the larger size used when
-    /// Debug mode adds the Detect / Key Log tabs.
+    /// Compact size for the Settings-only popover, and the larger size used when
+    /// Debug mode adds the Key Log tab.
     private static let settingsSize = NSSize(width: 360, height: 670)
     private static let debugSize = NSSize(width: 460, height: 680)
 
-    private func setupPanelWindow() {
-        // Use NSHostingView directly (not NSHostingController) as the panel's
-        // contentView. The controller continuously drives the window's auto-layout
-        // from SwiftUI's content size, which spins in a constraint/relayout loop.
-        // A plain hosting view with sizingOptions=[] and a fixed-size panel fully
-        // decouples window size from content — SwiftUI just fills the fixed bounds.
-        let hostingView = NSHostingView(
+    /// Shows Settings as a popover anchored to the menu-bar icon (with an arrow
+    /// pointing at it). It sticks to the menu and dismisses when you click away —
+    /// not a draggable floating window.
+    private func showSettingsPopover() {
+        guard let button = statusItem.button else { return }
+        let debug = UserDefaults.standard.bool(forKey: "debug_mode")
+        let size = debug ? Self.debugSize : Self.settingsSize
+
+        settingsPopover?.performClose(nil)
+        let host = NSHostingController(
             rootView: ContentView()
                 .environmentObject(Self.keyboard)
                 .environmentObject(Self.inspector)
                 .environmentObject(Self.panel)
                 .environmentObject(Self.enforcer)
-                .environmentObject(HotkeyManager.shared))
-        hostingView.sizingOptions = []
+                .environmentObject(HotkeyManager.shared)
+                .frame(width: size.width, height: size.height))
+        host.preferredContentSize = size
 
-        let panel = NSPanel(
-            contentRect: NSRect(origin: .zero, size: Self.settingsSize),
-            styleMask: [.titled, .closable, .fullSizeContentView],
-            backing: .buffered, defer: false)
-        panel.titleVisibility = .hidden
-        panel.titlebarAppearsTransparent = true
-        panel.isMovableByWindowBackground = false
-        // A normal, non-floating window that dismisses when you click away —
-        // standard menu-bar-app behavior (it no longer hovers over everything).
-        panel.isFloatingPanel = false
-        panel.level = .normal
-        panel.hidesOnDeactivate = true
-        panel.isReleasedWhenClosed = false
-        panel.standardWindowButton(.closeButton)?.isHidden = true
-        panel.standardWindowButton(.miniaturizeButton)?.isHidden = true
-        panel.standardWindowButton(.zoomButton)?.isHidden = true
-        panel.contentView = hostingView
-        panel.delegate = self
-        panelWindow = panel
-    }
+        let pop = NSPopover()
+        pop.contentViewController = host
+        pop.behavior = .transient        // dismiss on outside click
+        pop.animates = true
+        settingsPopover = pop
 
-    private func showPanel() {
-        // Size to fit: just Settings normally, larger when Debug tabs are shown.
-        let debug = UserDefaults.standard.bool(forKey: "debug_mode")
-        panelWindow.setContentSize(debug ? Self.debugSize : Self.settingsSize)
-        positionPanelUnderStatusItem()
         NSApp.activate(ignoringOtherApps: true)
-        panelWindow.makeKeyAndOrderFront(nil)
-        if debug { Self.inspector.startPolling() } else { Self.inspector.stopPolling() }
-    }
-
-    private func positionPanelUnderStatusItem() {
-        guard let buttonWindow = statusItem.button?.window else { return }
-        let itemFrame = buttonWindow.frame
-        var x = itemFrame.midX - panelWindow.frame.width / 2
-        let y = itemFrame.minY - 4
-        if let screen = buttonWindow.screen {
-            let maxX = screen.visibleFrame.maxX - panelWindow.frame.width - 8
-            x = min(max(screen.visibleFrame.minX + 8, x), maxX)
-        }
-        panelWindow.setFrameTopLeftPoint(NSPoint(x: x, y: y))
-    }
-}
-
-extension AppDelegate: NSWindowDelegate {
-    // The panel auto-hides on deactivate (hidesOnDeactivate); stop any polling.
-    func windowDidResignKey(_ notification: Notification) {
-        Self.inspector.stopPolling()
+        pop.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
     }
 }
 
