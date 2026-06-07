@@ -68,10 +68,25 @@
 
                 <Separator Margin="0,12"/>
 
+                <TextBlock Text="Privacy" FontWeight="SemiBold"/>
+                <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"
+                           Text="• No internet — Kysy never makes a network request."/>
+                <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"
+                           Text="• Nothing stored — it never saves the text you type."/>
+                <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"
+                           Text="• Password-safe — it stops listening on password fields."/>
+
+                <Separator Margin="0,12"/>
+
                 <TextBlock Text="About" FontWeight="SemiBold"/>
                 <TextBlock x:Name="VersionText" Foreground="#CCC" Margin="0,6,0,0"/>
                 <TextBlock Text="Fixes text typed in the wrong keyboard layout."
                            Foreground="#888" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                <TextBlock Margin="0,6,0,0" FontSize="11">
+                    <Hyperlink NavigateUri="https://github.com/walteryaron/kright"
+                               RequestNavigate="Hyperlink_RequestNavigate">View on GitHub</Hyperlink>
+                    <Run Text="   ·   by Yaron Walter" Foreground="#888"/>
+                </TextBlock>
 
                 <Separator Margin="0,12"/>
 
