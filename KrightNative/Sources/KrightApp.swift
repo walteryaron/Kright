@@ -95,7 +95,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         win.titleVisibility = .hidden
         win.titlebarAppearsTransparent = true
         win.isReleasedWhenClosed = false
-        win.level = .floating
+        // Normal level (not floating) so it tucks behind System Settings when the
+        // user opens the Accessibility list — it still auto-closes once granted.
+        win.level = .normal
         win.contentView = hosting
         win.center()
         onboardingWindow = win
