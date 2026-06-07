@@ -1,5 +1,7 @@
 # Kright
 
+> **Keyboard done right.** · by [Walter Apps LTD](#made-by)
+
 A lightweight **native desktop keyboard utility** for **macOS and Windows** that
 runs from the menu bar / system tray. Its main job: fix text you typed in the
 **wrong keyboard layout** (e.g. you meant `exit` but typed `קסןא` because Hebrew
@@ -81,3 +83,48 @@ powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 This publishes a **self-contained** x64 build (the .NET runtime is bundled, so
 end users install nothing extra) and wraps it in a per-user installer (no UAC),
 with optional "start at login".
+
+## Privacy
+
+**Kright never records, stores, sends, or sells your keystrokes. No internet. No
+cloud. No AI service. No telemetry. Nothing.** Everything happens on your own
+device, and only to fix the word you just typed. Password and secure fields are
+never read. Because the whole app is open source, every one of these claims is
+verifiable in this repo.
+
+## Common Questions
+
+**Does Kright record, log, or upload my keystrokes?**
+No — never. It looks at only the current word, in memory, to correct the layout.
+Nothing you type is written to disk, and it makes **zero** network requests.
+
+**Does it use the internet, a cloud, or an AI service?**
+No. There is no networking code anywhere in the app — no internet, no cloud, no
+AI, no analytics. It works fully offline. (Detection uses a tiny on-device
+statistical model, not a remote service.)
+
+**Can it see my passwords?**
+No. The moment a password or secure field is focused, Kright stops listening
+entirely — you can watch this live in the Key Log ("Paused — not capturing"). On
+macOS the operating system *also* blocks every app from reading secure fields.
+
+**Does it work in any app?**
+Yes — browsers, native apps, and terminals/consoles (it falls back to simulated
+keystrokes where direct edits aren't allowed).
+
+**Which languages does it support?**
+The wrong-layout fix works for any installed keyboard-layout pair (it reads your
+real layouts). The smart "is this gibberish?" detection currently covers
+**Hebrew ⇄ English**.
+
+**Is it open source?**
+Yes — the entire app is in this repository, so you can confirm the privacy claims
+yourself.
+
+## Made by
+
+**Walter Apps LTD** — Kright, *keyboard done right*.
+
+## License
+
+MIT License · Copyright © 2026 Walter Apps LTD. See [LICENSE](LICENSE).
