@@ -19,6 +19,23 @@ struct KeyLogView: View {
             .background(Color(white: 0.07))
             Divider()
 
+            // Live proof of the privacy promise: capturing for layout-fixing, but
+            // the moment a password / secure field is focused, it stops.
+            HStack(spacing: 6) {
+                Image(systemName: keyboard.paused ? "eye.slash.fill" : "checkmark.shield.fill")
+                    .font(.system(size: 11))
+                    .foregroundColor(keyboard.paused ? .orange : .green)
+                Text(keyboard.paused
+                     ? "Paused — a password / secure field is focused. Not capturing."
+                     : "Reading keys only to fix layout. Passwords & secure fields are never read.")
+                    .font(.system(size: 10.5)).foregroundColor(Color(white: 0.62))
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 16).padding(.vertical, 7)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(keyboard.paused ? Color.orange.opacity(0.14) : Color(white: 0.09))
+            Divider()
+
             if !keyboard.trusted {
                 VStack(spacing: 12) {
                     Spacer()

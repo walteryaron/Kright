@@ -15,6 +15,7 @@
 		389E54A993E3A3B49F8D2A5B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199A66F7153919B38F5B79BF /* Models.swift */; };
 		3A0E436698B4DFC992D948C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AFF03A265943550B489E799 /* ContentView.swift */; };
 		4C81B09F31C698DD05DF3906 /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C513C356FD98364D21AE87 /* HotkeyManager.swift */; };
+		5801487F22302CA954EA8374 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE852C1C29631892FC995790 /* OnboardingView.swift */; };
 		69152F36E8DA71912C6715C6 /* KeyboardLayoutMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FE182EAAB4E74780F9E8C4 /* KeyboardLayoutMap.swift */; };
 		82AC17876E30BF7187876EAE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F61F0D0D195B3E40CCD603 /* SettingsView.swift */; };
 		8D250C8CB83316FB0BD341EA /* KeyLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68839C81696380630476E0A4 /* KeyLogView.swift */; };
@@ -43,6 +44,7 @@
 		B744EDC6DCA0DD0C594E69A8 /* Kright.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Kright.entitlements; sourceTree = "<group>"; };
 		BB1F694D64E68D7427009B19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C1C513C356FD98364D21AE87 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		CE852C1C29631892FC995790 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		DC172C52E21BA67991FF288B /* AXInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXInspector.swift; sourceTree = "<group>"; };
 		E125DAE68F36CF54DC8FE61F /* FocusLanguageEnforcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusLanguageEnforcer.swift; sourceTree = "<group>"; };
 		E29A8D1161755B3512C7093A /* DetectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectView.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 				9AFF03A265943550B489E799 /* ContentView.swift */,
 				E29A8D1161755B3512C7093A /* DetectView.swift */,
 				68839C81696380630476E0A4 /* KeyLogView.swift */,
+				CE852C1C29631892FC995790 /* OnboardingView.swift */,
 				08F61F0D0D195B3E40CCD603 /* SettingsView.swift */,
 			);
 			path = Views;
@@ -190,6 +193,7 @@
 				245ECCF533EBD963B72C9BF6 /* KrightApp.swift in Sources */,
 				9B77A3F68C82619F33C53B75 /* LayoutConverter.swift in Sources */,
 				389E54A993E3A3B49F8D2A5B /* Models.swift in Sources */,
+				5801487F22302CA954EA8374 /* OnboardingView.swift in Sources */,
 				82AC17876E30BF7187876EAE /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

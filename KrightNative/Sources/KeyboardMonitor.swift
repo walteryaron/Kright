@@ -29,8 +29,9 @@ final class KeyboardMonitor: ObservableObject {
     }
 
     /// Blind mode: while true (set by PrivacyMonitor when a password field is
-    /// focused), the tap records nothing — no word buffer, no key log.
-    var paused = false
+    /// focused), the tap records nothing — no word buffer, no key log. Published
+    /// so the Key Log can show a "not listening on a secure field" banner.
+    @Published var paused = false
 
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?

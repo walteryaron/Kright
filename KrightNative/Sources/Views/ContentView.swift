@@ -14,14 +14,16 @@ enum AppTab: String, CaseIterable {
     }
 }
 
-/// Root panel UI shown from the menu bar. Normally just Settings; the Detect and
-/// Key Log tabs (developer tools) appear only when Debug mode is enabled.
+/// Root panel UI shown from the menu bar. Normally just Settings; the Key Log
+/// tab appears when Debug mode is enabled, so the user can watch exactly what's
+/// captured — and see that password fields are never read.
 struct ContentView: View {
     @EnvironmentObject var panel: PanelState
     @AppStorage("debug_mode") private var debugMode = false
 
-    /// Detect and Key Log are debug-only; Settings is always shown.
-    private var tabs: [AppTab] { debugMode ? AppTab.allCases : [.settings] }
+    /// Debug adds only the Key Log; Settings is always shown. (Detect is a
+    /// developer-only view, not surfaced.)
+    private var tabs: [AppTab] { debugMode ? [.keyLog, .settings] : [.settings] }
     private var current: AppTab { tabs.contains(panel.tab) ? panel.tab : .settings }
 
     var body: some View {

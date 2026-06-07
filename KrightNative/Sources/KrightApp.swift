@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import Combine
 
 /// Shared routing state so the right-click "Settings" item can switch the panel
 /// to the Settings tab.
@@ -51,6 +52,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var statusItem: NSStatusItem!
     private var panelWindow: NSPanel!
+    private var onboardingWindow: NSWindow?
+    private var cancellables = Set<AnyCancellable>()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Self.keyboard.start()
@@ -71,6 +74,41 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.refreshStatusIcon()
         }
         Self.privacy.start()
+
+        // First run: until Accessibility is granted, show an onboarding panel
+        // that explains why and opens the settings pane in one click.
+        showOnboardingIfNeeded()
+    }
+
+    /// Shows the first-run Accessibility panel when not yet trusted, and closes
+    /// it automatically once the user grants access.
+    private func showOnboardingIfNeeded() {
+        guard !Self.keyboard.trusted else { return }
+
+        let hosting = NSHostingView(rootView: OnboardingView(onGrant: {
+            Self.keyboard.requestAccess()             // system prompt + adds to the list
+            AXInspector.openAccessibilitySettings()   // open the pane
+        }))
+        let win = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 420, height: 380),
+                           styleMask: [.titled, .closable, .fullSizeContentView],
+                           backing: .buffered, defer: false)
+        win.titleVisibility = .hidden
+        win.titlebarAppearsTransparent = true
+        win.isReleasedWhenClosed = false
+        win.level = .floating
+        win.contentView = hosting
+        win.center()
+        onboardingWindow = win
+        NSApp.activate(ignoringOtherApps: true)
+        win.makeKeyAndOrderFront(nil)
+
+        // Auto-dismiss the moment access is granted.
+        Self.keyboard.$trusted
+            .receive(on: RunLoop.main)
+            .sink { [weak self] trusted in
+                if trusted { self?.onboardingWindow?.close(); self?.onboardingWindow = nil }
+            }
+            .store(in: &cancellables)
     }
 
     /// Convert the focused field's just-typed phrase from the wrong layout and
