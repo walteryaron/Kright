@@ -20,9 +20,18 @@ DD="$BUILD/dd"
 STAGE="$BUILD/dmg"
 DMG="$BUILD/Kright.dmg"
 # Override these via env vars for your own Apple Developer account.
-NOTARY_PROFILE="${KRIGHT_NOTARY_PROFILE:-kright-notary}"
 APPLE_ID="${KRIGHT_APPLE_ID:-<your-apple-id-email>}"
 TEAM_ID="${KRIGHT_TEAM_ID:-<your-team-id>}"
+# Use the first stored notary profile that exists (kright-notary preferred;
+# kysy-notary is the legacy name from before the rename). Requires the login
+# keychain to be unlocked.
+NOTARY_PROFILE="${KRIGHT_NOTARY_PROFILE:-}"
+if [ -z "$NOTARY_PROFILE" ]; then
+  for p in kright-notary kysy-notary; do
+    if xcrun notarytool history --keychain-profile "$p" >/dev/null 2>&1; then NOTARY_PROFILE="$p"; break; fi
+  done
+  NOTARY_PROFILE="${NOTARY_PROFILE:-kright-notary}"
+fi
 
 # Auto-detect a Developer ID Application identity (for notarized distribution).
 DEVID="$(security find-identity -v -p codesigning \
