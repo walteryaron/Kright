@@ -1,6 +1,18 @@
+<div align="center">
+
+<img src="assets/logo.png" alt="Kright logo" width="128" height="128" />
+
 # Kright
 
-> **Keyboard done right.** · by [Walter Apps LTD](#made-by)
+**Keyboard done right.** · by [Walter Apps LTD](#made-by)
+
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-555?logo=apple&logoColor=white)](#)
+[![macOS](https://img.shields.io/badge/macOS-Swift%20%2B%20SwiftUI-FA7343?logo=swift&logoColor=white)](Mac/)
+[![Windows](https://img.shields.io/badge/Windows-C%23%20.NET%208-512BD4?logo=dotnet&logoColor=white)](Windows/)
+[![Release](https://img.shields.io/github/v/release/walteryaron/Kright?label=release&color=brightgreen)](https://github.com/walteryaron/Kright/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+</div>
 
 A lightweight **native desktop keyboard utility** for **macOS and Windows** that
 runs from the menu bar / system tray. Its main job: fix text you typed in the
