@@ -70,7 +70,7 @@
 
                 <TextBlock Text="Privacy" FontWeight="SemiBold"/>
                 <TextBlock Foreground="#AAAAAA" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"
-                           Text="Kright never sends, stores, or sells your data — everything happens on your PC, only to fix the word you just typed."/>
+                           Text="Kright doesn't collect your data — it all happens on your PC. Your typing is never stored or sent anywhere, only used to fix the word you just typed."/>
                 <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"
                            Text="• No network — it makes zero internet requests, ever."/>
                 <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"

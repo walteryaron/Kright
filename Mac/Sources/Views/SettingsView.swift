@@ -81,7 +81,7 @@ struct SettingsView: View {
                     Divider().padding(.vertical, 4)
 
                     Text("Privacy").font(.system(size: 12, weight: .semibold))
-                    Text("Kright never sends, stores, or sells your data — everything happens on your Mac, only to fix the word you just typed.")
+                    Text("Kright doesn't collect your data — it all happens on your Mac. Your typing is never stored or sent anywhere, only used to fix the word you just typed.")
                         .font(.system(size: 10.5)).foregroundColor(Color(white: 0.6))
                         .fixedSize(horizontal: false, vertical: true)
                     privacyRow("wifi.slash", "No network — it makes zero internet requests, ever.")

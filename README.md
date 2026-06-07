@@ -130,9 +130,9 @@ with optional "start at login".
 
 ## Privacy
 
-**Kright never records, stores, sends, or sells your keystrokes. No internet. No
-cloud. No AI service. No telemetry. Nothing.** Everything happens on your own
-device, and only to fix the word you just typed. Password and secure fields are
+**Kright doesn't collect your keystrokes — nothing is recorded, stored, or sent
+anywhere. No internet. No cloud. No AI service. No telemetry. Nothing.**
+Everything happens on your own device, and only to fix the word you just typed. Password and secure fields are
 never read. Because the whole app is open source, every one of these claims is
 verifiable in this repo.
 
