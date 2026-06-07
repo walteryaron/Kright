@@ -107,16 +107,21 @@ if [ "$STYLED" = 0 ]; then
   fi
 fi
 
-if [ -n "$DEVID" ] && xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1; then
+# Always sign the DMG itself when a Developer ID cert is available, so it has a
+# usable signature even if notarization can't run.
+if [ -n "$DEVID" ]; then
   echo "▸ Signing DMG…"
   codesign --force --sign "$DEVID" --timestamp "$DMG"
+fi
+
+if [ -n "$DEVID" ] && xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1; then
   echo "▸ Notarizing (this can take a few minutes)…"
   xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
   echo "▸ Stapling…"
   xcrun stapler staple "$DMG"
   echo "✓ Done (notarized): $DMG"
 else
-  echo "✓ Done (not notarized): $DMG"
+  echo "✓ Done (signed, NOT notarized): $DMG"
   if [ -z "$DEVID" ]; then
     echo "  → No Developer ID cert: create one in Xcode → Settings → Accounts → Manage Certificates → + → Developer ID Application."
   else
