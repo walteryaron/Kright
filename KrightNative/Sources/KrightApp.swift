@@ -86,8 +86,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard !Self.keyboard.trusted else { return }
 
         let hosting = NSHostingView(rootView: OnboardingView(onGrant: {
-            Self.keyboard.requestAccess()             // system prompt + adds to the list
-            AXInspector.openAccessibilitySettings()   // open the pane
+            // The system prompt registers the app AND has its own "Open System
+            // Settings" button — so we show only this (don't also open the pane,
+            // which produced two overlapping windows).
+            Self.keyboard.requestAccess()
         }))
         let win = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 420, height: 380),
                            styleMask: [.titled, .closable, .fullSizeContentView],

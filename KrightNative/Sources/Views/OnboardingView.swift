@@ -27,7 +27,7 @@ struct OnboardingView: View {
             .padding(.vertical, 2)
 
             Button(action: onGrant) {
-                Text("Open Accessibility Settings")
+                Text("Grant Accessibility Access")
                     .frame(maxWidth: .infinity)
             }
             .controlSize(.large)
