@@ -102,7 +102,7 @@ struct SettingsView: View {
                         }
                     }
                     HStack(spacing: 6) {
-                        Link(destination: URL(string: "https://github.com/walteryaron/kright")!) {
+                        Link(destination: URL(string: "https://github.com/walteryaron/Kright")!) {
                             Label("View on GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
                                 .font(.system(size: 11))
                         }

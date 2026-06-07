@@ -41,5 +41,5 @@ First release. macOS (Swift + SwiftUI) and Windows (C# + WPF) native apps.
 - Zero network requests. Nothing typed is stored. Password / secure fields are
   never read. The whole app is auditable in this repository.
 
-[Unreleased]: https://github.com/walteryaron/kright/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/walteryaron/kright/releases/tag/v1.0.0
+[Unreleased]: https://github.com/walteryaron/Kright/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/walteryaron/Kright/releases/tag/v1.0.0

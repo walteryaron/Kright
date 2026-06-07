@@ -87,7 +87,7 @@
                 <TextBlock Text="Keyboard done right."
                            Foreground="#888" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"/>
                 <TextBlock Margin="0,6,0,0" FontSize="11">
-                    <Hyperlink NavigateUri="https://github.com/walteryaron/kright"
+                    <Hyperlink NavigateUri="https://github.com/walteryaron/Kright"
                                RequestNavigate="Hyperlink_RequestNavigate">View on GitHub</Hyperlink>
                     <Run Text="   ·   by Yaron Walter" Foreground="#888"/>
                 </TextBlock>
