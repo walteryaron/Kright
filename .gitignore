@@ -9,17 +9,17 @@
 .vs/
 .vscode/
 
-# ── macOS native app (KrightNative, Swift / Xcode) ──
-KrightNative/build/
+# ── macOS native app (Mac, Swift / Xcode) ──
+Mac/build/
 DerivedData/
 *.xcuserstate
 **/xcuserdata/
 *.xcscmblueprint
 
-# ── Windows native app (KrightWindows, .NET / WPF) ──
-KrightWindows/bin/
-KrightWindows/obj/
-KrightWindows/publish/
-KrightWindows/installer/output/
+# ── Windows native app (Windows, .NET / WPF) ──
+Windows/bin/
+Windows/obj/
+Windows/publish/
+Windows/installer/output/
 [Bb]in/
 [Oo]bj/

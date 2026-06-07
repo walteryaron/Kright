@@ -1,4 +1,4 @@
-# Builds the Kright Windows installer. Run on Windows from the KrightWindows folder:
+# Builds the Kright Windows installer. Run on Windows from the Windows folder:
 #
 #   powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 #

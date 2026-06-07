@@ -82,5 +82,5 @@ out += "    public const double HebrewAnchorLow = \(he.anchorLow);\n"
 out += "    public const double HebrewThreshold = \(he.threshold);\n"
 out += "    public static readonly double[] HebrewLogProb = { \(arr(he.logProb)) };\n"
 out += "}\n"
-try! out.write(toFile: "/Users/walter_yaron/Documents/kright/KrightWindows/Services/ModelData.cs", atomically: true, encoding: .utf8)
+try! out.write(toFile: "/Users/walter_yaron/Documents/kright/Windows/Services/ModelData.cs", atomically: true, encoding: .utf8)
 FileHandle.standardError.write("en n=\(en.n) thr=\(en.threshold)  he n=\(he.n) thr=\(he.threshold)\n".data(using: .utf8)!)

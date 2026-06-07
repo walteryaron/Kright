@@ -1,8 +1,8 @@
 #!/bin/bash
 # Regenerates Sources/Assets.xcassets/AppIcon.appiconset from the keyboard icon
-# renderer. Run from KrightNative/:  ./scripts/make-appicon.sh
+# renderer. Run from Mac/:  ./scripts/make-appicon.sh
 set -euo pipefail
-cd "$(dirname "$0")/.."        # KrightNative/
+cd "$(dirname "$0")/.."        # Mac/
 
 MASTER="/tmp/kright-icon-1024.png"
 SET="Sources/Assets.xcassets/AppIcon.appiconset"

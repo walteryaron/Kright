@@ -70,7 +70,7 @@ for i in 0..<n {
     out += "        \(row),\n"
 }
 out += "    ]\n}\n"
-try! out.write(toFile: "/Users/walter_yaron/Documents/kright/KrightNative/Sources/HebrewModelData.swift", atomically: true, encoding: .utf8)
+try! out.write(toFile: "/Users/walter_yaron/Documents/kright/Mac/Sources/HebrewModelData.swift", atomically: true, encoding: .utf8)
 
 // Sanity print
 FileHandle.standardError.write("threshold=\(threshold) high=\(anchorHigh) low=\(anchorLow)\n".data(using: .utf8)!)

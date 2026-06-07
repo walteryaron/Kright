@@ -13,8 +13,8 @@ There is **no shared/cross-platform code** — each OS has its own native app:
 
 | Platform | Stack | Folder |
 |----------|-------|--------|
-| macOS    | Swift + SwiftUI | [`KrightNative/`](KrightNative/) |
-| Windows  | C# + WPF (.NET 8) | [`KrightWindows/`](KrightWindows/) |
+| macOS    | Swift + SwiftUI | [`Mac/`](Mac/) |
+| Windows  | C# + WPF (.NET 8) | [`Windows/`](Windows/) |
 
 ## Features
 
@@ -35,7 +35,7 @@ There is **no shared/cross-platform code** — each OS has its own native app:
 
 **macOS** (needs Xcode + [XcodeGen](https://github.com/yonaskolb/XcodeGen)):
 ```sh
-cd KrightNative
+cd Mac
 xcodegen generate
 xcodebuild -project Kright.xcodeproj -scheme Kright -configuration Debug -derivedDataPath build build
 open build/Build/Products/Debug/Kright.app
@@ -43,9 +43,9 @@ open build/Build/Products/Debug/Kright.app
 Grant **Accessibility** permission (System Settings → Privacy & Security →
 Accessibility → enable Kright).
 
-**Windows** (needs the .NET 8 SDK — see [`KrightWindows/README.md`](KrightWindows/README.md)):
+**Windows** (needs the .NET 8 SDK — see [`Windows/README.md`](Windows/README.md)):
 ```powershell
-cd KrightWindows
+cd Windows
 dotnet build
 dotnet run
 ```
@@ -55,7 +55,7 @@ dotnet run
 **macOS — `.dmg`** (run on a Mac with Xcode):
 ```sh
 brew install create-dmg       # one-time: styled "drag to Applications" window
-cd KrightNative
+cd Mac
 ./scripts/build-dmg.sh        # → build/Kright.dmg
 ```
 The DMG shows a custom background (`scripts/gen-dmg-bg.swift`: light panel + a
@@ -76,7 +76,7 @@ right-click → Open.
 [.NET 8 SDK](https://dotnet.microsoft.com/download) and
 [Inno Setup 6](https://jrsoftware.org/isdl.php)):
 ```powershell
-cd KrightWindows
+cd Windows
 powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
 # → installer\output\KrightSetup-1.0.0.exe
 ```

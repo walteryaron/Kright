@@ -3,7 +3,7 @@
 #
 #   ./scripts/build-dmg.sh
 #
-# Output: KrightNative/build/Kright.dmg
+# Output: Mac/build/Kright.dmg
 #
 # If a "Developer ID Application" certificate AND a stored notary profile
 # (default name: kysy-notary) are present, the DMG is Developer-ID signed,
@@ -13,7 +13,7 @@
 # bottom of this file.
 set -euo pipefail
 
-cd "$(dirname "$0")/.."          # KrightNative/
+cd "$(dirname "$0")/.."          # Mac/
 ROOT="$(pwd)"
 BUILD="$ROOT/build"
 DD="$BUILD/dd"

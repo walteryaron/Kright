@@ -10,7 +10,7 @@ Requires the **.NET 8 SDK** (and the Desktop workload, which Visual Studio
 installs by default).
 
 ```powershell
-cd KrightWindows
+cd Windows
 dotnet build          # or open Kright.csproj in Visual Studio and press F5
 dotnet run
 ```
