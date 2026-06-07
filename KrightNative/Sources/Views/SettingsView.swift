@@ -5,6 +5,7 @@ struct SettingsView: View {
     @EnvironmentObject var enforcer: FocusLanguageEnforcer
     @EnvironmentObject var hotkey: HotkeyManager
     @AppStorage("debug_mode") private var debugMode = false
+    @AppStorage("auto_fix") private var autoFix = false
 
     private var appVersion: String {
         let info = Bundle.main.infoDictionary
@@ -43,6 +44,18 @@ struct SettingsView: View {
                         }
                         Spacer()
                     }
+
+                    Divider().padding(.vertical, 4)
+
+                    Text("Auto-fix as you type").font(.system(size: 12, weight: .semibold))
+                    Toggle(isOn: $autoFix) {
+                        Text("Convert wrong-layout words automatically on Space / Tab")
+                            .font(.system(size: 11)).foregroundColor(Color(white: 0.75))
+                    }
+                    .toggleStyle(.switch)
+                    Text("Hebrew ⇄ English. Each finished word is checked on-device; gibberish is converted and the keyboard switches to match.")
+                        .font(.system(size: 10)).foregroundColor(Color(white: 0.45))
+                        .fixedSize(horizontal: false, vertical: true)
 
                     Divider().padding(.vertical, 4)
 

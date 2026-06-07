@@ -19,6 +19,15 @@ final class KeyboardMonitor: ObservableObject {
     /// Call after a fix so the buffer reflects what's now in the field.
     func resetWord(to value: String = "") { currentPhrase = value }
 
+    /// Fired (on the tap thread) when a word boundary (space/tab) is typed,
+    /// carrying the word just completed — drives Auto-fix mode.
+    var onWordCompleted: ((String) -> Void)?
+
+    /// The trailing word of the current phrase (text after the last space).
+    private func lastWord() -> String {
+        String(currentPhrase.reversed().prefix { !$0.isWhitespace }.reversed())
+    }
+
     /// Blind mode: while true (set by PrivacyMonitor when a password field is
     /// focused), the tap records nothing — no word buffer, no key log.
     var paused = false
@@ -135,10 +144,17 @@ final class KeyboardMonitor: ObservableObject {
         case 51:                                   // delete/backspace
             if !currentPhrase.isEmpty { currentPhrase.removeLast() }
             return
-        case 49:                                   // space — keep it so words stay joined
+        case 49:                                   // space — word boundary; keep it so words stay joined
+            let done = lastWord()
             appendSpace()
+            if !done.isEmpty { onWordCompleted?(done) }
             return
-        case 36, 76, 48, 53,                       // return, enter, tab, esc
+        case 48:                                   // tab — word boundary, then reset
+            let done = lastWord()
+            currentPhrase = ""
+            if !done.isEmpty { onWordCompleted?(done) }
+            return
+        case 36, 76, 53,                           // return, enter, esc
              123, 124, 125, 126,                   // arrows (cursor moved)
              115, 119, 116, 121:                   // home/end/page up/down
             currentPhrase = ""

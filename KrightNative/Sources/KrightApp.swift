@@ -56,6 +56,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Self.keyboard.start()
         if !Self.isDisabled { Self.enforcer.startIfEnabled() }
         HotkeyManager.shared.onTrigger = { Self.fixFocusedLayout() }
+        // Auto-fix mode: when a word boundary is typed, convert it if it's
+        // wrong-layout (gated by the detector). Off unless enabled in Settings.
+        Self.keyboard.onWordCompleted = { word in
+            DispatchQueue.main.async { Self.autoFixWord(word) }
+        }
         setupPanelWindow()
         setupStatusItem()
 
@@ -130,6 +135,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private static func switchKeyboard(to s: LayoutSuggestion) {
         guard let id = s.toLayoutID else { return }
         KeyboardLanguage.select(id: id)
+    }
+
+    /// Auto-fix mode: a word boundary (space/tab) was just typed. If `word` looks
+    /// like wrong-layout gibberish (the on-device bigram detector confirms the
+    /// typed form isn't a real word in its script but the converted form is a real
+    /// word in the other), convert it in place — the trailing space stays — and
+    /// switch the keyboard so the next word is typed correctly. Opt-in, off by
+    /// default. The hotkey path is unchanged.
+    static func autoFixWord(_ word: String) {
+        guard UserDefaults.standard.bool(forKey: "auto_fix") else { return }
+        guard !isDisabled, !privacy.sensitive, word.count >= 2 else { return }
+        guard let s = LayoutConverter.suggest(word), s.isMeaningful else { return }
+        guard GibberishDetector.shared.looksWrongLayout(typed: word, converted: s.converted).wrong
+        else { return }
+
+        // Editable field: swap the just-typed word in the value (space untouched).
+        if let (element, value) = AXInspector.focusedValue(),
+           let range = value.range(of: word, options: .backwards) {
+            let full = value.replacingCharacters(in: range, with: s.converted)
+            if AXInspector.setValue(full, on: element).ok {
+                keyboard.resetWord(); switchKeyboard(to: s); return
+            }
+        }
+        // Read-only field (terminal/console): delete the word + its trailing
+        // space and retype the conversion, then switch layout.
+        let replacement = s.converted + " "
+        let deleteCount = word.count + 1
+        DispatchQueue.global(qos: .userInitiated).async {
+            KeystrokeReplacer.replaceLastWord(originalLength: deleteCount, replacement: replacement)
+        }
+        keyboard.resetWord(); switchKeyboard(to: s)
     }
 
     // MARK: - Status item
