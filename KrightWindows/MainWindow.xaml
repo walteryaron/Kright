@@ -69,12 +69,16 @@
                 <Separator Margin="0,12"/>
 
                 <TextBlock Text="Privacy" FontWeight="SemiBold"/>
+                <TextBlock Foreground="#AAAAAA" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"
+                           Text="Kright never sends, stores, or sells your data — everything happens on your PC, only to fix the word you just typed."/>
                 <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,6,0,0" TextWrapping="Wrap"
-                           Text="• No internet — Kright never makes a network request."/>
+                           Text="• No network — it makes zero internet requests, ever."/>
                 <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"
-                           Text="• Nothing stored — it never saves the text you type."/>
+                           Text="• No storage — what you type is never logged or saved to disk."/>
                 <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"
                            Text="• Password-safe — it stops listening on password fields."/>
+                <TextBlock Foreground="#8BBE8B" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"
+                           Text="• Open source — verify every word of this in the code on GitHub."/>
 
                 <Separator Margin="0,12"/>
 

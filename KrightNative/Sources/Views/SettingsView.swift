@@ -68,9 +68,13 @@ struct SettingsView: View {
                     Divider().padding(.vertical, 4)
 
                     Text("Privacy").font(.system(size: 12, weight: .semibold))
-                    privacyRow("wifi.slash", "No internet — Kright never makes a single network request.")
-                    privacyRow("externaldrive.badge.xmark", "Nothing stored — it never saves the text you type.")
-                    privacyRow("eye.slash.fill", "Password-safe — it stops listening on password fields.")
+                    Text("Kright never sends, stores, or sells your data — everything happens on your Mac, only to fix the word you just typed.")
+                        .font(.system(size: 10.5)).foregroundColor(Color(white: 0.6))
+                        .fixedSize(horizontal: false, vertical: true)
+                    privacyRow("wifi.slash", "No network — it makes zero internet requests, ever.")
+                    privacyRow("externaldrive.badge.xmark", "No storage — what you type is never logged or saved to disk.")
+                    privacyRow("eye.slash.fill", "Password-safe — it pauses on secure fields, which macOS also hides from every app.")
+                    privacyRow("checkmark.seal", "Open source — verify every word of this in the code on GitHub.")
 
                     Divider().padding(.vertical, 4)
 
