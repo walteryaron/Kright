@@ -6,7 +6,7 @@
 # Output: Mac/build/Kright.dmg
 #
 # If a "Developer ID Application" certificate AND a stored notary profile
-# (default name: kysy-notary) are present, the DMG is Developer-ID signed,
+# (default name: kright-notary) are present, the DMG is Developer-ID signed,
 # notarized by Apple, and stapled — so it opens with a normal double-click on
 # any Mac. Otherwise it falls back to a plain dev-signed DMG (first launch on
 # another Mac then needs a right-click → Open). See the one-time setup at the
@@ -19,9 +19,10 @@ BUILD="$ROOT/build"
 DD="$BUILD/dd"
 STAGE="$BUILD/dmg"
 DMG="$BUILD/Kright.dmg"
-NOTARY_PROFILE="${KRIGHT_NOTARY_PROFILE:-kysy-notary}"
-APPLE_ID="${KRIGHT_APPLE_ID:-walter_yaron@hotmail.com}"   # Apple Developer account
-TEAM_ID="${KRIGHT_TEAM_ID:-NFQL267669}"
+# Override these via env vars for your own Apple Developer account.
+NOTARY_PROFILE="${KRIGHT_NOTARY_PROFILE:-kright-notary}"
+APPLE_ID="${KRIGHT_APPLE_ID:-<your-apple-id-email>}"
+TEAM_ID="${KRIGHT_TEAM_ID:-<your-team-id>}"
 
 # Auto-detect a Developer ID Application identity (for notarized distribution).
 DEVID="$(security find-identity -v -p codesigning \
@@ -139,9 +140,9 @@ fi
 #
 # 2) Create an app-specific password at https://appleid.apple.com
 #    (Sign-In and Security → App-Specific Passwords), then store notary creds:
-#      xcrun notarytool store-credentials kysy-notary \
-#        --apple-id walter_yaron@hotmail.com \
-#        --team-id NFQL267669 \
+#      xcrun notarytool store-credentials kright-notary \
+#        --apple-id <your-apple-id-email> \
+#        --team-id <your-team-id> \
 #        --password <the-app-specific-password>
 #
 # Then just re-run this script — it auto-detects both and notarizes.

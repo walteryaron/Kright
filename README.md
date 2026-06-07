@@ -65,7 +65,7 @@ control Finder"; approve it** (the layout can't be written otherwise on macOS
 26+). It falls back to `dmgbuild` (headless, but its background may not render on
 macOS 26) or a plain DMG if neither tool is installed.
 If a **Developer ID Application** certificate and a stored notary profile
-(`kysy-notary`) are present, the script automatically signs (hardened runtime),
+(`kright-notary`) are present, the script automatically signs (hardened runtime),
 **notarizes**, and **staples** the DMG, so it opens with a normal double-click
 anywhere. The one-time setup (create the cert in Xcode; `notarytool
 store-credentials`) is documented at the bottom of `scripts/build-dmg.sh`.
