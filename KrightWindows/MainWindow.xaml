@@ -84,7 +84,7 @@
 
                 <TextBlock Text="About" FontWeight="SemiBold"/>
                 <TextBlock x:Name="VersionText" Foreground="#CCC" Margin="0,6,0,0"/>
-                <TextBlock Text="Fixes text typed in the wrong keyboard layout."
+                <TextBlock Text="Keyboard done right."
                            Foreground="#888" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap"/>
                 <TextBlock Margin="0,6,0,0" FontSize="11">
                     <Hyperlink NavigateUri="https://github.com/walteryaron/kright"

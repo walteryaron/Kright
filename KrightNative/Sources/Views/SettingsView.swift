@@ -84,7 +84,7 @@ struct SettingsView: View {
                         VStack(alignment: .leading, spacing: 1) {
                             Text("Kright \(appVersion)")
                                 .font(.system(size: 11, weight: .medium)).foregroundColor(Color(white: 0.8))
-                            Text("Fixes text typed in the wrong keyboard layout.")
+                            Text("Keyboard done right.")
                                 .font(.system(size: 10)).foregroundColor(Color(white: 0.45))
                         }
                     }
