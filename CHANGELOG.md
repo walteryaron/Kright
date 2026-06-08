@@ -6,15 +6,17 @@ All notable changes to **Kright** are documented here. The format is based on
 
 ## [Unreleased]
 
+### Planned
+- Onboarding + trust-focused Key Log on Windows (parity with macOS).
+
+## [1.0.2] — 2026-06-08
+
 ### Changed
 - **Auto-update asks first** — both platforms now show a first-run "Check for
   updates automatically?" prompt instead of silently enabling background checks,
   so the user consents to the only network call Kright makes. "Check for
   Updates…" stays available manually regardless of the choice. (macOS: drop
   `SUEnableAutomaticChecks`; Windows: persisted `AutoUpdateCheck` tri-state.)
-
-### Planned
-- Onboarding + trust-focused Key Log on Windows (parity with macOS).
 
 ## [1.0.1] — 2026-06-08
 
@@ -66,6 +68,7 @@ First release. macOS (Swift + SwiftUI) and Windows (C# + WPF) native apps.
 - Zero network requests. Nothing typed is stored. Password / secure fields are
   never read. The whole app is auditable in this repository.
 
-[Unreleased]: https://github.com/walteryaron/Kright/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/walteryaron/Kright/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/walteryaron/Kright/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/walteryaron/Kright/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/walteryaron/Kright/releases/tag/v1.0.0
