@@ -12,6 +12,11 @@
 [![Release](https://img.shields.io/github/v/release/walteryaron/Kright?label=release&color=brightgreen)](https://github.com/walteryaron/Kright/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
+<!-- DEMO: record a 15–30s clip of a wrong-layout word being fixed in place,
+     save it as assets/demo.gif (keep it < 5 MB), then uncomment the line below:
+<img src="assets/demo.gif" alt="Kright fixing wrong-layout text in place" width="760" />
+-->
+
 </div>
 
 A lightweight **native desktop keyboard utility** for **macOS and Windows** that
@@ -27,6 +32,19 @@ There is **no shared/cross-platform code** — each OS has its own native app:
 |----------|-------|--------|
 | macOS    | Swift + SwiftUI | [`Mac/`](Mac/) |
 | Windows  | C# + WPF (.NET 8) | [`Windows/`](Windows/) |
+
+## Download
+
+Grab the latest **signed** build — no build tools required:
+
+| Platform | Download |
+|----------|----------|
+| **macOS** 13+ | [**Kright.dmg**](https://github.com/walteryaron/Kright/releases/latest/download/Kright.dmg) |
+| **Windows** 10+ | [**Latest installer (.exe)**](https://github.com/walteryaron/Kright/releases/latest) |
+
+Or browse [all releases](https://github.com/walteryaron/Kright/releases). Once
+installed, Kright **keeps itself up to date automatically** (signed in-app
+updates — see the [changelog](CHANGELOG.md)).
 
 ## Features
 
@@ -87,7 +105,10 @@ wrong-layout gibberish, it converts it and switches the keyboard automatically.
 Everything happens **on your device** — no network, nothing stored, and
 password / secure fields are never read. See the [changelog](CHANGELOG.md).
 
-## Build & run
+## For developers
+
+<details>
+<summary><b>Build &amp; run from source</b></summary>
 
 **macOS** (needs Xcode + [XcodeGen](https://github.com/yonaskolb/XcodeGen)):
 ```sh
@@ -118,7 +139,10 @@ cd Mac && xcodebuild test -project Kright.xcodeproj -scheme Kright -destination 
 dotnet test Windows/Tests/Kright.Tests.csproj
 ```
 
-## Packaging installers
+</details>
+
+<details>
+<summary><b>Packaging installers</b></summary>
 
 **macOS — `.dmg`** (run on a Mac with Xcode):
 ```sh
@@ -146,11 +170,13 @@ right-click → Open.
 ```powershell
 cd Windows
 powershell -ExecutionPolicy Bypass -File .\build-installer.ps1
-# → installer\output\KrightSetup-1.0.0.exe
+# → installer\output\KrightSetup-1.0.1.exe
 ```
 This publishes a **self-contained** x64 build (the .NET runtime is bundled, so
 end users install nothing extra) and wraps it in a per-user installer (no UAC),
 with optional "start at login".
+
+</details>
 
 ## Privacy
 
