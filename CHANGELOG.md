@@ -14,6 +14,10 @@ All notable changes to **Kright** are documented here. The format is based on
 - **Auto-update (macOS)** — bundled [Sparkle](https://sparkle-project.org); a
   "Check for Updates…" menu item plus scheduled background checks against a
   signed appcast. Releases are EdDSA-signed via `Mac/scripts/gen-appcast.sh`.
+- **Auto-update (Windows)** — bundled [NetSparkle](https://github.com/NetSparkleUpdater/NetSparkle);
+  a "Check for Updates…" tray item plus scheduled background checks. Releases are
+  Ed25519-signed via `Windows/scripts/gen-appcast.ps1` (separate feed + key from
+  macOS). Set the public key in `App.xaml.cs` after `--generate-keys`.
 
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).

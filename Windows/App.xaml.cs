@@ -3,6 +3,9 @@ using System.Media;
 using System.Windows;
 using System.Windows.Forms; // NotifyIcon (tray)
 using Kright.Services;
+using NetSparkleUpdater;
+using NetSparkleUpdater.Enums;
+using NetSparkleUpdater.SignatureVerifiers;
 using Application = System.Windows.Application;
 
 namespace Kright;
@@ -11,6 +14,17 @@ public partial class App : Application
 {
     private NotifyIcon _tray = null!;
     private MainWindow? _window;
+    private SparkleUpdater? _sparkle;
+
+    // Sparkle auto-update feed (separate from macOS: Windows binaries + key differ).
+    // Reachable over HTTPS by every install — works once the repo is public, else
+    // host appcast-win.xml + the installer somewhere public and update this URL.
+    private const string AppcastUrl =
+        "https://raw.githubusercontent.com/walteryaron/Kright/main/appcast-win.xml";
+    // Ed25519 PUBLIC key — paste the value printed by `netsparkle-generate-appcast
+    // --generate-keys` (run once on the build machine; keep the private key safe).
+    // SecurityMode.Strict means updates are REJECTED until this is set correctly.
+    private const string Ed25519PublicKey = "REPLACE_WITH_BASE64_PUBLIC_KEY";
 
     public static HotkeyManager Hotkey { get; private set; } = null!;
     public static FocusLanguageEnforcer Enforcer { get; private set; } = null!;
@@ -33,6 +47,23 @@ public partial class App : Application
         Privacy = new PrivacyMonitor();
         Privacy.SensitiveChanged += OnSensitiveChanged;
         Privacy.Start();
+
+        SetupUpdater();
+    }
+
+    // ---- Auto-update (NetSparkle) ----
+
+    private void SetupUpdater()
+    {
+        _sparkle = new SparkleUpdater(
+            AppcastUrl,
+            new Ed25519Checker(SecurityMode.Strict, Ed25519PublicKey))
+        {
+            UIFactory = new NetSparkleUpdater.UI.WPF.UIFactory(),
+            RelaunchAfterUpdate = true,
+        };
+        // Scheduled background checks; true = also check once at launch.
+        _ = _sparkle.StartLoop(true);
     }
 
     private void OnSensitiveChanged(bool sensitive)
@@ -48,6 +79,8 @@ public partial class App : Application
         var menu = new ContextMenuStrip();
         menu.Items.Add("Open", null, (_, _) => ToggleWindow());
         menu.Items.Add("Settings", null, (_, _) => ShowWindow(tab: 1));
+        menu.Items.Add("Check for Updates…", null,
+            async (_, _) => { if (_sparkle is not null) await _sparkle.CheckForUpdatesAtUserRequest(); });
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Quit Kright", null, (_, _) => Shutdown());
 
@@ -110,6 +143,7 @@ public partial class App : Application
         _tray.Visible = false;
         _tray.Dispose();
         Hotkey.Dispose();
+        _sparkle?.Dispose();
         base.OnExit(e);
     }
 }

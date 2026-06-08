@@ -12,6 +12,10 @@
 AppId={{6F3C2A41-9B7E-4D2A-9C1F-A1B2C3D4E5F6}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
+; Stamp the version into the setup .exe's file metadata so NetSparkle's appcast
+; generator can read the version from the installer it lists.
+VersionInfoVersion={#MyAppVersion}
+VersionInfoProductVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 DefaultDirName={localappdata}\Programs\{#MyAppName}
 DisableProgramGroupPage=yes
