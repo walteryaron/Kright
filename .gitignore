@@ -23,3 +23,8 @@ Windows/publish/
 Windows/installer/output/
 [Bb]in/
 [Oo]bj/
+
+# ── Signing keys / secrets (NEVER commit or push) ──
+secrets/
+*-PRIVATE.key
+*.private.key
