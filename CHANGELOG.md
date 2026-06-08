@@ -11,6 +11,9 @@ All notable changes to **Kright** are documented here. The format is based on
   layout pair, and bundled on-device bigram models cover English, Hebrew,
   Russian, Ukrainian, Bulgarian, Serbian, Macedonian, Greek, Persian, Armenian,
   and Georgian (built from Hunspell dictionaries via `tools/gen_models.swift`).
+- **Auto-update (macOS)** — bundled [Sparkle](https://sparkle-project.org); a
+  "Check for Updates…" menu item plus scheduled background checks against a
+  signed appcast. Releases are EdDSA-signed via `Mac/scripts/gen-appcast.sh`.
 
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).

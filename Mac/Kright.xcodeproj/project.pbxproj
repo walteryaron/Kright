@@ -11,6 +11,7 @@
 		0CE29D7A6F0070505B1FA182 /* KeyboardLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C896CE3DA7E2A1AD144C399 /* KeyboardLanguage.swift */; };
 		0CE92DB4BE3F621B3EB6D14B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370B1FD94FF6D2849A1CF02B /* Assets.xcassets */; };
 		1E2D7F44DB43027341A853FB /* KrightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EBBB61C25E67A73DF393C9 /* KrightTests.swift */; };
+		220238DD461FD538A46D87D9 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 5C59133F63E25AE94A14E6BA /* Sparkle */; };
 		245ECCF533EBD963B72C9BF6 /* KrightApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3CDE9CB3FE330665F8E794 /* KrightApp.swift */; };
 		257C0CFED5153DE0276D5F43 /* KeystrokeReplacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95326BE6EDD6C037DF8D03FF /* KeystrokeReplacer.swift */; };
 		389E54A993E3A3B49F8D2A5B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199A66F7153919B38F5B79BF /* Models.swift */; };
@@ -65,6 +66,17 @@
 		EBA65DBC99E6FA0457DF0254 /* GibberishDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GibberishDetector.swift; sourceTree = "<group>"; };
 		FF3CDE9CB3FE330665F8E794 /* KrightApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KrightApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AC60BC89DEF6CCA07AD83EB6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				220238DD461FD538A46D87D9 /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		584F81E4752CC45FB6AB3F40 /* Views */ = {
@@ -156,6 +168,7 @@
 			buildPhases = (
 				515C40354810A5F746360127 /* Sources */,
 				16DD8DA29668CA1925BF65AD /* Resources */,
+				AC60BC89DEF6CCA07AD83EB6 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -163,6 +176,7 @@
 			);
 			name = Kright;
 			packageProductDependencies = (
+				5C59133F63E25AE94A14E6BA /* Sparkle */,
 			);
 			productName = Kright;
 			productReference = 4BEA40490A8D7357B85B6177 /* Kright.app */;
@@ -196,6 +210,9 @@
 			);
 			mainGroup = D215D31321D4196D11A389EA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				17DC6BCCC9AC6B38EF00E3EF /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F85FB36DD8124BF315CFC87D /* Products */;
 			projectDirPath = "";
@@ -497,6 +514,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		17DC6BCCC9AC6B38EF00E3EF /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5C59133F63E25AE94A14E6BA /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 17DC6BCCC9AC6B38EF00E3EF /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3E008B90FF9DA613D6FF75E6 /* Project object */;
 }

@@ -17,12 +17,23 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
+	<!-- Sparkle auto-update. The feed must be reachable over HTTPS by every
+	     installed copy; raw.githubusercontent.com works once the repo is public
+	     (otherwise host appcast.xml + the DMG somewhere public and update this URL). -->
+	<key>SUFeedURL</key>
+	<string>https://raw.githubusercontent.com/walteryaron/Kright/main/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>DtqktTmJUAf7h9aEDEtWHCsEHpkJrIERlRLRny8AbnM=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
 </dict>
 </plist>

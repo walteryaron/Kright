@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import Combine
+import Sparkle
 
 /// Shared routing state so the right-click "Settings" item can switch the panel
 /// to the Settings tab.
@@ -55,10 +56,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var onboardingWindow: NSWindow?
     private var cancellables = Set<AnyCancellable>()
 
+    /// Sparkle auto-updater. Created in `applicationDidFinishLaunching` (after the
+    /// XCTest guard) with `startingUpdater: true` so it does scheduled background
+    /// checks (feed URL + public key live in Info.plist); the "Check for Updates…"
+    /// menu item triggers a manual, user-initiated check.
+    private var updaterController: SPUStandardUpdaterController?
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Under unit tests the app is only a host for pure-logic tests — don't
         // start the event tap, timers, status item, or onboarding.
         if NSClassFromString("XCTestCase") != nil { return }
+
+        // Start Sparkle's updater (scheduled background update checks).
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
         Self.keyboard.start()
         if !Self.isDisabled { Self.enforcer.startIfEnabled() }
@@ -256,11 +267,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         toggle.target = self
         let settings = NSMenuItem(title: "Settings…", action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
+        // Sparkle drives this item: target/action on the updater controller, which
+        // also enables/disables it (e.g. greys out while a check is in progress).
+        let updates = NSMenuItem(title: "Check for Updates…",
+                                 action: #selector(SPUStandardUpdaterController.checkForUpdates(_:)),
+                                 keyEquivalent: "")
+        updates.target = updaterController
         let quit = NSMenuItem(title: "Quit Kright", action: #selector(quit), keyEquivalent: "q")
         quit.target = self
         menu.addItem(toggle)
         menu.addItem(.separator())
         menu.addItem(settings)
+        menu.addItem(updates)
         menu.addItem(.separator())
         menu.addItem(quit)
 

@@ -14,12 +14,18 @@ settings:
     PROVISIONING_PROFILE_SPECIFIER: ""
     DEVELOPMENT_TEAM: "V3275SDA78"
     ENABLE_HARDENED_RUNTIME: "NO"
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.6.0"
 targets:
   Kright:
     type: application
     platform: macOS
     sources:
       - path: Sources
+    dependencies:
+      - package: Sparkle
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.kright.native
