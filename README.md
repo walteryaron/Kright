@@ -12,10 +12,7 @@
 [![Release](https://img.shields.io/github/v/release/walteryaron/Kright?label=release&color=brightgreen)](https://github.com/walteryaron/Kright/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-<!-- DEMO: record a 15–30s clip of a wrong-layout word being fixed in place,
-     save it as assets/demo.gif (keep it < 5 MB), then uncomment the line below:
-<img src="assets/demo.gif" alt="Kright fixing wrong-layout text in place" width="760" />
--->
+<img src="assets/demo.gif" alt="Kright fixing wrong-layout text in place" width="574" />
 
 </div>
 
