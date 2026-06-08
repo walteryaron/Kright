@@ -18,11 +18,16 @@ dotnet publish .\Kright.csproj -c Release -r win-x64 --self-contained true `
   -p:PublishSingleFile=false -o .\publish
 
 Write-Host "Step 2/2: compiling installer with Inno Setup..." -ForegroundColor Cyan
-$iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
-if (!(Test-Path $iscc)) { $iscc = "${env:ProgramFiles}\Inno Setup 6\ISCC.exe" }
-if (!(Test-Path $iscc)) {
+# Look in the usual machine-wide spots plus the per-user location winget uses.
+$isccCandidates = @(
+  "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+  "${env:ProgramFiles}\Inno Setup 6\ISCC.exe",
+  "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe"
+)
+$iscc = $isccCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (!$iscc) {
   throw "Inno Setup 6 not found. Install it from https://jrsoftware.org/isdl.php"
 }
 & $iscc .\installer\kright.iss
 
-Write-Host "`nDone. Installer is at: installer\output\KrightSetup-1.0.0.exe" -ForegroundColor Green
+Write-Host "`nDone. Installer is at: installer\output\KrightSetup-1.0.1.exe" -ForegroundColor Green
