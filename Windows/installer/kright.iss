@@ -3,7 +3,7 @@
 ; Produces a per-user installer (no admin / UAC needed), like Chrome / VS Code.
 
 #define MyAppName "Kright"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Yaron Walter"
 #define MyAppExeName "Kright.exe"
 

@@ -58,9 +58,9 @@ Write-Host "> Generating Windows appcast for $tag ..."
 netsparkle-generate-appcast `
     --binaries $stage `
     --ext exe `
-    --url $dlPrefix `
+    --base-url $dlPrefix `
     --appcast-output-directory $outDir `
-    --application-name Kright
+    --product-name Kright
 
 $generated = Join-Path $outDir "appcast.xml"
 if (-not (Test-Path $generated)) { throw "generate-appcast did not produce $generated" }

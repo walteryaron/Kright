@@ -24,7 +24,7 @@ public partial class App : Application
     // Ed25519 PUBLIC key — paste the value printed by `netsparkle-generate-appcast
     // --generate-keys` (run once on the build machine; keep the private key safe).
     // SecurityMode.Strict means updates are REJECTED until this is set correctly.
-    private const string Ed25519PublicKey = "REPLACE_WITH_BASE64_PUBLIC_KEY";
+    private const string Ed25519PublicKey = "uywCRbRonAfBNWIj9q2C6O7OtW4pBCinuktq094zyc4=";
 
     public static HotkeyManager Hotkey { get; private set; } = null!;
     public static FocusLanguageEnforcer Enforcer { get; private set; } = null!;

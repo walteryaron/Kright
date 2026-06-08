@@ -11,7 +11,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>Kright</AssemblyName>
     <RootNamespace>Kright</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <!-- UI Automation (focused-field detection) ships with the Windows Desktop
