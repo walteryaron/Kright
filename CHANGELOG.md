@@ -6,6 +6,11 @@ All notable changes to **Kright** are documented here. The format is based on
 
 ## [Unreleased]
 
+### Planned
+- Onboarding + trust-focused Key Log on Windows (parity with macOS).
+
+## [1.0.1] — 2026-06-08
+
 ### Added
 - **Multi-language detection** — the converter now fixes any non-Latin ⇄ Latin
   layout pair, and bundled on-device bigram models cover English, Hebrew,
@@ -19,8 +24,8 @@ All notable changes to **Kright** are documented here. The format is based on
   Ed25519-signed via `Windows/scripts/gen-appcast.ps1` (separate feed + key from
   macOS). Set the public key in `App.xaml.cs` after `--generate-keys`.
 
-### Planned
-- Onboarding + trust-focused Key Log on Windows (parity with macOS).
+> Windows installer shipped as `KrightSetup-1.0.1.exe`. The macOS 1.0.1 `.dmg`
+> is pending a build on macOS (see appcast note below).
 
 ## [1.0.0] — 2026-06-07
 
@@ -54,5 +59,6 @@ First release. macOS (Swift + SwiftUI) and Windows (C# + WPF) native apps.
 - Zero network requests. Nothing typed is stored. Password / secure fields are
   never read. The whole app is auditable in this repository.
 
-[Unreleased]: https://github.com/walteryaron/Kright/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/walteryaron/Kright/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/walteryaron/Kright/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/walteryaron/Kright/releases/tag/v1.0.0
