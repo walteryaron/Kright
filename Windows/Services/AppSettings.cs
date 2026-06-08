@@ -16,6 +16,11 @@ public sealed class AppSettings
     /// <summary>Show the Detect tab (developer tool). Hidden by default.</summary>
     public bool DebugMode { get; set; } = false;
 
+    /// <summary>Auto-update consent: null = not asked yet (prompt on first run),
+    /// true = check automatically, false = manual only. Mirrors Sparkle's
+    /// first-run "Check for updates automatically?" prompt on macOS.</summary>
+    public bool? AutoUpdateCheck { get; set; } = null;
+
     private static readonly string Dir =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Kright");
     private static readonly string FilePath = Path.Combine(Dir, "settings.json");

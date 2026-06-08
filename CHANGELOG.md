@@ -6,6 +6,13 @@ All notable changes to **Kright** are documented here. The format is based on
 
 ## [Unreleased]
 
+### Changed
+- **Auto-update asks first** — both platforms now show a first-run "Check for
+  updates automatically?" prompt instead of silently enabling background checks,
+  so the user consents to the only network call Kright makes. "Check for
+  Updates…" stays available manually regardless of the choice. (macOS: drop
+  `SUEnableAutomaticChecks`; Windows: persisted `AutoUpdateCheck` tri-state.)
+
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 

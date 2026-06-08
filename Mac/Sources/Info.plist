@@ -31,8 +31,9 @@
 	<string>https://raw.githubusercontent.com/walteryaron/Kright/main/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>DtqktTmJUAf7h9aEDEtWHCsEHpkJrIERlRLRny8AbnM=</string>
-	<key>SUEnableAutomaticChecks</key>
-	<true/>
+	<!-- SUEnableAutomaticChecks is intentionally NOT set: Sparkle then shows its
+	     first-run "Check for updates automatically?" prompt, so the user consents
+	     to the only network call this otherwise-offline app makes. -->
 	<key>SUScheduledCheckInterval</key>
 	<integer>86400</integer>
 </dict>

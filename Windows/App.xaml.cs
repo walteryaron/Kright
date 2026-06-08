@@ -62,8 +62,28 @@ public partial class App : Application
             UIFactory = new NetSparkleUpdater.UI.WPF.UIFactory(),
             RelaunchAfterUpdate = true,
         };
-        // Scheduled background checks; true = also check once at launch.
-        _ = _sparkle.StartLoop(true);
+
+        // First run: ask whether to check for updates automatically — parity with
+        // Sparkle's first-run prompt on macOS, so the user consents to the only
+        // network call this otherwise-offline app makes. The choice is persisted;
+        // the tray's "Check for Updates…" item works regardless of the answer.
+        if (AppSettings.Current.AutoUpdateCheck is null)
+        {
+            // Fully-qualified: System.Windows.Forms is also imported (tray) and
+            // also has a MessageBox, so the bare name is ambiguous.
+            var answer = System.Windows.MessageBox.Show(
+                "Should Kright automatically check for updates? You can always " +
+                "check for updates manually from the tray menu.",
+                "Check for updates automatically?",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+            AppSettings.Current.AutoUpdateCheck = answer == MessageBoxResult.Yes;
+            AppSettings.Save();
+        }
+
+        // Scheduled background checks (true = also check once at launch) — only if
+        // the user opted in.
+        if (AppSettings.Current.AutoUpdateCheck == true)
+            _ = _sparkle.StartLoop(true);
     }
 
     private void OnSensitiveChanged(bool sensitive)
