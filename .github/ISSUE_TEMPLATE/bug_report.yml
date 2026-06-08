@@ -1,0 +1,72 @@
+name: Bug report
+description: Report something in Kright that isn't working correctly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in the details
+        below. **Do not paste any passwords or sensitive text** — Kright never
+        reads secure fields, and neither should a bug report.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - macOS
+        - Windows
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: Kright version
+      description: Shown in the About panel (e.g. 1.0.2).
+      placeholder: "1.0.2"
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: OS version
+      placeholder: "macOS 14.5 / Windows 11 23H2"
+    validations:
+      required: true
+  - type: input
+    id: layouts
+    attributes:
+      label: Keyboard layouts / languages involved
+      description: Which input sources were active?
+      placeholder: "Hebrew ⇄ English"
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: What did you type, in which app/field, and which hotkey did you press?
+      placeholder: |
+        1. In TextEdit, with Hebrew active, type the word meaning "exit" → קסןא
+        2. Press ⌃⌥K
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I'm on the latest release and this still happens
+          required: false
+        - label: This report contains no passwords or sensitive text
+          required: true
