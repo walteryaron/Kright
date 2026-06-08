@@ -6,8 +6,8 @@ options:
   createIntermediateGroups: true
 settings:
   base:
-    MARKETING_VERSION: "1.0.0"
-    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "1.0.1"
+    CURRENT_PROJECT_VERSION: "2"
     SWIFT_VERSION: "5.0"
     CODE_SIGN_STYLE: Manual
     CODE_SIGN_IDENTITY: "D1429C0F8B8121EEC4B463D2EA6CF36130C80B84"
@@ -31,6 +31,12 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.kright.native
         PRODUCT_NAME: Kright
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # Reference the existing files (don't let XcodeGen generate/overwrite them
+        # — the Info.plist holds the Sparkle keys + $(MARKETING_VERSION), and the
+        # entitlements disable the sandbox). Versions come from the settings above.
+        INFOPLIST_FILE: Sources/Info.plist
+        GENERATE_INFOPLIST_FILE: "NO"
+        CODE_SIGN_ENTITLEMENTS: Sources/Kright.entitlements
     scheme:
       testTargets:
         - KrightTests
@@ -45,14 +51,3 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.kright.native.tests
         GENERATE_INFOPLIST_FILE: "YES"
-    info:
-      path: Sources/Info.plist
-      properties:
-        LSUIElement: true
-        CFBundleName: Kright
-        CFBundleDisplayName: Kright
-        NSHumanReadableCopyright: ""
-    entitlements:
-      path: Sources/Kright.entitlements
-      properties:
-        com.apple.security.app-sandbox: false
