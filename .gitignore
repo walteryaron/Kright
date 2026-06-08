@@ -28,3 +28,6 @@ Windows/installer/output/
 secrets/
 *-PRIVATE.key
 *.private.key
+
+# Local-only internal docs (kept on disk, never pushed)
+PRD.md
