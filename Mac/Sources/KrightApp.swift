@@ -18,8 +18,14 @@ final class PrivacyMonitor {
     /// Called on the main thread whenever `sensitive` flips.
     var onChange: ((Bool) -> Void)?
 
+    /// Called on the main thread when focus moves to a different field or app —
+    /// the cue to clear the typed-keystroke buffer so a fix can't replay text
+    /// from the field the user just left.
+    var onFocusChange: (() -> Void)?
+
     private var timer: Timer?
     private let ownPid = getpid()
+    private var lastFocusSignature = ""
 
     func start() {
         timer?.invalidate()
@@ -30,8 +36,21 @@ final class PrivacyMonitor {
 
     private func tick() {
         guard AXIsProcessTrusted() else { return }
+        let field = AXInspector.focusedFieldLight(ignoring: ownPid)
+
+        // Focus moved to a different field/app → reset the typed buffer. A nil
+        // field means focus is on Kright's own panel (or nothing): leave the
+        // signature untouched so returning to the same field is not a "change".
+        if let field {
+            let sig = field.focusSignature
+            if sig != lastFocusSignature {
+                lastFocusSignature = sig
+                onFocusChange?()
+            }
+        }
+
         // A focused secure field reports the "Password" guess (AXSecureTextField).
-        let s = AXInspector.focusedFieldLight(ignoring: ownPid)?.guess.label == "Password"
+        let s = field?.guess.label == "Password"
         if s != sensitive {
             sensitive = s
             onChange?(s)
@@ -87,6 +106,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if sensitive { Self.keyboard.resetWord() }
             self?.refreshStatusIcon()
         }
+        // Clear the typed buffer whenever focus moves to a different field/app, so
+        // the next fix can't replay characters typed in the field the user left.
+        Self.privacy.onFocusChange = { Self.keyboard.resetWord() }
         Self.privacy.start()
 
         // First run: until Accessibility is granted, show an onboarding panel

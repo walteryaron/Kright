@@ -50,6 +50,17 @@ struct FocusedField {
     var help: String? { attributes["AXHelp"] }
     var value: String { attributes["AXValue"] ?? "" }
 
+    /// Fingerprint of *which* field is focused — the owning process plus the
+    /// element's role and identifying labels. Used to notice when focus moves to
+    /// a different field or app, so the typed-keystroke buffer can be cleared
+    /// (otherwise a fix in the new field would replay text typed in the old one).
+    var focusSignature: String {
+        [pid.map(String.init), role, subrole,
+         attributes["AXIdentifier"], attributes["AXDOMIdentifier"],
+         title, placeholder]
+            .map { $0 ?? "" }.joined(separator: "|")
+    }
+
     /// Best-effort inference of the field's purpose.
     var guess: FieldGuess {
         if subrole == "AXSecureTextField" {

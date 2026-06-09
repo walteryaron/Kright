@@ -9,6 +9,16 @@ All notable changes to **Kright** are documented here. The format is based on
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 
+## [1.0.3] — 2026-06-09
+
+### Fixed
+- **Stale typed-buffer across fields/apps (macOS)** — the keystroke buffer that
+  the layout-fix hotkey converts now resets when focus moves to a different field
+  or app. Previously it only cleared on Enter/Tab/Esc/arrows, so switching apps
+  with the mouse left the old text in the buffer — and a fix in the new app could
+  delete characters and paste the previously-converted text. The always-on
+  privacy watcher now also detects focus changes and clears the buffer.
+
 ## [1.0.2] — 2026-06-08
 
 ### Changed
