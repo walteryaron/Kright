@@ -16,8 +16,24 @@ final class KeyboardMonitor: ObservableObject {
     /// value, which is why it works in Terminal/consoles.
     private(set) var currentPhrase = ""
 
+    /// Main-thread mirror of `currentPhrase` for the debug Key Log, so the user can
+    /// watch the buffer the fix hotkey will convert — the fastest way to spot a
+    /// stale "cache" carrying over into a new field/tab. Updated via the main queue.
+    @Published private(set) var bufferSnapshot = ""
+
     /// Call after a fix so the buffer reflects what's now in the field.
-    func resetWord(to value: String = "") { currentPhrase = value }
+    func resetWord(to value: String = "") {
+        currentPhrase = value
+        DispatchQueue.main.async { self.bufferSnapshot = value }
+    }
+
+    /// Debug action (Key Log "Clear"): wipe the visible event list AND the typed
+    /// buffer/cache, so the user can reset state and re-observe from a clean slate.
+    func clearLog() {
+        currentPhrase = ""
+        events.removeAll()
+        bufferSnapshot = ""
+    }
 
     /// Fired (on the tap thread) when a word boundary (space/tab) is typed,
     /// carrying the word just completed — drives Auto-fix mode.
@@ -38,6 +54,12 @@ final class KeyboardMonitor: ObservableObject {
     private var retryTimer: Timer?
 
     private static let maxEvents = 200
+
+    /// Monotonic timestamp (systemUptime) of the last recordable key-down, used by
+    /// the idle reset in `updateWordBuffer`.
+    private var lastKeyDownTime: TimeInterval = 0
+    /// Typing gap after which the buffer starts fresh (a new typing context).
+    private static let idleResetSeconds: TimeInterval = 2.0
 
     func start() {
         if eventTap != nil { return }
@@ -74,7 +96,10 @@ final class KeyboardMonitor: ObservableObject {
         let mask: CGEventMask =
             (1 << CGEventType.keyDown.rawValue) |
             (1 << CGEventType.keyUp.rawValue) |
-            (1 << CGEventType.flagsChanged.rawValue)
+            (1 << CGEventType.flagsChanged.rawValue) |
+            // Mouse clicks reset the typed buffer (the caret/field just moved).
+            (1 << CGEventType.leftMouseDown.rawValue) |
+            (1 << CGEventType.rightMouseDown.rawValue)
 
         guard let tap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
@@ -108,6 +133,14 @@ final class KeyboardMonitor: ObservableObject {
         // Ignore Kright's own synthetic keystrokes (the Terminal/iTerm replacer).
         if event.getIntegerValueField(.eventSourceUserData) == KeystrokeReplacer.marker { return }
 
+        // A mouse click moves the caret or changes the focused field — the current
+        // run of typing is over. Reset so a later fix can't replay it into the new
+        // spot. (Not logged as a key event.)
+        if type == .leftMouseDown || type == .rightMouseDown {
+            resetWord()
+            return
+        }
+
         let keyCode = Int(event.getIntegerValueField(.keyboardEventKeycode))
         let flags = event.flags
 
@@ -130,16 +163,32 @@ final class KeyboardMonitor: ObservableObject {
             meta: flags.contains(.maskCommand),
             timestamp: Date())
 
+        let phraseSnapshot = currentPhrase   // captured on the tap thread
         DispatchQueue.main.async {
             self.events.insert(ev, at: 0)
             if self.events.count > Self.maxEvents { self.events.removeLast() }
+            self.bufferSnapshot = phraseSnapshot
         }
     }
 
     /// Maintains `currentPhrase` from real keystrokes.
     private func updateWordBuffer(event: CGEvent, keyCode: Int, flags: CGEventFlags) {
-        // Shortcuts (incl. our ⌃⌥K hotkey) aren't typing — don't record them.
+        // Shortcuts (incl. our ⌃⌥K hotkey) aren't typing — don't record them. We do
+        // NOT clear on ⌘ (that wiped the buffer on ⌘⇧-screenshots, ⌘C, ⌘Tab, …).
         if flags.contains(.maskCommand) || flags.contains(.maskControl) { return }
+
+        // Idle reset: a long gap with no typing means the user moved on to a new
+        // context we can't otherwise see — notably opening a new Safari tab (⌘T) and
+        // then typing, where the address bar is a single shared element so no focus
+        // change fires. Start the buffer fresh instead of appending to stale text.
+        // Monotonic clock, so wall-clock/timezone changes can't affect it. The fix
+        // hotkey (⌃⌥K) is Control-modified and returns above, so pausing to think and
+        // then firing the hotkey never trips this — only resuming *typing* does.
+        let now = ProcessInfo.processInfo.systemUptime
+        if !currentPhrase.isEmpty, now - lastKeyDownTime > Self.idleResetSeconds {
+            currentPhrase = ""
+        }
+        lastKeyDownTime = now
 
         switch keyCode {
         case 51:                                   // delete/backspace

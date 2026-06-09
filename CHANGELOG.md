@@ -9,6 +9,23 @@ All notable changes to **Kright** are documented here. The format is based on
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 
+## [1.0.6] — 2026-06-09
+
+### Fixed
+- **Buffer no longer bleeds into a new tab via ⌘T (macOS)** — a new Safari tab
+  reuses the single address-bar element (no focus change) and exposes no readable
+  text, so the value-guard from 1.0.4 couldn't catch it. The typed buffer now
+  resets on a **mouse click** (the caret/field moved) and after a **~2s typing
+  pause** (a new typing context), which covers opening a new tab and typing fresh.
+
+### Changed
+- The buffer is **no longer cleared on ⌘ shortcuts** — that wiped it on ⌘⇧
+  screenshots, ⌘C, ⌘Tab, etc. The click + idle resets replace it.
+
+### Added
+- **Debug Key Log** now shows a live **Buffer** row (the text the fix hotkey will
+  convert) and a **Clear** button that resets the event list and the buffer.
+
 ## [1.0.4] — 2026-06-09
 
 ### Fixed

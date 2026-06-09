@@ -12,11 +12,34 @@ struct KeyLogView: View {
                 if keyboard.trusted {
                     Text("\(keyboard.events.count) events")
                         .font(.system(size: 11)).foregroundColor(Color(white: 0.47))
+                    Button { keyboard.clearLog() } label: {
+                        Label("Clear", systemImage: "trash")
+                            .font(.system(size: 11))
+                    }
+                    .help("Clear the event list and reset the typed buffer/cache")
                 }
             }
             .padding(.horizontal, 16).padding(.vertical, 12)
             .frame(maxWidth: .infinity)
             .background(Color(white: 0.07))
+            Divider()
+
+            // Live view of the typed buffer (the "cache" the fix hotkey converts).
+            // Watching this is the fastest way to see a stale buffer bleed into a new
+            // field/tab — it should reset on focus changes and ⌘-shortcuts (e.g. ⌘T).
+            HStack(spacing: 6) {
+                Image(systemName: "text.cursor").font(.system(size: 11))
+                    .foregroundColor(Color(white: 0.5))
+                Text("Buffer").font(.system(size: 10.5)).foregroundColor(Color(white: 0.5))
+                Text(keyboard.bufferSnapshot.isEmpty ? "∅ empty" : keyboard.bufferSnapshot)
+                    .font(.system(size: 12, design: .monospaced))
+                    .foregroundColor(keyboard.bufferSnapshot.isEmpty ? Color(white: 0.4) : .yellow)
+                    .lineLimit(1).truncationMode(.head)
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 16).padding(.vertical, 7)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(white: 0.09))
             Divider()
 
             // Live proof of the privacy promise: capturing for layout-fixing, but
