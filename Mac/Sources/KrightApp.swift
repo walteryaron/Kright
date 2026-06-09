@@ -186,15 +186,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
-        // Editable fields: a clean AX write that swaps the word inside the value.
-        if let (element, value) = AXInspector.focusedValue(),
-           let range = value.range(of: typed, options: .backwards) {
-            let full = value.replacingCharacters(in: range, with: s.converted)
-            if AXInspector.setValue(full, on: element).ok {
-                keyboard.resetWord(to: s.converted)
-                switchKeyboard(to: s)
+        if let (element, value) = AXInspector.focusedValue() {
+            if let range = value.range(of: typed, options: .backwards) {
+                // Buffer matches the field — a clean AX write that swaps just that
+                // run inside the value.
+                let full = value.replacingCharacters(in: range, with: s.converted)
+                if AXInspector.setValue(full, on: element).ok {
+                    keyboard.resetWord(to: s.converted)
+                    switchKeyboard(to: s)
+                    return
+                }
+                // Editable field that rejects AX writes (rare) → keystroke path below.
+            } else if !value.isEmpty {
+                // The field holds text that does NOT contain our typed buffer, so the
+                // buffer is stale: focus moved to another field/app/tab without a key
+                // event we could see — e.g. a new Safari tab, which reuses the single
+                // address-bar element, so no focus-change fires. Blind-deleting here
+                // would corrupt this field (the "old conversion bleeds into the new
+                // tab" bug). Resync the buffer to what's actually in the field and
+                // bail; pressing the hotkey again converts the field cleanly.
+                keyboard.resetWord(to: value)
+                NSSound.beep()
                 return
             }
+            // value is empty → a read-only field exposing no AX value (terminal /
+            // console): fall through to the keystroke replacer, the only way in.
         }
 
         // Read-only AX (Terminal / iTerm / consoles) → simulate keystrokes.
@@ -230,11 +246,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         else { return }
 
         // Editable field: swap the just-typed word in the value (space untouched).
-        if let (element, value) = AXInspector.focusedValue(),
-           let range = value.range(of: word, options: .backwards) {
-            let full = value.replacingCharacters(in: range, with: s.converted)
-            if AXInspector.setValue(full, on: element).ok {
-                keyboard.resetWord(); switchKeyboard(to: s); return
+        if let (element, value) = AXInspector.focusedValue() {
+            if let range = value.range(of: word, options: .backwards) {
+                let full = value.replacingCharacters(in: range, with: s.converted)
+                if AXInspector.setValue(full, on: element).ok {
+                    keyboard.resetWord(); switchKeyboard(to: s); return
+                }
+            } else if !value.isEmpty {
+                // The word isn't in the field → the buffer is stale (focus moved
+                // unseen). Don't blind-delete into an unrelated field; just resync.
+                keyboard.resetWord(); return
             }
         }
         // Read-only field (terminal/console): delete the word + its trailing

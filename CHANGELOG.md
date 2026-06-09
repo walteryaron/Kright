@@ -9,6 +9,17 @@ All notable changes to **Kright** are documented here. The format is based on
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 
+## [1.0.4] — 2026-06-09
+
+### Fixed
+- **Stale buffer corrupting a new field/tab (macOS)** — the fix hotkey no longer
+  blind-deletes when the typed buffer doesn't match the focused field. A new
+  Safari tab reuses the one address-bar element, so no focus change fires and the
+  previous conversion bled into the new tab. The fix now verifies the buffer is
+  actually present in the field's value before writing; if it isn't, it resyncs
+  to the field and beeps (press again to convert) instead of pasting stale text.
+  The keystroke replacer is now reserved for genuinely read-only fields (consoles).
+
 ## [1.0.3] — 2026-06-09
 
 ### Fixed
