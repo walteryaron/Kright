@@ -9,6 +9,28 @@ All notable changes to **Kright** are documented here. The format is based on
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 
+## [1.0.7] — 2026-06-11
+
+### Added
+- **Per-app keyboard rules (macOS + Windows)** — assign a target layout to any
+  app in Settings; Kright switches to it automatically when that app gains
+  focus. Add the currently-focused app with one click; rules survive restarts.
+- **Keyboard Map debug view** — a live "Keyboard Map" card in the debug Detect
+  view shows the full key-to-character mapping for the active layout, making
+  manual verification of every key easy.
+
+### Fixed
+- **Hebrew `w` key mapped to ׳ (Geresh U+05F3)** — previously mapped to ASCII
+  `'`, causing wrong characters in Hebrew text.
+- **Shift+symbol no longer clears the typed buffer** — typing `!` or other
+  Shift-layer symbols after a word no longer wiped the buffer and broke the
+  next fix. The Shift layer is now pre-computed via `UCKeyTranslate` /
+  `ToUnicodeEx`.
+
+### Added (tests)
+- Punctuation round-trip unit tests for `;↔ף`, `'↔,`, `,↔ת`, `.↔ץ`, `/↔.`,
+  `` `↔; ``, `w↔׳` on both macOS and Windows.
+
 ## [1.0.6] — 2026-06-09
 
 ### Fixed
