@@ -1,6 +1,11 @@
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Kright.Native;
 using Kright.Services;
@@ -12,6 +17,7 @@ public partial class MainWindow : Window
     private readonly DispatcherTimer _timer;
     private bool _recording;
     private LayoutSuggestion? _suggestion;
+    private DispatcherTimer? _statusTimer;
 
     public MainWindow()
     {
@@ -28,6 +34,21 @@ public partial class MainWindow : Window
 
         var v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         VersionText.Text = $"Kright {v?.ToString(3) ?? "1.0.0"}";
+
+        // Per-app keyboard section
+        AppLangCheck.IsChecked = App.AppEnforcer.Enabled;
+        foreach (var lang in LanguageManager.Enabled())
+            AddLayoutCombo.Items.Add(new ComboBoxItem { Content = lang.Name, Tag = lang });
+        if (AddLayoutCombo.Items.Count > 0) AddLayoutCombo.SelectedIndex = 0;
+        RefreshRulesList();
+
+        RefreshLayoutMap();
+    }
+
+    protected override void OnActivated(EventArgs e)
+    {
+        base.OnActivated(e);
+        UpdateAddButtonLabel();
     }
 
     public void SelectTab(int index)
@@ -51,6 +72,60 @@ public partial class MainWindow : Window
     }
 
     // ---- Detect tab ----
+
+    private void RefreshLayoutMap()
+    {
+        var langs = LanguageManager.Enabled();
+        var latin = langs.FirstOrDefault(l => LanguageManager.IsLatin(l.Hkl));
+        var other = langs.FirstOrDefault(l => !LanguageManager.IsLatin(l.Hkl));
+        if (latin == null || other == null)
+        {
+            LayoutMapText.Text = "Install a Latin + a non-Latin keyboard layout to view the map.";
+            return;
+        }
+
+        var latinFwd = KeyboardLayoutMap.ForwardMap(latin.Hkl);
+        var otherFwd = KeyboardLayoutMap.ForwardMap(other.Hkl);
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"{latin.Name}  ↔  {other.Name}");
+
+        // Letter rows (QWERTY order)
+        (uint vk, string key)[][] letterRows =
+        [
+            [(0x51,"Q"),(0x57,"W"),(0x45,"E"),(0x52,"R"),(0x54,"T"),
+             (0x59,"Y"),(0x55,"U"),(0x49,"I"),(0x4F,"O"),(0x50,"P")],
+            [(0x41,"A"),(0x53,"S"),(0x44,"D"),(0x46,"F"),(0x47,"G"),
+             (0x48,"H"),(0x4A,"J"),(0x4B,"K"),(0x4C,"L")],
+            [(0x5A,"Z"),(0x58,"X"),(0x43,"C"),(0x56,"V"),(0x42,"B"),
+             (0x4E,"N"),(0x4D,"M")],
+        ];
+        foreach (var row in letterRows)
+        {
+            foreach (var (vk, name) in row)
+            {
+                var oc = otherFwd.TryGetValue(vk, out var v) ? v : "?";
+                sb.Append($"{name}:{oc}  ");
+            }
+            sb.AppendLine();
+        }
+
+        // Punctuation keys — show both EN and HE since neither is obvious
+        sb.AppendLine();
+        sb.AppendLine("Punctuation  (KEY: English→Hebrew)");
+        (uint vk, string key)[] punctKeys =
+        [
+            (0xBA, ";"), (0xDE, "'"), (0xBC, ","), (0xBE, "."), (0xBF, "/"), (0xC0, "`"),
+        ];
+        foreach (var (vk, name) in punctKeys)
+        {
+            var lc = latinFwd.TryGetValue(vk, out var lv) ? lv : "?";
+            var oc = otherFwd.TryGetValue(vk, out var ov) ? ov : "?";
+            sb.Append($"{name}: {lc}→{oc}   ");
+        }
+
+        LayoutMapText.Text = sb.ToString();
+    }
 
     private void RefreshDetect()
     {
@@ -174,5 +249,148 @@ public partial class MainWindow : Window
         System.Diagnostics.Process.Start(
             new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
         e.Handled = true;
+    }
+
+    // ---- Per-app keyboard ----
+
+    private void AppLangCheck_Click(object sender, RoutedEventArgs e)
+        => App.AppEnforcer.Enabled = AppLangCheck.IsChecked == true;
+
+    private void AddAppButton_Click(object sender, RoutedEventArgs e)
+    {
+        var exePath = App.AppEnforcer.LastExternalExePath;
+        var appName = App.AppEnforcer.LastExternalAppName;
+        if (exePath == null || appName == null)
+        {
+            ShowAddStatus("Switch to an app first, then click Add.");
+            return;
+        }
+        if (AppSettings.Current.AppLanguageRules.Any(r =>
+            string.Equals(r.ExePath, exePath, StringComparison.OrdinalIgnoreCase)))
+        {
+            ShowAddStatus($"{appName} is already in the list.");
+            return;
+        }
+        if (AddLayoutCombo.SelectedItem is not ComboBoxItem { Tag: InputLanguage lang })
+        {
+            ShowAddStatus("Pick a layout first.");
+            return;
+        }
+        AppSettings.Current.AppLanguageRules.Add(new AppLanguageRule
+        {
+            ExePath = exePath,
+            AppName = appName,
+            HklValue = (long)lang.Hkl,
+            LayoutName = lang.Name
+        });
+        AppSettings.Save();
+        RefreshRulesList();
+        ShowAddStatus($"Added {appName}.");
+    }
+
+    private void RefreshRulesList()
+    {
+        RulesPanel.Children.Clear();
+        var langs = LanguageManager.Enabled();
+        foreach (var rule in AppSettings.Current.AppLanguageRules)
+            RulesPanel.Children.Add(BuildRuleRow(rule, langs));
+        UpdateAddButtonLabel();
+    }
+
+    private void UpdateAddButtonLabel()
+    {
+        AddAppButton.Content = App.AppEnforcer.LastExternalAppName is { } n
+            ? $"+ Add \"{n}\""
+            : "+ Add current app";
+    }
+
+    private UIElement BuildRuleRow(AppLanguageRule rule, List<InputLanguage> langs)
+    {
+        var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(22) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(24) });
+
+        var icon = LoadAppIcon(rule.ExePath);
+        if (icon != null)
+        {
+            var img = new System.Windows.Controls.Image
+                { Source = icon, Width = 16, Height = 16, VerticalAlignment = VerticalAlignment.Center };
+            Grid.SetColumn(img, 0);
+            grid.Children.Add(img);
+        }
+
+        var name = new TextBlock
+        {
+            Text = rule.AppName, FontSize = 11, VerticalAlignment = VerticalAlignment.Center,
+            Foreground = new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC)),
+            TextTrimming = TextTrimming.CharacterEllipsis
+        };
+        Grid.SetColumn(name, 1);
+        grid.Children.Add(name);
+
+        var combo = new ComboBox { FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
+        foreach (var lang in langs)
+        {
+            var item = new ComboBoxItem { Content = lang.Name, Tag = lang };
+            combo.Items.Add(item);
+            if ((long)lang.Hkl == rule.HklValue) combo.SelectedItem = item;
+        }
+        combo.SelectionChanged += (_, _) =>
+        {
+            if (combo.SelectedItem is ComboBoxItem { Tag: InputLanguage l })
+            {
+                rule.HklValue = (long)l.Hkl;
+                rule.LayoutName = l.Name;
+                AppSettings.Save();
+            }
+        };
+        Grid.SetColumn(combo, 2);
+        grid.Children.Add(combo);
+
+        var del = new Button
+        {
+            Content = "✕", Width = 20, Height = 20, FontSize = 11,
+            Background = Brushes.Transparent, BorderThickness = new Thickness(0),
+            Foreground = new SolidColorBrush(Color.FromRgb(0x66, 0x66, 0x66)),
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        del.Click += (_, _) =>
+        {
+            AppSettings.Current.AppLanguageRules.Remove(rule);
+            AppSettings.Save();
+            RefreshRulesList();
+        };
+        Grid.SetColumn(del, 3);
+        grid.Children.Add(del);
+
+        return grid;
+    }
+
+    private static BitmapSource? LoadAppIcon(string exePath)
+    {
+        try
+        {
+            using var icon = System.Drawing.Icon.ExtractAssociatedIcon(exePath);
+            if (icon == null) return null;
+            return System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+        }
+        catch { return null; }
+    }
+
+    private void ShowAddStatus(string msg)
+    {
+        AddAppStatus.Text = msg;
+        AddAppStatus.Visibility = Visibility.Visible;
+        _statusTimer?.Stop();
+        _statusTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+        _statusTimer.Tick += (_, _) =>
+        {
+            _statusTimer.Stop();
+            AddAppStatus.Visibility = Visibility.Collapsed;
+        };
+        _statusTimer.Start();
     }
 }

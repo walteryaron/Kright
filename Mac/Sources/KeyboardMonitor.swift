@@ -229,6 +229,17 @@ final class KeyboardMonitor: ObservableObject {
             // (Hebrew "," is ת). Keep it. Genuine layout-independent punctuation
             // (digits, "-", "=") is the same in both layouts and ends the word.
             currentPhrase += String(c)
+        } else if flags.contains(.maskShift), !currentPhrase.isEmpty {
+            // Shift was held (e.g. !, @, #) and we're mid-phrase. The shifted
+            // character is layout-independent so it doesn't NEED converting, but
+            // we must include it so replaceLastWord has the correct deletion count
+            // and the conversion can pass it through unchanged. Look up the actual
+            // shifted character from the pre-computed shifted layout map.
+            let shifted = KeyboardLayoutMap.shiftedForwardMap(sourceID)
+            if let sc = shifted[UInt16(keyCode)]?.first, !sc.isWhitespace {
+                currentPhrase += String(sc)
+            }
+            // If lookup fails the buffer stays as-is (don't reset mid-phrase).
         } else {
             currentPhrase = ""
         }

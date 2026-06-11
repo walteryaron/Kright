@@ -33,6 +33,10 @@
                     <TextBlock Text="LANGUAGES" FontWeight="Bold" FontSize="11" Foreground="#777"/>
                     <TextBlock x:Name="LanguagesText" Margin="0,4,0,0" Foreground="#CCC"/>
 
+                    <TextBlock Text="LAYOUT MAP" FontWeight="Bold" FontSize="11" Foreground="#777" Margin="0,12,0,0"/>
+                    <TextBlock x:Name="LayoutMapText" FontFamily="Consolas" FontSize="10"
+                               Foreground="#AAA" Margin="0,4,0,0" TextWrapping="Wrap"/>
+
                     <TextBlock Text="DETECTED TYPE" FontWeight="Bold" FontSize="11" Foreground="#777" Margin="0,12,0,0"/>
                     <TextBlock x:Name="GuessText" Margin="0,4,0,0" FontSize="15" FontWeight="Bold" Foreground="#88CC88"/>
                 </StackPanel>
@@ -41,6 +45,7 @@
 
         <!-- SETTINGS -->
         <TabItem Header="Settings">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="16">
                 <TextBlock Text="Fix-layout shortcut" FontWeight="SemiBold"/>
                 <TextBlock Text="Press this anywhere to fix the focused field's last word."
@@ -59,6 +64,23 @@
                           Content="Switch to English on email / URL / password fields"
                           Click="AutoLangCheck_Click"/>
                 <TextBlock x:Name="AutoLangStatus" Foreground="#88CC88" FontSize="11" Margin="0,4,0,0"/>
+
+                <Separator Margin="0,12"/>
+
+                <TextBlock Text="Per-app keyboard" FontWeight="SemiBold"/>
+                <CheckBox x:Name="AppLangCheck" Margin="0,6,0,0" Foreground="#CCC"
+                          Content="Switch keyboard when app gains focus"
+                          Click="AppLangCheck_Click"/>
+                <TextBlock Foreground="#666" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"
+                           Text="When you switch to a listed app, Kright immediately changes to its configured layout."/>
+                <StackPanel x:Name="RulesPanel" Margin="0,6,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <ComboBox x:Name="AddLayoutCombo" Width="80" Margin="0,0,8,0" FontSize="11"/>
+                    <Button x:Name="AddAppButton" Content="+ Add current app"
+                            FontSize="11" Click="AddAppButton_Click"/>
+                </StackPanel>
+                <TextBlock x:Name="AddAppStatus" FontSize="10" Foreground="#888"
+                           Margin="0,4,0,0" Visibility="Collapsed" TextWrapping="Wrap"/>
 
                 <Separator Margin="0,12"/>
 
@@ -96,6 +118,7 @@
 
                 <Button Content="Quit Kright" HorizontalAlignment="Left" Click="Quit_Click"/>
             </StackPanel>
+            </ScrollViewer>
         </TabItem>
     </TabControl>
 </Window>

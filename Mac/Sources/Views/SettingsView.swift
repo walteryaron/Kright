@@ -3,9 +3,14 @@ import AppKit
 
 struct SettingsView: View {
     @EnvironmentObject var enforcer: FocusLanguageEnforcer
+    @EnvironmentObject var appEnforcer: AppLanguageEnforcer
+    @EnvironmentObject var ruleStore: AppLanguageRuleStore
     @EnvironmentObject var hotkey: HotkeyManager
     @AppStorage("debug_mode") private var debugMode = false
     @AppStorage("auto_fix") private var autoFix = false
+    @State private var sources: [InputSource] = KeyboardLanguage.enabledSources()
+    @State private var addSourceID: String = KeyboardLanguage.firstLatin()?.id ?? ""
+    @State private var addStatus: String = ""
 
     private var appVersion: String {
         let info = Bundle.main.infoDictionary
@@ -71,6 +76,77 @@ struct SettingsView: View {
 
                     Divider().padding(.vertical, 4)
 
+                    Text("Per-app keyboard").font(.system(size: 12, weight: .semibold))
+                    Toggle(isOn: $appEnforcer.enabled) {
+                        Text("Switch keyboard when app gains focus")
+                            .font(.system(size: 11)).foregroundColor(Color(white: 0.75))
+                    }
+                    .toggleStyle(.switch)
+                    Text("When you switch to a listed app, Kright immediately changes to its configured layout.")
+                        .font(.system(size: 10)).foregroundColor(Color(white: 0.45))
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    if !ruleStore.rules.isEmpty {
+                        VStack(spacing: 2) {
+                            ForEach($ruleStore.rules) { $rule in
+                                HStack(spacing: 8) {
+                                    AppIconView(bundleID: rule.bundleID)
+                                    Text(rule.appName)
+                                        .font(.system(size: 11))
+                                        .foregroundColor(Color(white: 0.75))
+                                        .lineLimit(1)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    Picker("", selection: $rule.inputSourceID) {
+                                        ForEach(sources, id: \.id) { s in
+                                            Text(s.name).tag(s.id)
+                                        }
+                                    }
+                                    .pickerStyle(.menu)
+                                    .labelsHidden()
+                                    .frame(width: 90)
+                                    Button {
+                                        ruleStore.rules.removeAll { $0.id == rule.id }
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(Color(white: 0.3))
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                .padding(.vertical, 2)
+                            }
+                        }
+                        .padding(.top, 4)
+                    }
+
+                    HStack(spacing: 8) {
+                        Picker("", selection: $addSourceID) {
+                            ForEach(sources, id: \.id) { s in
+                                Text(s.name).tag(s.id)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                        .frame(width: 90)
+                        .disabled(sources.isEmpty)
+                        Button("+ Add current app") {
+                            let layoutName = sources.first { $0.id == addSourceID }?.name ?? addSourceID
+                            if let name = ruleStore.addFrontmostApp(
+                                inputSourceID: addSourceID, layoutName: layoutName) {
+                                addStatus = "Added \(name)"
+                            } else {
+                                addStatus = "Already added or Kright is frontmost"
+                            }
+                        }
+                        .disabled(sources.isEmpty)
+                        Spacer()
+                    }
+                    if !addStatus.isEmpty {
+                        Text(addStatus)
+                            .font(.system(size: 10)).foregroundColor(Color(white: 0.45))
+                    }
+
+                    Divider().padding(.vertical, 4)
+
                     Text("Developer").font(.system(size: 12, weight: .semibold))
                     Toggle(isOn: $debugMode) {
                         Text("Debug mode — show the Detect and Key Log tabs")
@@ -122,6 +198,23 @@ struct SettingsView: View {
                 Label("Quit Kright", systemImage: "power")
             }
             .padding(.horizontal, 16).padding(.vertical, 10)
+        }
+    }
+
+    private struct AppIconView: View {
+        let bundleID: String
+        @State private var icon: NSImage?
+
+        var body: some View {
+            Group {
+                if let icon {
+                    Image(nsImage: icon).resizable().scaledToFit()
+                } else {
+                    Image(systemName: "app.fill").foregroundColor(Color(white: 0.4))
+                }
+            }
+            .frame(width: 18, height: 18)
+            .onAppear { icon = AppLanguageRuleStore.icon(for: bundleID) }
         }
     }
 

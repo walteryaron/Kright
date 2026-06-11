@@ -65,6 +65,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     static let panel = PanelState()
     static let enforcer = FocusLanguageEnforcer()
     static let privacy = PrivacyMonitor()
+    static let appRuleStore = AppLanguageRuleStore()
+    static let appEnforcer = AppLanguageEnforcer(store: appRuleStore)
 
     /// Master on/off switch (right-click menu). While disabled, the fix hotkey is
     /// inert and the auto-language enforcer is paused — handy for A/B demos.
@@ -91,7 +93,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
         Self.keyboard.start()
-        if !Self.isDisabled { Self.enforcer.startIfEnabled() }
+        if !Self.isDisabled {
+            Self.enforcer.startIfEnabled()
+            Self.appEnforcer.startIfEnabled()
+        }
         HotkeyManager.shared.onTrigger = { Self.fixFocusedLayout() }
         // Auto-fix mode: when a word boundary is typed, convert it if it's
         // wrong-layout (gated by the detector). Off unless enabled in Settings.
@@ -337,9 +342,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         UserDefaults.standard.set(Self.isDisabled, forKey: "kright_disabled")
         if Self.isDisabled {
             Self.enforcer.stop()
+            Self.appEnforcer.stop()
             Self.keyboard.resetWord()
         } else {
             Self.enforcer.startIfEnabled()
+            Self.appEnforcer.startIfEnabled()
         }
         refreshStatusIcon()
     }
@@ -375,6 +382,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 .environmentObject(Self.inspector)
                 .environmentObject(Self.panel)
                 .environmentObject(Self.enforcer)
+                .environmentObject(Self.appEnforcer)
+                .environmentObject(Self.appRuleStore)
                 .environmentObject(HotkeyManager.shared)
                 .frame(width: size.width, height: size.height))
         host.preferredContentSize = size

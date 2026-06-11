@@ -28,6 +28,7 @@ public partial class App : Application
 
     public static HotkeyManager Hotkey { get; private set; } = null!;
     public static FocusLanguageEnforcer Enforcer { get; private set; } = null!;
+    public static AppLanguageEnforcer AppEnforcer { get; private set; } = null!;
     public static PrivacyMonitor Privacy { get; private set; } = null!;
 
     protected override void OnStartup(StartupEventArgs e)
@@ -39,6 +40,9 @@ public partial class App : Application
 
         Enforcer = new FocusLanguageEnforcer();
         Enforcer.StartIfEnabled();
+
+        AppEnforcer = new AppLanguageEnforcer();
+        AppEnforcer.Start();
 
         SetupTray();
 
@@ -163,6 +167,7 @@ public partial class App : Application
         _tray.Visible = false;
         _tray.Dispose();
         Hotkey.Dispose();
+        AppEnforcer.Dispose();
         _sparkle?.Dispose();
         base.OnExit(e);
     }

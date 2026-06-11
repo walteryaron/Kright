@@ -5,7 +5,7 @@ import Foundation
 /// is active comes out "קסןא".
 enum LayoutConverter {
     static let enToHe: [Character: Character] = [
-        "q": "/", "w": "'", "e": "ק", "r": "ר", "t": "א", "y": "ט", "u": "ו",
+        "q": "/", "w": "׳", "e": "ק", "r": "ר", "t": "א", "y": "ט", "u": "ו",
         "i": "ן", "o": "ם", "p": "פ", "a": "ש", "s": "ד", "d": "ג", "f": "כ",
         "g": "ע", "h": "י", "j": "ח", "k": "ל", "l": "ך", "z": "ז", "x": "ס",
         "c": "ב", "v": "ה", "b": "נ", "n": "מ", "m": "צ",

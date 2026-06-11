@@ -12,6 +12,7 @@ enum KeyboardLayoutMap {
 
     // keycode → produced character, cached per input-source id (layouts are static).
     private static var forwardCache: [String: [UInt16: String]] = [:]
+    private static var shiftedCache: [String: [UInt16: String]] = [:]
 
     static func convert(_ text: String, fromID: String, toID: String) -> String? {
         let fromReverse = reverseMap(fromID)   // char → keycode (source layout)
@@ -36,13 +37,30 @@ enum KeyboardLayoutMap {
         var map: [UInt16: String] = [:]
         if let data = layoutData(for: sourceID) {
             for kc in keyCodes {
-                if let ch = character(keyCode: kc, layoutData: data),
+                if let ch = character(keyCode: kc, layoutData: data, modifiers: 0),
                    !ch.isEmpty, ch != " " {
                     map[kc] = ch
                 }
             }
         }
         forwardCache[sourceID] = map
+        return map
+    }
+
+    /// Characters each key produces when Shift is held (Shift modifierKeyState = 2
+    /// in UCKeyTranslate terms). Used to resolve Shift+digit → !, @, # etc.
+    static func shiftedForwardMap(_ sourceID: String) -> [UInt16: String] {
+        if let cached = shiftedCache[sourceID] { return cached }
+        var map: [UInt16: String] = [:]
+        if let data = layoutData(for: sourceID) {
+            for kc in keyCodes {
+                if let ch = character(keyCode: kc, layoutData: data, modifiers: 2),
+                   !ch.isEmpty, ch != " " {
+                    map[kc] = ch
+                }
+            }
+        }
+        shiftedCache[sourceID] = map
         return map
     }
 
@@ -70,7 +88,7 @@ enum KeyboardLayoutMap {
         return nil
     }
 
-    private static func character(keyCode: UInt16, layoutData: CFData) -> String? {
+    private static func character(keyCode: UInt16, layoutData: CFData, modifiers: UInt32) -> String? {
         guard let bytes = CFDataGetBytePtr(layoutData) else { return nil }
         return bytes.withMemoryRebound(to: UCKeyboardLayout.self, capacity: 1) { layoutPtr -> String? in
             var deadKeyState: UInt32 = 0
@@ -80,7 +98,7 @@ enum KeyboardLayoutMap {
                 layoutPtr,
                 keyCode,
                 UInt16(kUCKeyActionDown),
-                0,                                  // no modifiers (base character)
+                modifiers,                          // 0 = base, 2 = Shift
                 UInt32(LMGetKbdType()),
                 OptionBits(kUCKeyTranslateNoDeadKeysBit),
                 &deadKeyState,

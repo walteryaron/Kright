@@ -21,6 +21,9 @@ public sealed class AppSettings
     /// first-run "Check for updates automatically?" prompt on macOS.</summary>
     public bool? AutoUpdateCheck { get; set; } = null;
 
+    public bool AppLanguageRulesEnabled { get; set; } = true;
+    public List<AppLanguageRule> AppLanguageRules { get; set; } = new();
+
     private static readonly string Dir =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Kright");
     private static readonly string FilePath = Path.Combine(Dir, "settings.json");

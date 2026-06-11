@@ -93,6 +93,7 @@ struct DetectView: View {
                             sectionLabel("TEXT FIELD DETECTION")
                             GuessCard(field: f)
                         }
+                        KeyMapCard()
                     }
                     .padding(16)
                 }
@@ -303,6 +304,102 @@ struct GuessCard: View {
         .background(Color(white: 0.086))
         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(white: 0.15)))
         .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+// MARK: - Keyboard layout map (manual test tool)
+
+/// Shows the full key→character mapping for the Latin and non-Latin installed layouts
+/// side by side so you can verify punctuation keys like ; ↔ ף and ' ↔ , by eye.
+struct KeyMapCard: View {
+
+    // (keyCode, display label, isPunctuation)
+    private static let rows: [[(UInt16, String, Bool)]] = [
+        [(12,"Q",false),(13,"W",false),(14,"E",false),(15,"R",false),(17,"T",false),
+         (16,"Y",false),(32,"U",false),(34,"I",false),(31,"O",false),(35,"P",false)],
+        [(0,"A",false),(1,"S",false),(2,"D",false),(3,"F",false),(5,"G",false),
+         (4,"H",false),(38,"J",false),(40,"K",false),(37,"L",false)],
+        [(6,"Z",false),(7,"X",false),(8,"C",false),(9,"V",false),(11,"B",false),
+         (45,"N",false),(46,"M",false)],
+        [(41,";",true),(39,"'",true),(43,",",true),(47,".",true),(44,"/",true),(50,"`",true)],
+    ]
+    private static let rowLabels = ["Q–P", "A–L", "Z–M", "Punctuation"]
+
+    @State private var latinMap: [UInt16: String] = [:]
+    @State private var otherMap: [UInt16: String] = [:]
+    @State private var latinName = ""
+    @State private var otherName = ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 6) {
+                Image(systemName: "keyboard.fill")
+                    .font(.system(size: 13)).foregroundColor(Color(white: 0.45))
+                Text("LAYOUT MAP").font(.system(size: 10, weight: .bold)).tracking(1.2)
+                    .foregroundColor(Color(white: 0.45))
+                Spacer()
+                if !latinName.isEmpty {
+                    Text("\(latinName)  ↔  \(otherName)")
+                        .font(.system(size: 10)).foregroundColor(Color(white: 0.38))
+                }
+            }
+
+            if latinMap.isEmpty || otherMap.isEmpty {
+                Text("Install a Latin + a non-Latin keyboard layout to view the map.")
+                    .font(.system(size: 11)).foregroundColor(Color(white: 0.4))
+            } else {
+                ForEach(Array(zip(Self.rows, Self.rowLabels)), id: \.1) { row, label in
+                    mapRow(label: label, keys: row)
+                }
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(white: 0.086))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(white: 0.15)))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .onAppear { loadMaps() }
+    }
+
+    @ViewBuilder
+    private func mapRow(label: String, keys: [(UInt16, String, Bool)]) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label).font(.system(size: 9, weight: .semibold))
+                .foregroundColor(Color(white: 0.32))
+            FlowLayout(spacing: 5) {
+                ForEach(keys, id: \.0) { kc, name, isPunct in
+                    let lc = latinMap[kc] ?? "?"
+                    let oc = otherMap[kc] ?? "?"
+                    HStack(spacing: 3) {
+                        Text(name)
+                            .font(.system(size: 9, design: .monospaced))
+                            .foregroundColor(Color(white: 0.35))
+                        if isPunct {
+                            Text(lc)
+                                .font(.system(size: 10, design: .monospaced))
+                                .foregroundColor(Color(white: 0.55))
+                            Image(systemName: "arrow.right")
+                                .font(.system(size: 7)).foregroundColor(Color(white: 0.3))
+                        }
+                        Text(oc)
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(isPunct ? .yellow : Color(white: 0.8))
+                    }
+                    .padding(.horizontal, 6).padding(.vertical, 4)
+                    .background(Color(white: isPunct ? 0.13 : 0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                }
+            }
+        }
+    }
+
+    private func loadMaps() {
+        guard let latin = KeyboardLanguage.firstLatin(),
+              let other = KeyboardLanguage.firstNonEnglish() else { return }
+        latinName = latin.name
+        otherName = other.name
+        latinMap = KeyboardLayoutMap.forwardMap(latin.id)
+        otherMap = KeyboardLayoutMap.forwardMap(other.id)
     }
 }
 

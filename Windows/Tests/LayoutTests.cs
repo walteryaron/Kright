@@ -55,6 +55,31 @@ public class LanguageModelTests
     }
 }
 
+// Hebrew final-form letters appear on the same physical keys as punctuation.
+// IsHebrew must recognise them correctly so the conversion direction is set right.
+public class LayoutConverterPunctuationTests
+{
+    [Theory]
+    [InlineData('ף', true)]   // Final Pe   — semicolon key in Hebrew
+    [InlineData('ת', true)]   // Tav        — comma key in Hebrew
+    [InlineData('ץ', true)]   // Final Tsade — period key in Hebrew
+    [InlineData('ם', true)]   // Final Mem  — O key in Hebrew
+    [InlineData('ן', true)]   // Final Nun  — I key in Hebrew
+    [InlineData('ך', true)]   // Final Kaf  — L key in Hebrew
+    [InlineData('נ', true)]   // Nun        — B key in Hebrew
+    public void IsHebrew_FinalLetters(char c, bool expected)
+        => Assert.Equal(expected, LayoutConverter.IsHebrew(c));
+
+    // ASCII punctuation produced by the same physical keys in the Hebrew layout
+    // must NOT be detected as Hebrew — they indicate a layout mismatch, not Hebrew input.
+    [Theory]
+    [InlineData(',')]   // apostrophe key in Hebrew → comma (convert back to ')
+    [InlineData('.')]   // slash key in Hebrew → period (convert back to /)
+    [InlineData(';')]   // backtick key in Hebrew → semicolon (convert back to `)
+    public void IsHebrew_AsciiPunctuation_IsFalse(char c)
+        => Assert.False(LayoutConverter.IsHebrew(c));
+}
+
 public class LanguageManagerTests
 {
     [Theory]

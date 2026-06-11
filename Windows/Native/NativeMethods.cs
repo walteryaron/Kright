@@ -90,4 +90,32 @@ internal static class NativeMethods
         public uint time;
         public UIntPtr dwExtraInfo;
     }
+
+    // ---- WinEvent hook for foreground-window changes ----
+    public const uint EVENT_SYSTEM_FOREGROUND = 0x0003;
+    public const uint WINEVENT_OUTOFCONTEXT = 0x0000;
+
+    public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd,
+        int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax,
+        IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc,
+        uint idProcess, uint idThread, uint dwFlags);
+
+    [DllImport("user32.dll")]
+    public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
+    // ---- Process path (more reliable than MainModule.FileName cross-bitness) ----
+    public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
+
+    [DllImport("kernel32.dll")]
+    public static extern bool CloseHandle(IntPtr hObject);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+    public static extern bool QueryFullProcessImageName(IntPtr hProcess, uint dwFlags,
+        System.Text.StringBuilder lpExeName, ref uint lpdwSize);
 }

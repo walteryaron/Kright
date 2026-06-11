@@ -28,6 +28,8 @@
 		D8A11173C5D3ACFDF9E4BCBC /* AXInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC172C52E21BA67991FF288B /* AXInspector.swift */; };
 		F5D370FA6257C6846A3B42E9 /* DetectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A8D1161755B3512C7093A /* DetectView.swift */; };
 		F68C94D269F7BEF95245EF0A /* LanguageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C07F10F43A4E76EAF2EF901 /* LanguageModels.swift */; };
+		B90EAE562FD4448E88E77606 /* AppLanguageEnforcer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5C7F7FFC114F9DB94F8D82 /* AppLanguageEnforcer.swift */; };
+		E70135F91307427E86E5CECD /* AppLanguageRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B682F2263748C7B77A813B /* AppLanguageRule.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +67,8 @@
 		E8FE182EAAB4E74780F9E8C4 /* KeyboardLayoutMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutMap.swift; sourceTree = "<group>"; };
 		EBA65DBC99E6FA0457DF0254 /* GibberishDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GibberishDetector.swift; sourceTree = "<group>"; };
 		FF3CDE9CB3FE330665F8E794 /* KrightApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KrightApp.swift; sourceTree = "<group>"; };
+		0A5C7F7FFC114F9DB94F8D82 /* AppLanguageEnforcer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguageEnforcer.swift; sourceTree = "<group>"; };
+		69B682F2263748C7B77A813B /* AppLanguageRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguageRule.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +107,8 @@
 			isa = PBXGroup;
 			children = (
 				370B1FD94FF6D2849A1CF02B /* Assets.xcassets */,
+				0A5C7F7FFC114F9DB94F8D82 /* AppLanguageEnforcer.swift */,
+				69B682F2263748C7B77A813B /* AppLanguageRule.swift */,
 				DC172C52E21BA67991FF288B /* AXInspector.swift */,
 				26C0B933D8FEDD59B3C25F67 /* FieldInspector.swift */,
 				E125DAE68F36CF54DC8FE61F /* FocusLanguageEnforcer.swift */,
@@ -248,6 +254,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B90EAE562FD4448E88E77606 /* AppLanguageEnforcer.swift in Sources */,
+				E70135F91307427E86E5CECD /* AppLanguageRule.swift in Sources */,
 				D8A11173C5D3ACFDF9E4BCBC /* AXInspector.swift in Sources */,
 				3A0E436698B4DFC992D948C1 /* ContentView.swift in Sources */,
 				F5D370FA6257C6846A3B42E9 /* DetectView.swift in Sources */,

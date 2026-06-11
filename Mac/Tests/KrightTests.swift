@@ -74,3 +74,60 @@ final class KeyboardLanguageTests: XCTestCase {
         }
     }
 }
+
+// MARK: - Punctuation key mappings (EN↔HE fallback table)
+
+final class LayoutConverterPunctuationTests: XCTestCase {
+
+    // ---- Individual keys ----
+
+    func testSemicolon_enToHe() { XCTAssertEqual(LayoutConverter.enToHebrew(";"),  "ף") }
+    func testSemicolon_heToEn() { XCTAssertEqual(LayoutConverter.heToEnglish("ף"), ";") }
+
+    func testApostrophe_enToHe() { XCTAssertEqual(LayoutConverter.enToHebrew("'"),  ",") }
+    func testApostrophe_heToEn() { XCTAssertEqual(LayoutConverter.heToEnglish(","), "'") }
+
+    func testComma_enToHe() { XCTAssertEqual(LayoutConverter.enToHebrew(","),  "ת") }
+    func testComma_heToEn() { XCTAssertEqual(LayoutConverter.heToEnglish("ת"), ",") }
+
+    func testPeriod_enToHe() { XCTAssertEqual(LayoutConverter.enToHebrew("."),  "ץ") }
+    func testPeriod_heToEn() { XCTAssertEqual(LayoutConverter.heToEnglish("ץ"), ".") }
+
+    func testSlash_enToHe() { XCTAssertEqual(LayoutConverter.enToHebrew("/"),  ".") }
+    func testSlash_heToEn() { XCTAssertEqual(LayoutConverter.heToEnglish("."), "/") }
+
+    func testGrave_enToHe() { XCTAssertEqual(LayoutConverter.enToHebrew("`"),  ";") }
+    func testGrave_heToEn() { XCTAssertEqual(LayoutConverter.heToEnglish(";"), "`") }
+
+    // W key: real Israeli keyboard produces Hebrew Geresh ׳ (U+05F3), not ASCII apostrophe.
+    func testW_enToHe() { XCTAssertEqual(LayoutConverter.enToHebrew("w"),  "׳") }
+    func testW_heToEn() { XCTAssertEqual(LayoutConverter.heToEnglish("׳"), "w") }
+
+    // ---- Phrases with punctuation ----
+
+    func testPhrase_helloComma_enToHe() {
+        // h→י e→ק l→ך l→ך o→ם ,→ת
+        XCTAssertEqual(LayoutConverter.enToHebrew("hello,"), "יקךךםת")
+    }
+
+    func testPhrase_helloComma_heToEn() {
+        XCTAssertEqual(LayoutConverter.heToEnglish("יקךךםת"), "hello,")
+    }
+
+    func testPhrase_dont_enToHe() {
+        // apostrophe key in Hebrew layout produces comma: '→,
+        XCTAssertEqual(LayoutConverter.enToHebrew("don't"), "גםמ,א")
+    }
+
+    func testPhrase_dont_heToEn() {
+        XCTAssertEqual(LayoutConverter.heToEnglish("גםמ,א"), "don't")
+    }
+
+    // ---- Round-trips ----
+
+    func testAllPunctuationRoundTrip() {
+        // Every punctuation key: EN→HE→EN must return to original.
+        let keys = ";',./" + "`" + "w"
+        XCTAssertEqual(LayoutConverter.heToEnglish(LayoutConverter.enToHebrew(keys)), keys)
+    }
+}
