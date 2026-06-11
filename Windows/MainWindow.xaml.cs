@@ -9,6 +9,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Kright.Native;
 using Kright.Services;
+using InputLanguage = Kright.Services.InputLanguage;
+using Color = System.Windows.Media.Color;
+using Brushes = System.Windows.Media.Brushes;
+using ComboBox = System.Windows.Controls.ComboBox;
+using Button = System.Windows.Controls.Button;
 
 namespace Kright;
 
