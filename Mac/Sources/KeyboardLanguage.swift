@@ -7,17 +7,33 @@ enum KeyboardLanguage {
 
     static func enabledSources() -> [InputSource] {
         let current = currentSourceID()
-        return keyboardSources()
+        let raw: [(id: String, layout: String, lang: String)] = keyboardSources()
             .filter { isSelectable($0) }
             .map { src in
                 let id = stringProp(src, kTISPropertyInputSourceID) ?? ""
                 let langs = getProp(src, kTISPropertyInputSourceLanguages) as? [String] ?? []
-                return InputSource(
-                    id: id,
-                    name: stringProp(src, kTISPropertyLocalizedName) ?? id,
-                    lang: langs.first ?? "",
-                    isCurrent: id == current)
+                return (id, stringProp(src, kTISPropertyLocalizedName) ?? id, langs.first ?? "")
             }
+        // Display the language ("English", "Hebrew") like System Settings, not
+        // the layout name ("ABC", "U.S."). Only when two enabled layouts share a
+        // language does the layout name come back to tell them apart:
+        // "English (ABC)", "English (U.S.)".
+        let names = raw.map { languageName($0.lang) ?? $0.layout }
+        var counts: [String: Int] = [:]
+        names.forEach { counts[$0, default: 0] += 1 }
+        return zip(raw, names).map { item, name in
+            let display = (counts[name] ?? 0) > 1 && name != item.layout
+                ? "\(name) (\(item.layout))" : name
+            return InputSource(id: item.id, name: display, lang: item.lang,
+                               isCurrent: item.id == current)
+        }
+    }
+
+    /// "en" → "English", "en-GB" → "English (United Kingdom)"; nil if unknown.
+    static func languageName(_ lang: String) -> String? {
+        guard !lang.isEmpty else { return nil }
+        return Locale(identifier: "en")
+            .localizedString(forIdentifier: lang.replacingOccurrences(of: "-", with: "_"))
     }
 
     static func currentSourceID() -> String {

@@ -9,6 +9,16 @@ All notable changes to **Kright** are documented here. The format is based on
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 
+## [1.0.8] — 2026-06-12
+
+### Changed
+- **Keyboard layouts are listed by language (macOS)** — the per-app keyboard
+  dropdown and the auto-switch status line now show the language, like System
+  Settings ("English", "Hebrew"), instead of raw macOS layout names ("ABC",
+  "U.S.", "British"). If two enabled layouts share a language they're
+  disambiguated as "English (ABC)" / "English (U.S.)". Windows is unaffected —
+  its layout names already include the language.
+
 ## [1.0.7] — 2026-06-11
 
 ### Added
