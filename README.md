@@ -59,9 +59,12 @@ updates — see the [changelog](CHANGELOG.md)).
   finish them (on Space / Tab), no hotkey needed.
 - **Auto keyboard language** — optionally switch to a Latin layout on email / URL
   / password fields (only when the current layout is non-Latin).
-- **Per-app keyboard rules** — assign a target layout to any app; Kright
+- **Per-app keyboard rules** — assign a target language to any app; Kright
   switches automatically the moment that app gains focus (e.g., always Hebrew
   in your notes app, always English in your terminal).
+- **Layouts shown by language** — everywhere Kright lists keyboards it names
+  them by language, like System Settings ("English", "Hebrew") — not by
+  macOS's cryptic layout names ("ABC", "U.S.", "British").
 - **Private by design** — no network, nothing stored, and password / secure
   fields are never read (you can watch capture pause in the Key Log).
 

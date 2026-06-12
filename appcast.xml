@@ -3,6 +3,15 @@
     <channel>
         <title>Kright</title>
         <item>
+            <title>1.0.8</title>
+            <pubDate>Fri, 12 Jun 2026 12:49:30 +0300</pubDate>
+            <link>https://github.com/walteryaron/Kright</link>
+            <sparkle:version>9</sparkle:version>
+            <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.0.8/Kright.dmg" length="1969429" type="application/octet-stream" sparkle:edSignature="Lr3/OCB9dQFBCwyujf6QE3nZtTs3hP+dwPP8e//4fQI9xL9YMqjjNwIRt+o0asLBJe4ah+nDbpbrbySKAh5aBQ=="/>
+        </item>
+        <item>
             <title>1.0.7</title>
             <pubDate>Thu, 11 Jun 2026 06:20:59 +0300</pubDate>
             <link>https://github.com/walteryaron/Kright</link>
@@ -19,24 +28,6 @@
             <sparkle:shortVersionString>1.0.6</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.0.6/Kright.dmg" length="1846727" type="application/octet-stream" sparkle:edSignature="4BvhPQz8uJi/5C1cn/vU9WQd0hCDbr29UriuVpVA0D6KmbFinuQmVSGf9CbkRrANRsJVElSsyRCpgqi3tlf7CA=="/>
-        </item>
-        <item>
-            <title>1.0.4</title>
-            <pubDate>Tue, 09 Jun 2026 09:57:01 +0300</pubDate>
-            <link>https://github.com/walteryaron/Kright</link>
-            <sparkle:version>5</sparkle:version>
-            <sparkle:shortVersionString>1.0.4</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.0.4/Kright.dmg" length="1836865" type="application/octet-stream" sparkle:edSignature="NOEqR0gZMKfHF3Z8Jpl1ts+xSV/N1sDI9oCIAKjFPhwG56f7c07MerFje0SnDEA1IlvdA4t/hZNOHNTPIz/3Dg=="/>
-        </item>
-        <item>
-            <title>1.0.3</title>
-            <pubDate>Tue, 09 Jun 2026 09:30:09 +0300</pubDate>
-            <link>https://github.com/walteryaron/Kright</link>
-            <sparkle:version>4</sparkle:version>
-            <sparkle:shortVersionString>1.0.3</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.0.3/Kright.dmg" length="1836558" type="application/octet-stream" sparkle:edSignature="6wsWAhQuZUKSv7/2ZKvjV/dSXU+xjpF7FMFwh2fdd8itS/UCalSFXaN2h3Fo03ydCB2HopRDmXxcRCE6Ios/CA=="/>
         </item>
     </channel>
 </rss>
