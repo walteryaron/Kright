@@ -5,12 +5,16 @@ struct SettingsView: View {
     @EnvironmentObject var enforcer: FocusLanguageEnforcer
     @EnvironmentObject var appEnforcer: AppLanguageEnforcer
     @EnvironmentObject var ruleStore: AppLanguageRuleStore
+    @EnvironmentObject var contactEnforcer: ContactLanguageEnforcer
+    @EnvironmentObject var contactRuleStore: ContactLanguageRuleStore
     @EnvironmentObject var hotkey: HotkeyManager
     @AppStorage("debug_mode") private var debugMode = false
     @AppStorage("auto_fix") private var autoFix = false
     @State private var sources: [InputSource] = KeyboardLanguage.enabledSources()
     @State private var addSourceID: String = KeyboardLanguage.firstLatin()?.id ?? ""
     @State private var addStatus: String = ""
+    @State private var contactSourceID: String = KeyboardLanguage.firstLatin()?.id ?? ""
+    @State private var contactStatus: String = ""
 
     private var appVersion: String {
         let info = Bundle.main.infoDictionary
@@ -142,6 +146,87 @@ struct SettingsView: View {
                     }
                     if !addStatus.isEmpty {
                         Text(addStatus)
+                            .font(.system(size: 10)).foregroundColor(Color(white: 0.45))
+                    }
+
+                    Divider().padding(.vertical, 4)
+
+                    Text("Per-contact keyboard").font(.system(size: 12, weight: .semibold))
+                    Toggle(isOn: $contactEnforcer.enabled) {
+                        Text("Switch keyboard per WhatsApp / Teams chat")
+                            .font(.system(size: 11)).foregroundColor(Color(white: 0.75))
+                    }
+                    .toggleStyle(.switch)
+                    Text("Open a chat, then click “Add current contact”. Kright switches to that contact's layout whenever the chat is open — overriding the per-app rule.")
+                        .font(.system(size: 10)).foregroundColor(Color(white: 0.45))
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    if !contactRuleStore.rules.isEmpty {
+                        VStack(spacing: 2) {
+                            ForEach($contactRuleStore.rules) { $rule in
+                                HStack(spacing: 8) {
+                                    Image(systemName: rule.app.symbolName)
+                                        .font(.system(size: 12))
+                                        .foregroundColor(Color(white: 0.55))
+                                        .frame(width: 18, height: 18)
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text(rule.contactName)
+                                            .font(.system(size: 11))
+                                            .foregroundColor(Color(white: 0.75))
+                                            .lineLimit(1)
+                                        Text(rule.app.displayName)
+                                            .font(.system(size: 9))
+                                            .foregroundColor(Color(white: 0.4))
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    Picker("", selection: $rule.inputSourceID) {
+                                        ForEach(sources, id: \.id) { s in
+                                            Text(s.name).tag(s.id)
+                                        }
+                                    }
+                                    .pickerStyle(.menu)
+                                    .labelsHidden()
+                                    .frame(width: 90)
+                                    Button {
+                                        contactRuleStore.rules.removeAll { $0.id == rule.id }
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(Color(white: 0.3))
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                .padding(.vertical, 2)
+                            }
+                        }
+                        .padding(.top, 4)
+                    }
+
+                    HStack(spacing: 8) {
+                        Picker("", selection: $contactSourceID) {
+                            ForEach(sources, id: \.id) { s in
+                                Text(s.name).tag(s.id)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                        .frame(width: 90)
+                        .disabled(sources.isEmpty)
+                        Button(contactEnforcer.lastContactName.map { "+ Add “\($0)”" } ?? "+ Add current contact") {
+                            guard let app = contactEnforcer.lastContactApp,
+                                  let name = contactEnforcer.lastContactName else {
+                                contactStatus = "Open a WhatsApp or Teams chat first, then click again"
+                                return
+                            }
+                            let layoutName = sources.first { $0.id == contactSourceID }?.name ?? contactSourceID
+                            contactStatus = contactRuleStore.add(
+                                app: app, contactName: name,
+                                inputSourceID: contactSourceID, layoutName: layoutName)
+                        }
+                        .disabled(sources.isEmpty || contactEnforcer.lastContactName == nil)
+                        Spacer()
+                    }
+                    if !contactStatus.isEmpty {
+                        Text(contactStatus)
                             .font(.system(size: 10)).foregroundColor(Color(white: 0.45))
                     }
 
