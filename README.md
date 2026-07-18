@@ -227,6 +227,11 @@ Armenian, and Georgian** — adding a language is just bundling one more table.
 Yes — the entire app is in this repository, so you can confirm the privacy claims
 yourself.
 
+## Thanks
+
+**Idan Rubin** — for thorough testing and thoughtful feedback throughout development.
+**Adi Ohana** — for suggesting the per-contact keyboard rules feature.
+
 ## Made by
 
 **Walter Apps LTD** — Kright, *keyboard done right*.
