@@ -5,11 +5,11 @@
     <description>Most recent changes with links to updates</description>
     <language>en</language>
     <item>
-      <title>Kright 1.0.8</title>
-      <pubDate>Fri, 12 Jun 2026 13:34:47 +03:00</pubDate>
-      <sparkle:version>1.0.8</sparkle:version>
-      <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>
-      <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.0.8/KrightSetup-1.0.8.exe" sparkle:version="1.0.8" sparkle:shortVersionString="1.0.8" length="50994374" sparkle:os="windows" type="application/x-msdos-program" sparkle:criticalUpdate="false" sparkle:signature="jZXUTC9+iL5PFP853d0lwkFZ+GKjh8WISx5BvHjtlDNIzKuNHEWEu98HPa9KbL3++RlAb1zPpwi0kahOw1V3Ag==" />
+      <title>Kright 1.1.0</title>
+      <pubDate>Sat, 18 Jul 2026 15:18:51 +03:00</pubDate>
+      <sparkle:version>1.1.0</sparkle:version>
+      <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
+      <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.1.0/KrightSetup-1.1.0.exe" sparkle:version="1.1.0" sparkle:shortVersionString="1.1.0" length="51001303" sparkle:os="windows" type="application/x-msdos-program" sparkle:criticalUpdate="false" sparkle:signature="2QN21yAv8W+J3wuJ1jDswmJ4KjXWhq0wzU43zKh3/QJXVb/58UOAW/OR4Zi9Ke9mct4CmEjKlLXtxyGNpLmpAA==" />
     </item>
   </channel>
 </rss>
