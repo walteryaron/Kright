@@ -36,6 +36,10 @@
     <Content Remove="Tests/**" />
     <None Remove="Tests/**" />
     <Page Remove="Tests/**" />
+    <Compile Remove="scripts/**" />
+    <Content Remove="scripts/**" />
+    <None Remove="scripts/**" />
+    <Page Remove="scripts/**" />
   </ItemGroup>
 
 </Project>

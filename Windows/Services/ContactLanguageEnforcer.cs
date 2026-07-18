@@ -1,24 +1,14 @@
-using System.Diagnostics;
-using System.IO;
 using System.Text;
-using System.Threading;
+using System.Windows.Threading;
 using Kright.Native;
 
 namespace Kright.Services;
 
 /// <summary>Switches the keyboard based on which conversation is open inside a
-/// supported chat app (WhatsApp / Teams). Complements <see cref="AppLanguageEnforcer"/>:
-/// that one acts on app switches (per exe); this one acts on chat switches
-/// *within* an app (per contact).
-///
-/// There's no OS event for "the open chat changed", so while a watched app is
-/// foreground we poll on a light timer. Polling only runs while such an app is
-/// foreground — never globally — and the WhatsApp UIA walk is node-budgeted, so
-/// the cost stays low. When no contact rule matches we do nothing, leaving any
-/// per-app rule in effect (contact rules refine, not replace, per-app rules).</summary>
+/// supported chat app (Teams). Polls the foreground window on the WPF UI thread
+/// via DispatcherTimer — no WinEvent hook needed, works reliably with Store apps.</summary>
 public sealed class ContactLanguageEnforcer : IDisposable
 {
-    // For the "Add current contact" button in Settings (read on the UI thread).
     public ContactApp? LastContactApp { get; private set; }
     public string? LastContactName { get; private set; }
 
@@ -28,102 +18,65 @@ public sealed class ContactLanguageEnforcer : IDisposable
         set { AppSettings.Current.ContactLanguageRulesEnabled = value; AppSettings.Save(); }
     }
 
-    private readonly NativeMethods.WinEventDelegate _hookProc;
-    private IntPtr _hook = IntPtr.Zero;
-    private Timer? _timer;
-    private ContactApp? _currentApp;
+    private DispatcherTimer? _timer;
     private string? _lastContact;
     private static readonly uint OwnPid = (uint)Environment.ProcessId;
 
-    private const int PollMs = 700;
-
-    public ContactLanguageEnforcer()
-    {
-        _hookProc = WinEventProc; // hold reference — prevents GC while hook is live
-    }
+    private const double PollSeconds = 0.8;
 
     public void Start()
     {
-        if (_hook != IntPtr.Zero) return;
-        _hook = NativeMethods.SetWinEventHook(
-            NativeMethods.EVENT_SYSTEM_FOREGROUND,
-            NativeMethods.EVENT_SYSTEM_FOREGROUND,
-            IntPtr.Zero, _hookProc,
-            0, 0, NativeMethods.WINEVENT_OUTOFCONTEXT);
-
-        // Handle the app that's already foreground at start time.
-        BeginWatching(AppFor(NativeMethods.GetForegroundWindow()));
+        if (_timer != null) return;
+        _timer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromSeconds(PollSeconds)
+        };
+        _timer.Tick += (_, _) => Poll();
+        _timer.Start();
     }
 
     public void Stop()
     {
-        if (_hook != IntPtr.Zero) { NativeMethods.UnhookWinEvent(_hook); _hook = IntPtr.Zero; }
-        StopPolling();
+        _timer?.Stop();
+        _timer = null;
+        _lastContact = null;
     }
 
     public void Dispose() => Stop();
 
-    private void WinEventProc(IntPtr hHook, uint eventType, IntPtr hwnd,
-        int idObject, int idChild, uint dwThread, uint dwTime)
-    {
-        if (hwnd == IntPtr.Zero) return;
-        BeginWatching(AppFor(hwnd));
-    }
-
-    /// <summary>Identify which watched chat app (if any) owns a window.</summary>
-    private static ContactApp? AppFor(IntPtr hwnd)
-    {
-        if (hwnd == IntPtr.Zero) return null;
-        NativeMethods.GetWindowThreadProcessId(hwnd, out uint pid);
-        if (pid == OwnPid) return null;
-        return ContactAppExtensions.FromExePath(GetProcessPath(pid));
-    }
-
-    private void BeginWatching(ContactApp? app)
-    {
-        if (app == null) { StopPolling(); return; }
-        _currentApp = app;
-        _lastContact = null;                 // force re-apply on (re)entering the app
-        _timer?.Dispose();
-        // First tick slightly late so it lands *after* AppLanguageEnforcer's per-app
-        // switch on foreground change — the contact rule wins.
-        _timer = new Timer(_ => Poll(), null, 350, PollMs);
-    }
-
-    private void StopPolling()
-    {
-        _timer?.Dispose();
-        _timer = null;
-        _currentApp = null;
-        _lastContact = null;
-    }
-
     private void Poll()
     {
-        var app = _currentApp;
-        if (app == null) return;
+        try
+        {
+            var hwnd = NativeMethods.GetForegroundWindow();
+            if (hwnd == IntPtr.Zero) return;
 
-        var hwnd = NativeMethods.GetForegroundWindow();
-        // Bail if the watched app is no longer foreground (the hook will have or
-        // will shortly stop us; avoids reading an unrelated window).
-        if (AppFor(hwnd) != app) return;
+            NativeMethods.GetWindowThreadProcessId(hwnd, out uint pid);
+            if (pid == OwnPid) return;
 
-        var contact = ChatContactDetector.CurrentContact(app.Value, hwnd);
-        if (contact == null) return;
+            var app = ContactAppExtensions.FromExePath(GetProcessPath(pid));
+            if (app == null) { _lastContact = null; return; }
 
-        LastContactApp = app;
-        LastContactName = contact;
+            var contact = ChatContactDetector.CurrentContact(app.Value, hwnd);
+            if (contact == null) return;
 
-        if (!Enabled || contact == _lastContact) return;
-        _lastContact = contact;
+            LastContactApp = app;
+            LastContactName = contact;
 
-        var rule = AppSettings.Current.ContactLanguageRules
-            .FirstOrDefault(r => r.App == app.Value && r.ContactName == contact);
-        if (rule == null) return;
+            if (!Enabled || contact == _lastContact) return;
+            _lastContact = contact;
 
-        var lang = LanguageManager.Enabled().FirstOrDefault(l => (long)l.Hkl == rule.HklValue);
-        if (lang != null) LanguageManager.Switch(lang.Hkl);
+            var rule = AppSettings.Current.ContactLanguageRules
+                .FirstOrDefault(r => r.App == app.Value && r.ContactName == contact);
+            if (rule == null) return;
+
+            var lang = LanguageManager.Enabled().FirstOrDefault(l => (long)l.Hkl == rule.HklValue);
+            if (lang != null) LanguageManager.Switch(lang.Hkl);
+        }
+        catch { /* best-effort poll — never let a transient UIA/process error crash the timer */ }
     }
+
+    // ---- helpers ----
 
     private static string? GetProcessPath(uint pid)
     {

@@ -6,6 +6,15 @@ All notable changes to **Kright** are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+- **Per-contact keyboard rules** — assign a target language to a specific
+  chat; Kright switches the moment that conversation is open, overriding the
+  per-app rule for it. macOS: WhatsApp + Teams. Windows: **Teams only** —
+  WhatsApp's Windows app renders its UI inside a WebView2 control that exposes
+  nothing to UI Automation (a known WebView2-in-WinUI3 accessibility gap, not
+  a Kright limitation), confirmed via live on-device testing against both the
+  regular and Beta Store builds.
+
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 

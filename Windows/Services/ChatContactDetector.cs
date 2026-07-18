@@ -6,24 +6,31 @@ namespace Kright.Services;
 /// name) in a supported chat app, via UI Automation — the Windows analogue of
 /// macOS Accessibility (see the macOS ChatContactDetector). Read-only.
 ///
-/// Two strategies, mirroring macOS:
-///  • Teams (WebView2/Chromium): the chat name lives in the window *title*
-///    ("Chat | &lt;name&gt; | Microsoft Teams") → cheap title read + parse. LOW RISK.
-///  • WhatsApp (WinUI): best-effort tree search for the conversation header.
-///    ⚠ NEEDS ON-DEVICE VERIFICATION — the anchor below is a placeholder; confirm
-///    the real element with Inspect.exe / Accessibility Insights on a Windows PC
-///    and adjust <see cref="WhatsAppHeaderAutomationId"/> / the search predicate.
+/// Teams (WebView2/Chromium) is the only supported app: the chat name lives in
+/// the window *title* ("Chat | &lt;name&gt; | Microsoft Teams") → cheap title
+/// read + parse. Verified live on-device against the new Teams client
+/// (ms-teams.exe).
+///
+/// WhatsApp is intentionally not supported on Windows. Its Windows app (both
+/// the regular and Beta Store builds — confirmed identical) is a WinUI3 shell
+/// around WebView2, and the entire chat UI renders inside that WebView2 with
+/// nothing exposed to UI Automation: the window title never changes from
+/// "WhatsApp"/"WhatsApp Beta" regardless of which chat is open, and a UIA tree
+/// walk (ControlView and RawView, with a multi-second delay to let Chromium's
+/// accessibility engine activate) finds zero descendants under the WebView2
+/// node — confirmed live with real open chats. This isn't a WhatsApp-specific
+/// bug: WebView2 hosted inside a WinUI3 app is a known, Microsoft-acknowledged
+/// accessibility gap (the same WebView2 control works fine with screen readers
+/// in non-WinUI3 hosts). Third-party NVDA add-ons *can* read this content, but
+/// only because a real, recognized screen reader process activates Chromium's
+/// accessibility tree in the first place — a plain UI Automation client (what
+/// Kright is) doesn't trigger that activation, and requiring every user to run
+/// a screen reader in the background just for keyboard-layout switching isn't
+/// reasonable. macOS supports WhatsApp because its WhatsApp is a native
+/// Catalyst app, not WebView2 — a different architecture entirely.
 /// </summary>
 public static class ChatContactDetector
 {
-    /// <summary>Caps the WhatsApp UIA walk so a poll stays cheap on a large tree.</summary>
-    private const int MaxNodes = 2500;
-
-    /// ⚠ PLACEHOLDER — set this to the AutomationId of the conversation-header
-    /// element once verified with Inspect.exe. Empty = fall back to the heuristic
-    /// text search below.
-    private const string WhatsAppHeaderAutomationId = "";
-
     /// <param name="hwnd">Top-level window handle of the watched app (the current
     /// foreground window, supplied by the enforcer).</param>
     public static string? CurrentContact(ContactApp app, IntPtr hwnd)
@@ -32,8 +39,7 @@ public static class ChatContactDetector
         try
         {
             var root = AutomationElement.FromHandle(hwnd);
-            if (root == null) return null;
-            return app == ContactApp.Teams ? TeamsContact(root) : WhatsAppContact(root);
+            return root == null ? null : TeamsContact(root);
         }
         catch { return null; }
     }
@@ -57,63 +63,4 @@ public static class ChatContactDetector
             { "Activity", "Chat", "Calls", "Calendar", "Teams", "Files", "Microsoft Teams", "" };
         return nonChatTabs.Contains(s) ? null : s;
     }
-
-    // ---- WhatsApp (UIA tree, best-effort) ----
-
-    private static string? WhatsAppContact(AutomationElement root)
-    {
-        // Preferred: a stable AutomationId, once known.
-        if (WhatsAppHeaderAutomationId.Length > 0)
-        {
-            var byId = root.FindFirst(TreeScope.Descendants,
-                new PropertyCondition(AutomationElement.AutomationIdProperty, WhatsAppHeaderAutomationId));
-            var name = byId?.Current.Name?.Trim();
-            if (!string.IsNullOrEmpty(name)) return Clean(name);
-        }
-
-        // Heuristic fallback: the first Header/Text element with a non-empty Name
-        // that isn't obvious chrome. Bounded BFS so it stays cheap.
-        // ⚠ Verify/replace this once the real tree is inspected on Windows.
-        var walker = TreeWalker.ControlViewWalker;
-        var queue = new Queue<AutomationElement>();
-        queue.Enqueue(root);
-        int budget = MaxNodes;
-
-        while (queue.Count > 0 && budget-- > 0)
-        {
-            var el = queue.Dequeue();
-            try
-            {
-                var ct = el.Current.ControlType;
-                if ((ct == ControlType.Header || ct == ControlType.Text) &&
-                    el.Current.Name is { Length: > 0 } n && !HeaderNoise.Contains(n))
-                {
-                    return Clean(n);
-                }
-            }
-            catch { /* stale element — skip */ }
-
-            try
-            {
-                var child = walker.GetFirstChild(el);
-                while (child != null && budget > 0)
-                {
-                    queue.Enqueue(child);
-                    child = walker.GetNextSibling(child);
-                }
-            }
-            catch { }
-        }
-        return null;
-    }
-
-    private static readonly HashSet<string> HeaderNoise = new()
-    {
-        "Chats", "More", "New Chat", "Archived", "Starred", "Settings",
-        "Calls", "Updates", "Search", "Clear text", "WhatsApp",
-    };
-
-    /// <summary>Strip bidi marks / whitespace so rule matching compares clean names.</summary>
-    private static string Clean(string s) =>
-        s.Trim('‎', '‏', '‪', '‬', ' ', '\t', '\r', '\n');
 }

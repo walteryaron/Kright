@@ -2,27 +2,22 @@ using System.IO;
 
 namespace Kright.Services;
 
-/// <summary>The two chat apps whose open conversation Kright can detect on Windows.</summary>
+/// <summary>Chat apps whose open conversation Kright can detect on Windows.
+/// WhatsApp is excluded — its Windows app is WebView2-based and exposes no
+/// accessibility content, so contact detection is not possible.</summary>
 public enum ContactApp
 {
-    WhatsApp,
     Teams
 }
 
 public static class ContactAppExtensions
 {
-    public static string DisplayName(this ContactApp app) =>
-        app == ContactApp.WhatsApp ? "WhatsApp" : "Microsoft Teams";
+    public static string DisplayName(this ContactApp app) => "Microsoft Teams";
 
-    /// <summary>Best-effort identification of a watched chat app from its
-    /// executable path. WhatsApp ships as "WhatsApp.exe"; the new Teams as
-    /// "ms-teams.exe". Match on the file name so a Store/MSIX install path still
-    /// resolves.</summary>
     public static ContactApp? FromExePath(string? exePath)
     {
         if (string.IsNullOrEmpty(exePath)) return null;
         var file = Path.GetFileNameWithoutExtension(exePath).ToLowerInvariant();
-        if (file.Contains("whatsapp")) return ContactApp.WhatsApp;
         if (file is "ms-teams" or "teams" || file.Contains("teams")) return ContactApp.Teams;
         return null;
     }

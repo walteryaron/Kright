@@ -23,6 +23,24 @@ icon to open the panel; right-click for **Settings / Quit**.
 **Ctrl+Alt+K** — press it in any app to fix the focused field's last word.
 Change it under **Settings → Fix-layout shortcut → Change…**.
 
+## Per-app / per-contact keyboard rules
+
+Settings lets you assign a target keyboard language to a specific app (switches
+on focus) or to a specific chat (switches when that conversation is open,
+overriding the app-level rule). Per-contact detection currently supports
+**Microsoft Teams only** — its window title carries the open chat's name
+("Chat | \<name\> | Microsoft Teams"), which `ChatContactDetector.cs` parses.
+
+**WhatsApp is not supported for per-contact rules on Windows.** Its Windows
+app (regular and Beta Store builds alike) is a WinUI3 shell around a Chromium
+WebView2 that renders the entire chat UI — nothing about the open conversation
+is exposed to UI Automation: the window title never changes, and a UIA tree
+walk finds zero descendants under the WebView2 node, even with a real chat
+open. This is a known WebView2-in-WinUI3 accessibility gap, not specific to
+WhatsApp or to Kright (see the comment in `ChatContactDetector.cs` for the
+full investigation). macOS supports WhatsApp because its app is native
+Catalyst, not WebView2.
+
 ## How the macOS pieces map here
 
 | Mac | Windows (this project) |

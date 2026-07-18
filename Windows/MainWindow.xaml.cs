@@ -420,7 +420,7 @@ public partial class MainWindow : Window
         var contact = App.ContactEnforcer.LastContactName;
         if (app == null || string.IsNullOrEmpty(contact))
         {
-            ShowContactStatus("Open a WhatsApp or Teams chat first, then click Add.");
+            ShowContactStatus("Open a Teams chat first, then click Add.");
             return;
         }
         if (AppSettings.Current.ContactLanguageRules.Any(r =>
@@ -459,7 +459,7 @@ public partial class MainWindow : Window
     {
         AddContactButton.Content = App.ContactEnforcer.LastContactName is { } n
             ? $"+ Add \"{n}\""
-            : "+ Add current contact";
+            : "+ Add current Teams chat";
     }
 
     private UIElement BuildContactRuleRow(ContactLanguageRule rule, List<InputLanguage> langs)
