@@ -3,6 +3,15 @@
     <channel>
         <title>Kright</title>
         <item>
+            <title>1.1.0</title>
+            <pubDate>Sat, 18 Jul 2026 15:08:42 +0300</pubDate>
+            <link>https://github.com/walteryaron/Kright</link>
+            <sparkle:version>10</sparkle:version>
+            <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.1.0/Kright.dmg" length="2011807" type="application/octet-stream" sparkle:edSignature="SIW7hOP+gqkUzMplGrLFMyN+zdABHQK12cnwS1qyd48eVhbYd8J+Ai7po4/L3J+g45M5sHk+CU/aYo0fGrdMCA=="/>
+        </item>
+        <item>
             <title>1.0.8</title>
             <pubDate>Fri, 12 Jun 2026 12:49:30 +0300</pubDate>
             <link>https://github.com/walteryaron/Kright</link>
@@ -19,15 +28,6 @@
             <sparkle:shortVersionString>1.0.7</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.0.7/Kright.dmg" length="2347193" type="application/octet-stream" sparkle:edSignature="BcrLM1lDRsaT3E7Hh3gwn3ay3AS2BqqcgaCtyO9C5drXTeHkIVawK4G7xfI5kRT+WnWUWejVk1zHY5u8CWoaCA=="/>
-        </item>
-        <item>
-            <title>1.0.6</title>
-            <pubDate>Tue, 09 Jun 2026 13:27:43 +0300</pubDate>
-            <link>https://github.com/walteryaron/Kright</link>
-            <sparkle:version>7</sparkle:version>
-            <sparkle:shortVersionString>1.0.6</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/walteryaron/Kright/releases/download/v1.0.6/Kright.dmg" length="1846727" type="application/octet-stream" sparkle:edSignature="4BvhPQz8uJi/5C1cn/vU9WQd0hCDbr29UriuVpVA0D6KmbFinuQmVSGf9CbkRrANRsJVElSsyRCpgqi3tlf7CA=="/>
         </item>
     </channel>
 </rss>
