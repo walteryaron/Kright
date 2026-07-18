@@ -84,6 +84,23 @@
 
                 <Separator Margin="0,12"/>
 
+                <TextBlock Text="Per-contact keyboard" FontWeight="SemiBold"/>
+                <CheckBox x:Name="ContactLangCheck" Margin="0,6,0,0" Foreground="#CCC"
+                          Content="Switch keyboard per Teams chat"
+                          Click="ContactLangCheck_Click"/>
+                <TextBlock Foreground="#666" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"
+                           Text="Open a Teams chat, then click &quot;+ Add current Teams chat&quot;. Kright switches to that contact's layout whenever the chat is open."/>
+                <StackPanel x:Name="ContactRulesPanel" Margin="0,6,0,0"/>
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <ComboBox x:Name="ContactLayoutCombo" Width="80" Margin="0,0,8,0" FontSize="11"/>
+                    <Button x:Name="AddContactButton" Content="+ Add current Teams chat"
+                            FontSize="11" Click="AddContactButton_Click"/>
+                </StackPanel>
+                <TextBlock x:Name="AddContactStatus" FontSize="10" Foreground="#888"
+                           Margin="0,4,0,0" Visibility="Collapsed" TextWrapping="Wrap"/>
+
+                <Separator Margin="0,12"/>
+
                 <TextBlock Text="Developer" FontWeight="SemiBold"/>
                 <CheckBox x:Name="DebugCheck" Margin="0,6,0,0" Foreground="#CCC"
                           Content="Debug mode — show the Detect tab" Click="DebugCheck_Click"/>

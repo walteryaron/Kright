@@ -24,6 +24,9 @@ public sealed class AppSettings
     public bool AppLanguageRulesEnabled { get; set; } = true;
     public List<AppLanguageRule> AppLanguageRules { get; set; } = new();
 
+    public bool ContactLanguageRulesEnabled { get; set; } = true;
+    public List<ContactLanguageRule> ContactLanguageRules { get; set; } = new();
+
     private static readonly string Dir =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Kright");
     private static readonly string FilePath = Path.Combine(Dir, "settings.json");

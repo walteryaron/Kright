@@ -67,6 +67,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     static let privacy = PrivacyMonitor()
     static let appRuleStore = AppLanguageRuleStore()
     static let appEnforcer = AppLanguageEnforcer(store: appRuleStore)
+    static let contactRuleStore = ContactLanguageRuleStore()
+    static let contactEnforcer = ContactLanguageEnforcer(store: contactRuleStore)
 
     /// Master on/off switch (right-click menu). While disabled, the fix hotkey is
     /// inert and the auto-language enforcer is paused — handy for A/B demos.
@@ -96,6 +98,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if !Self.isDisabled {
             Self.enforcer.startIfEnabled()
             Self.appEnforcer.startIfEnabled()
+            Self.contactEnforcer.startIfEnabled()
         }
         HotkeyManager.shared.onTrigger = { Self.fixFocusedLayout() }
         // Auto-fix mode: when a word boundary is typed, convert it if it's
@@ -343,10 +346,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if Self.isDisabled {
             Self.enforcer.stop()
             Self.appEnforcer.stop()
+            Self.contactEnforcer.stop()
             Self.keyboard.resetWord()
         } else {
             Self.enforcer.startIfEnabled()
             Self.appEnforcer.startIfEnabled()
+            Self.contactEnforcer.startIfEnabled()
         }
         refreshStatusIcon()
     }
@@ -384,6 +389,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 .environmentObject(Self.enforcer)
                 .environmentObject(Self.appEnforcer)
                 .environmentObject(Self.appRuleStore)
+                .environmentObject(Self.contactEnforcer)
+                .environmentObject(Self.contactRuleStore)
                 .environmentObject(HotkeyManager.shared)
                 .frame(width: size.width, height: size.height))
         host.preferredContentSize = size

@@ -62,6 +62,13 @@ updates — see the [changelog](CHANGELOG.md)).
 - **Per-app keyboard rules** — assign a target language to any app; Kright
   switches automatically the moment that app gains focus (e.g., always Hebrew
   in your notes app, always English in your terminal).
+- **Per-contact keyboard rules** — assign a target language to a specific
+  WhatsApp/Teams conversation; Kright switches the moment that chat is open,
+  overriding the per-app rule for it. On **macOS**: WhatsApp and Teams. On
+  **Windows**: Teams only — WhatsApp's Windows app renders its whole UI inside
+  a WebView2 control that exposes nothing to UI Automation, so there's no
+  conversation name to detect (see [`Windows/README.md`](Windows/README.md)
+  for details).
 - **Layouts shown by language** — everywhere Kright lists keyboards it names
   them by language, like System Settings ("English", "Hebrew") — not by
   macOS's cryptic layout names ("ABC", "U.S.", "British").

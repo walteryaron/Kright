@@ -47,6 +47,13 @@ public partial class MainWindow : Window
         if (AddLayoutCombo.Items.Count > 0) AddLayoutCombo.SelectedIndex = 0;
         RefreshRulesList();
 
+        // Per-contact keyboard section
+        ContactLangCheck.IsChecked = App.ContactEnforcer.Enabled;
+        foreach (var lang in LanguageManager.Enabled())
+            ContactLayoutCombo.Items.Add(new ComboBoxItem { Content = lang.Name, Tag = lang });
+        if (ContactLayoutCombo.Items.Count > 0) ContactLayoutCombo.SelectedIndex = 0;
+        RefreshContactRulesList();
+
         RefreshLayoutMap();
     }
 
@@ -54,6 +61,7 @@ public partial class MainWindow : Window
     {
         base.OnActivated(e);
         UpdateAddButtonLabel();
+        UpdateAddContactButtonLabel();
     }
 
     public void SelectTab(int index)
@@ -397,5 +405,134 @@ public partial class MainWindow : Window
             AddAppStatus.Visibility = Visibility.Collapsed;
         };
         _statusTimer.Start();
+    }
+
+    // ---- Per-contact keyboard ----
+
+    private DispatcherTimer? _contactStatusTimer;
+
+    private void ContactLangCheck_Click(object sender, RoutedEventArgs e)
+        => App.ContactEnforcer.Enabled = ContactLangCheck.IsChecked == true;
+
+    private void AddContactButton_Click(object sender, RoutedEventArgs e)
+    {
+        var app = App.ContactEnforcer.LastContactApp;
+        var contact = App.ContactEnforcer.LastContactName;
+        if (app == null || string.IsNullOrEmpty(contact))
+        {
+            ShowContactStatus("Open a Teams chat first, then click Add.");
+            return;
+        }
+        if (AppSettings.Current.ContactLanguageRules.Any(r =>
+            r.App == app.Value && r.ContactName == contact))
+        {
+            ShowContactStatus($"{contact} is already in the list.");
+            return;
+        }
+        if (ContactLayoutCombo.SelectedItem is not ComboBoxItem { Tag: InputLanguage lang })
+        {
+            ShowContactStatus("Pick a layout first.");
+            return;
+        }
+        AppSettings.Current.ContactLanguageRules.Add(new ContactLanguageRule
+        {
+            App = app.Value,
+            ContactName = contact,
+            HklValue = (long)lang.Hkl,
+            LayoutName = lang.Name
+        });
+        AppSettings.Save();
+        RefreshContactRulesList();
+        ShowContactStatus($"Added {contact}.");
+    }
+
+    private void RefreshContactRulesList()
+    {
+        ContactRulesPanel.Children.Clear();
+        var langs = LanguageManager.Enabled();
+        foreach (var rule in AppSettings.Current.ContactLanguageRules)
+            ContactRulesPanel.Children.Add(BuildContactRuleRow(rule, langs));
+        UpdateAddContactButtonLabel();
+    }
+
+    private void UpdateAddContactButtonLabel()
+    {
+        AddContactButton.Content = App.ContactEnforcer.LastContactName is { } n
+            ? $"+ Add \"{n}\""
+            : "+ Add current Teams chat";
+    }
+
+    private UIElement BuildContactRuleRow(ContactLanguageRule rule, List<InputLanguage> langs)
+    {
+        var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
+        grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(24) });
+
+        var text = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+        text.Children.Add(new TextBlock
+        {
+            Text = rule.ContactName, FontSize = 11,
+            Foreground = new SolidColorBrush(Color.FromRgb(0xCC, 0xCC, 0xCC)),
+            TextTrimming = TextTrimming.CharacterEllipsis
+        });
+        text.Children.Add(new TextBlock
+        {
+            Text = rule.App.DisplayName(), FontSize = 9,
+            Foreground = new SolidColorBrush(Color.FromRgb(0x66, 0x66, 0x66))
+        });
+        Grid.SetColumn(text, 0);
+        grid.Children.Add(text);
+
+        var combo = new ComboBox { FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
+        foreach (var lang in langs)
+        {
+            var item = new ComboBoxItem { Content = lang.Name, Tag = lang };
+            combo.Items.Add(item);
+            if ((long)lang.Hkl == rule.HklValue) combo.SelectedItem = item;
+        }
+        combo.SelectionChanged += (_, _) =>
+        {
+            if (combo.SelectedItem is ComboBoxItem { Tag: InputLanguage l })
+            {
+                rule.HklValue = (long)l.Hkl;
+                rule.LayoutName = l.Name;
+                AppSettings.Save();
+            }
+        };
+        Grid.SetColumn(combo, 1);
+        grid.Children.Add(combo);
+
+        var del = new Button
+        {
+            Content = "✕", Width = 20, Height = 20, FontSize = 11,
+            Background = Brushes.Transparent, BorderThickness = new Thickness(0),
+            Foreground = new SolidColorBrush(Color.FromRgb(0x66, 0x66, 0x66)),
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        del.Click += (_, _) =>
+        {
+            AppSettings.Current.ContactLanguageRules.Remove(rule);
+            AppSettings.Save();
+            RefreshContactRulesList();
+        };
+        Grid.SetColumn(del, 2);
+        grid.Children.Add(del);
+
+        return grid;
+    }
+
+    private void ShowContactStatus(string msg)
+    {
+        AddContactStatus.Text = msg;
+        AddContactStatus.Visibility = Visibility.Visible;
+        _contactStatusTimer?.Stop();
+        _contactStatusTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+        _contactStatusTimer.Tick += (_, _) =>
+        {
+            _contactStatusTimer.Stop();
+            AddContactStatus.Visibility = Visibility.Collapsed;
+        };
+        _contactStatusTimer.Start();
     }
 }
