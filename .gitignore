@@ -31,3 +31,6 @@ secrets/
 
 # Local-only internal docs (kept on disk, never pushed)
 PRD.md
+
+# Windows Explorer thumbnail cache
+Thumbs.db

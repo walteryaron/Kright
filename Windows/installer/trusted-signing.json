@@ -1,0 +1,6 @@
+{
+  "_comment": "Azure Trusted / Artifact Signing config for Kright. Fill these in from the Azure portal (Artifact Signing account + certificate profile). The Endpoint is region-specific: East US = https://eus.codesigning.azure.net, West Europe = https://weu.codesigning.azure.net, West US 2 = https://wus2.codesigning.azure.net.",
+  "Endpoint": "https://weu.codesigning.azure.net",
+  "CodeSigningAccountName": "walterapps-signing",
+  "CertificateProfileName": "REPLACE_WITH_PROFILE_NAME"
+}
