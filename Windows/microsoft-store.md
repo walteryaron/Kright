@@ -41,7 +41,7 @@ installer's `AppPublisher` must all read exactly `Walter Apps LTD`.
 >
 > **Open source & verifiable:** the entire app is public at
 > https://github.com/walteryaron/Kright — all privacy claims can be verified in
-> source. Privacy policy: <PRIVACY-POLICY-URL>.
+> source. Privacy policy: https://walteryaron.github.io/Kright/privacy.html
 >
 > **Testing:** no login required. Install, press Ctrl+Alt+K in any text field after
 > typing a wrong-layout word; the last word is corrected in place.
@@ -95,7 +95,7 @@ installer's `AppPublisher` must all read exactly `Walter Apps LTD`.
 
 **Category:** Productivity
 
-**Privacy policy URL:** `<PRIVACY-POLICY-URL>`  (see section 4)
+**Privacy policy URL:** `https://walteryaron.github.io/Kright/privacy.html`  (see section 4)
 
 **Age rating:** everyone (no objectionable content, no data collection).
 
