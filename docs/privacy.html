@@ -12,12 +12,6 @@
     font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #1a1a1a; background: #fff;
   }
-  @media (prefers-color-scheme: dark) {
-    body { color: #e6e6e6; background: #141414; }
-    a { color: #6ea8fe; }
-    code { background: #2a2a2a; }
-    .lede { background: #1d2b1d; border-color: #2f5130; }
-  }
   h1 { font-size: 1.9rem; margin: 0 0 .25rem; }
   h2 { font-size: 1.2rem; margin: 2rem 0 .5rem; }
   .updated { color: #888; font-size: .9rem; margin: 0 0 1.5rem; }
@@ -26,10 +20,17 @@
   ul { padding-left: 1.3rem; }
   li { margin: .3rem 0; }
   .lede {
-    background: #eef7ee; border: 1px solid #cfe6cf; border-radius: 10px;
+    color: #1a1a1a; background: #eef7ee; border: 1px solid #cfe6cf; border-radius: 10px;
     padding: 1rem 1.2rem; margin: 1.25rem 0;
   }
   footer { margin-top: 3rem; color: #888; font-size: .9rem; }
+  /* Dark-mode overrides last, so they win by source order. */
+  @media (prefers-color-scheme: dark) {
+    body { color: #e6e6e6; background: #141414; }
+    a { color: #6ea8fe; }
+    code { background: #2a2a2a; }
+    .lede { color: #e6e6e6; background: #1d2b1d; border-color: #2f5130; }
+  }
 </style>
 </head>
 <body>
