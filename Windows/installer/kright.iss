@@ -4,7 +4,7 @@
 
 #define MyAppName "Kright"
 #define MyAppVersion "1.1.0"
-#define MyAppPublisher "Walter Apps LTD"
+#define MyAppPublisher "Walter Technologies LTD"
 #define MyAppExeName "Kright.exe"
 
 [Setup]

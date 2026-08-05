@@ -5,9 +5,9 @@ Everything needed to submit Kright (Windows) to the Microsoft Store via the
 single update authority — the Store just lists the same signed installer we ship
 on GitHub, so there is no separate Store build and no update drift.
 
-Publisher / account: **Walter Apps LTD** (Company account). The Partner Center
+Publisher / account: **Walter Technologies LTD** (Company account). The Partner Center
 publisher name, the Azure Trusted Signing validated organization name, and the
-installer's `AppPublisher` must all read exactly `Walter Apps LTD`.
+installer's `AppPublisher` must all read exactly `Walter Technologies LTD`.
 
 ---
 
@@ -141,14 +141,14 @@ via Settings → Apps (Policy 10.2.7).
 
 ## 5. Pre-submission checklist
 
-- [ ] Azure Artifact Signing identity validation for Walter Apps LTD = **Completed**.
+- [ ] Azure Artifact Signing identity validation for Walter Technologies LTD = **Completed**.
 - [ ] Certificate Profile (Public Trust) created; name in `installer/trusted-signing.json`.
 - [ ] Signed release build: `.\build-installer.ps1 -Sign`; `signtool verify` passes.
 - [ ] Installer + `Kright.exe` both show a valid signature chaining to a Microsoft
-      Trusted Root, signed by **Walter Apps LTD**.
+      Trusted Root, signed by **Walter Technologies LTD**.
 - [ ] GitHub Release created; versioned installer URL is immutable.
 - [ ] Privacy policy hosted; URL ready.
-- [ ] Partner Center **Company** account (Walter Apps LTD) verified.
+- [ ] Partner Center **Company** account (Walter Technologies LTD) verified.
 - [ ] Silent install tested (`/VERYSILENT`).
 - [ ] Submission uses "provide a link to my installer" → the versioned GitHub URL.
 - [ ] Certification notes (section 1) pasted, with the privacy URL filled in.

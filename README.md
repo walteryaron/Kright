@@ -4,7 +4,7 @@
 
 # Kright
 
-**Keyboard done right.** · by [Walter Apps LTD](#made-by)
+**Keyboard done right.** · by [Walter Technologies LTD](#made-by)
 
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-555?logo=apple&logoColor=white)](#)
 [![macOS](https://img.shields.io/badge/macOS-Swift%20%2B%20SwiftUI-FA7343?logo=swift&logoColor=white)](Mac/)
@@ -234,8 +234,8 @@ yourself.
 
 ## Made by
 
-**Walter Apps LTD** — Kright, *keyboard done right*.
+**Walter Technologies LTD** — Kright, *keyboard done right*.
 
 ## License
 
-MIT License · Copyright © 2026 Walter Apps LTD. See [LICENSE](LICENSE).
+MIT License · Copyright © 2026 Walter Technologies LTD. See [LICENSE](LICENSE).

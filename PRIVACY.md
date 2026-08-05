@@ -3,7 +3,7 @@
 _Last updated: 24 July 2026_
 
 **Kright** is a keyboard-layout utility for macOS and Windows, published by
-**Walter Apps LTD**. This policy explains exactly what the app does and does not
+**Walter Technologies LTD**. This policy explains exactly what the app does and does not
 do with your data. Because Kright is open source, every claim below is
 verifiable in this repository.
 
@@ -83,4 +83,4 @@ Questions about this policy or Kright's privacy practices:
 - **Email:** walter@walterapps.com
 - **Security reports:** see [SECURITY.md](SECURITY.md)
 
-_Walter Apps LTD_
+_Walter Technologies LTD_
