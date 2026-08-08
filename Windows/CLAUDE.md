@@ -25,7 +25,7 @@ Two independent signatures exist — keep both:
 2. **NetSparkle Ed25519** appcast signature — update integrity. Added by
    `scripts/gen-appcast.ps1`. NOT a substitute for Authenticode.
 
-Signing account: Azure **Artifact Signing** account `waltertechnologies-signing`
+Signing account: Azure **Artifact Signing** account `waltertech-signing`
 (resource group `kright-signing`), **Public Trust** profile, org identity
 **Walter Technologies LTD**. Config lives in `installer/trusted-signing.json`.
 
