@@ -41,11 +41,12 @@ Set-Location $PSScriptRoot
 function Invoke-Sign {
     param([Parameter(Mandatory)] [string] $File)
     if (-not (Test-Path $File)) { throw "Sign: file not found: $File" }
+    $File = (Resolve-Path $File).Path
     Write-Host "  signing $File ..." -ForegroundColor DarkCyan
     Invoke-TrustedSigning `
-        -Endpoint               $script:sign.Endpoint `
-        -CodeSigningAccountName $script:sign.CodeSigningAccountName `
-        -CertificateProfileName $script:sign.CertificateProfileName `
+        -Endpoint               $script:signConfig.Endpoint `
+        -CodeSigningAccountName $script:signConfig.CodeSigningAccountName `
+        -CertificateProfileName $script:signConfig.CertificateProfileName `
         -Files                  $File `
         -FileDigest             SHA256 `
         -TimestampRfc3161       $TimestampUrl `
@@ -57,11 +58,11 @@ if ($Sign) {
         throw "TrustedSigning module not found. Run: Install-Module -Name TrustedSigning -Scope CurrentUser -Force"
     }
     if (-not (Test-Path $SigningConfig)) { throw "Signing config not found: $SigningConfig" }
-    $script:sign = Get-Content $SigningConfig -Raw | ConvertFrom-Json
-    if ($script:sign.CertificateProfileName -like "REPLACE_*") {
+    $script:signConfig = Get-Content $SigningConfig -Raw | ConvertFrom-Json
+    if ($script:signConfig.CertificateProfileName -like "REPLACE_*") {
         throw "Fill in $SigningConfig with your real Endpoint / account / profile before signing."
     }
-    Write-Host "Signing enabled -> $($script:sign.CodeSigningAccountName) / $($script:sign.CertificateProfileName)" -ForegroundColor Cyan
+    Write-Host "Signing enabled -> $($script:signConfig.CodeSigningAccountName) / $($script:signConfig.CertificateProfileName)" -ForegroundColor Cyan
 } else {
     Write-Host "Signing DISABLED (test build). Pass -Sign for a release build." -ForegroundColor Yellow
 }
