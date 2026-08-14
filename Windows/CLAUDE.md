@@ -25,9 +25,9 @@ Two independent signatures exist — keep both:
 2. **NetSparkle Ed25519** appcast signature — update integrity. Added by
    `scripts/gen-appcast.ps1`. NOT a substitute for Authenticode.
 
-Signing account: Azure **Artifact Signing** account `walterapps-signing`
+Signing account: Azure **Artifact Signing** account `waltertech-signing`
 (resource group `kright-signing`), **Public Trust** profile, org identity
-**Walter Apps LTD**. Config lives in `installer/trusted-signing.json`.
+**Walter Technologies LTD**. Config lives in `installer/trusted-signing.json`.
 
 ### One-time setup on the build machine
 ```powershell
@@ -40,7 +40,7 @@ The signed-in user needs the **Artifact Signing Certificate Profile Signer** rol
 on the signing account.
 
 ### Before the first signed build
-1. Confirm Azure identity validation for Walter Apps LTD shows **Completed**
+1. Confirm Azure identity validation for Walter Technologies LTD shows **Completed**
    (Azure portal → Artifact Signing account → Identity validations).
 2. Create a **Certificate Profile** (type: Public Trust) on the account.
 3. Put the real values in `installer/trusted-signing.json`:
@@ -79,7 +79,7 @@ KrightSetup-<version>.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
 No windows should appear; app installs to `%LOCALAPPDATA%\Programs\Kright`.
 
 ## Microsoft Store submission
-Once the Partner Center company account (**Walter Apps LTD**) is approved:
+Once the Partner Center company account (**Walter Technologies LTD**) is approved:
 1. Reserve app name **Kright**.
 2. Packages → "provide a link to my installer" → the **versioned GitHub Release URL**
    (`.../releases/download/vX.Y.Z/KrightSetup-X.Y.Z.exe`). Not a `main`-branch link.
@@ -90,7 +90,7 @@ Once the Partner Center company account (**Walter Apps LTD**) is approved:
 5. Age rating = everyone. Submit.
 
 ## Guardrails
-- Publisher name must read exactly **`Walter Apps LTD`** across: installer
+- Publisher name must read exactly **`Walter Technologies LTD`** across: installer
   `AppPublisher`, Azure signing identity, and Partner Center. Keep them identical.
 - Never commit real secrets. `trusted-signing.json` holds only account/profile
   names (no keys) — auth is via `az login`, so it is safe to commit.
