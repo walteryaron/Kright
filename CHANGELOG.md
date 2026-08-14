@@ -9,6 +9,22 @@ All notable changes to **Kright** are documented here. The format is based on
 ### Planned
 - Onboarding + trust-focused Key Log on Windows (parity with macOS).
 
+## [1.1.1] — 2026-08-14
+
+### Changed
+- **Windows builds are now code-signed.** Both `Kright.exe` and the installer
+  carry an Authenticode signature issued to **Walter Technologies LTD**, via
+  Azure Trusted Signing (Public Trust). Windows SmartScreen no longer warns on
+  download, and the installer meets Microsoft Store Policy 10.2.9.
+- Publisher name across the installer, `LICENSE`, and the privacy policy now
+  reads the registered legal entity, **Walter Technologies LTD**. No change to
+  who maintains Kright — "Walter Apps" was never a registered company.
+
+### Note
+- No functional changes. This release exists so the signed binaries ship under
+  a version of their own rather than replacing the published 1.1.0 artifacts,
+  which would invalidate the update signature already in `appcast-win.xml`.
+
 ## [1.1.0] — 2026-07-18
 
 ### Added
