@@ -45,6 +45,14 @@ installer's `AppPublisher` must all read exactly `Walter Technologies LTD`.
 >
 > **Testing:** no login required. Install, press Ctrl+Alt+K in any text field after
 > typing a wrong-layout word; the last word is corrected in place.
+>
+> **Install verification:** Kright installs per-user via `KrightSetup-1.1.1.exe
+> /VERYSILENT /SUPPRESSMSGBOXES /NORESTART`, matching Store Policy 10.2.9. This
+> was manually validated: the installer produced no UI and no UAC prompt, placed
+> the app at `%LOCALAPPDATA%\Programs\Kright`, and registered a single Programs
+> and Features (Add/Remove Programs) entry — `HKCU\...\Uninstall\{6F3C2A41-9B7E-
+> 4D2A-9C1F-A1B2C3D4E5F6}_is1` — reading Name: Kright, Publisher: Walter
+> Technologies LTD, Version: 1.1.1.
 
 > Reviewers flag keyboard-hook apps as potential keyloggers. The paragraph above is
 > the mitigation — lead with it.
@@ -149,6 +157,6 @@ via Settings → Apps (Policy 10.2.7).
 - [ ] GitHub Release created; versioned installer URL is immutable.
 - [ ] Privacy policy hosted; URL ready.
 - [ ] Partner Center **Company** account (Walter Technologies LTD) verified.
-- [ ] Silent install tested (`/VERYSILENT`).
+- [x] Silent install tested (`/VERYSILENT`) — validated 2026-08-15, see §1 "Install verification".
 - [ ] Submission uses "provide a link to my installer" → the versioned GitHub URL.
 - [ ] Certification notes (section 1) pasted, with the privacy URL filled in.
