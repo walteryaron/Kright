@@ -13,49 +13,61 @@ installer's `AppPublisher` must all read exactly `Walter Technologies LTD`.
 
 ## 1. Notes for certification  (paste into Partner Center "Notes for certification")
 
-> **What Kright is:** Kright is a keyboard-layout utility. Its main job is to fix
-> text typed in the wrong keyboard layout (e.g. you meant `exit` but typed `קסןא`
-> because Hebrew was active) — converting the current word in place via a global
-> hotkey (default Ctrl+Alt+K), and optionally auto-switching the keyboard language
-> on email/URL/password fields or per-app / per-contact.
+**Partner Center caps this field at 2000 characters** and silently truncates past
+that — the text below is ~1930 as plain text, so keep edits inside the budget.
+Copy it ready to paste (strips the `>` quoting and markdown):
+
+```sh
+awk '/^<!-- CERT-NOTES-START/{f=1;next} /^<!-- CERT-NOTES-END/{f=0} f' Windows/microsoft-store.md \
+  | sed 's/^> \{0,1\}//; s/\*\*//g; s/`//g' | tee >(wc -m) | pbcopy
+```
+
+<!-- CERT-NOTES-START -->
+> **What Kright is:** a keyboard-layout utility that fixes text typed in the wrong
+> layout (you meant `exit` but typed `קסןא` because Hebrew was active), converting
+> the current word in place via a global hotkey (default Ctrl+Alt+K).
 >
 > **Why it uses a low-level keyboard hook — and why it is NOT a keylogger:**
-> To know the exact characters of the word being typed *right now*, the app
-> installs a `WH_KEYBOARD_LL` hook. This is used **only** to hold the current word
-> in memory so it can be re-encoded to the correct layout on demand. Kright does
-> **not** log, store, or transmit keystrokes:
+> To know the characters of the word being typed right now, it installs a
+> `WH_KEYBOARD_LL` hook, used **only** to hold the current word in memory so it can
+> be re-encoded to the correct layout on demand. Kright does **not** log, store, or
+> transmit keystrokes:
 > - Nothing typed is ever written to disk.
-> - There is no analytics, telemetry, account, or server.
-> - The only network call the app makes is its signed auto-update check
->   (NetSparkle appcast on GitHub); no typed content is ever included.
-> - **Password / secure fields are never read.** A monitor detects secure fields
->   and puts the app into "blind mode" (the tray icon changes), so it visibly stops
+> - No analytics, telemetry, account, or server.
+> - The only network call is the signed auto-update check (NetSparkle appcast on
+>   GitHub); no typed content is ever included.
+> - **Password / secure fields are never read.** A monitor detects secure fields and
+>   puts the app into "blind mode" (the tray icon changes), so it visibly stops
 >   observing input while a password field is focused.
 >
-> **Injection (SendInput):** For read-only console fields (cmd, PowerShell, Windows
-> Terminal) the app falls back to `SendInput` to type the corrected text. Injected
-> events are tagged in `dwExtraInfo` so the app ignores its own input.
+> **Injection:** for read-only console fields (cmd, PowerShell, Windows Terminal) it
+> falls back to `SendInput` to type the corrected text. Injected events are tagged
+> in `dwExtraInfo` so the app ignores its own input.
 >
-> **Privileges:** runs `asInvoker` (no elevation). It cannot read or affect
-> elevated windows — expected Windows behavior.
+> **Privileges:** runs `asInvoker` (no elevation). It cannot read or affect elevated
+> windows — expected Windows behavior.
 >
-> **Open source & verifiable:** the entire app is public at
-> https://github.com/walteryaron/Kright — all privacy claims can be verified in
-> source. Privacy policy: https://walteryaron.github.io/Kright/privacy.html
+> **Open source & verifiable:** https://github.com/walteryaron/Kright
+> **Privacy policy:** https://walteryaron.github.io/Kright/privacy.html
 >
-> **Testing:** no login required. Install, press Ctrl+Alt+K in any text field after
-> typing a wrong-layout word; the last word is corrected in place.
+> **Testing:** no login required. Type a wrong-layout word in any text field and
+> press Ctrl+Alt+K; the word is corrected in place.
 >
-> **Install verification:** Kright installs per-user via `KrightSetup-1.1.1.exe
-> /VERYSILENT /SUPPRESSMSGBOXES /NORESTART`, matching Store Policy 10.2.9. This
-> was manually validated: the installer produced no UI and no UAC prompt, placed
-> the app at `%LOCALAPPDATA%\Programs\Kright`, and registered a single Programs
-> and Features (Add/Remove Programs) entry — `HKCU\...\Uninstall\{6F3C2A41-9B7E-
-> 4D2A-9C1F-A1B2C3D4E5F6}_is1` — reading Name: Kright, Publisher: Walter
-> Technologies LTD, Version: 1.1.1.
+> **Install verification:** per-user install via `KrightSetup-1.1.1.exe /VERYSILENT
+> /SUPPRESSMSGBOXES /NORESTART` (Policy 10.2.9). Manually validated on a clean VM:
+> no UI, no UAC prompt, installs to `%LOCALAPPDATA%\Programs\Kright`, and registers
+> a single Add/Remove Programs entry — under HKCU rather than HKLM, since the
+> install is per-user — reading Kright / Walter Technologies LTD / 1.1.1.
+<!-- CERT-NOTES-END -->
 
 > Reviewers flag keyboard-hook apps as potential keyloggers. The paragraph above is
-> the mitigation — lead with it.
+> the mitigation — lead with it. The HKCU/HKLM sentence in "Install verification"
+> is what explains the inconclusive ("?") silent-install / ARP / bundleware results
+> in Partner Center's automated package validation — a per-user installer registers
+> uninstall info in HKCU, which their scanner does not see. Those warnings do not
+> block submission; manual validation per
+> https://learn.microsoft.com/windows/apps/publish/publish-your-app/msi/manual-package-validation
+> is the documented answer.
 
 ---
 
