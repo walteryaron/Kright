@@ -64,7 +64,15 @@ Prereqs: .NET 8 SDK, Inno Setup 6.
 1. Bump `<Version>` in `Windows/Kright.csproj` AND `MyAppVersion` in
    `installer/kright.iss` to the same `X.Y.Z`.
 2. `.\build-installer.ps1 -Sign`
-3. `gh release create vX.Y.Z ...` and upload `KrightSetup-X.Y.Z.exe`.
+3. `gh release create vX.Y.Z ...` and upload `KrightSetup-X.Y.Z.exe`. This is the
+   copy the appcast points at.
+   If the release also goes to the Store, upload the **same file** to Azure Blob —
+   that copy is what Partner Center links:
+   ```powershell
+   az storage blob upload --account-name krightdownloads --container-name releases `
+     --name KrightSetup-X.Y.Z.exe --file installer\output\KrightSetup-X.Y.Z.exe `
+     --auth-mode login
+   ```
 4. `pwsh scripts\gen-appcast.ps1 -Version X.Y.Z` → updates `appcast-win.xml`.
 5. Commit `appcast-win.xml` (+ version bumps) **via PR to `main`** — never push to
    `main` directly (see repo memory).
@@ -81,8 +89,12 @@ No windows should appear; app installs to `%LOCALAPPDATA%\Programs\Kright`.
 ## Microsoft Store submission
 Once the Partner Center company account (**Walter Technologies LTD**) is approved:
 1. Reserve app name **Kright**.
-2. Packages → "provide a link to my installer" → the **versioned GitHub Release URL**
-   (`.../releases/download/vX.Y.Z/KrightSetup-X.Y.Z.exe`). Not a `main`-branch link.
+2. Packages → "provide a link to my installer" → the **versioned Azure Blob URL**
+   (`https://krightdownloads.blob.core.windows.net/releases/KrightSetup-X.Y.Z.exe`).
+   Must be versioned and immutable — never a `main`-branch or "latest" link. This is
+   *not* the GitHub Release URL, which is what the NetSparkle appcast points at (see
+   `microsoft-store.md`, "Two URLs, two jobs" — they can be unified if you ever want
+   to, since the appcast signature covers the installer bytes, not the URL).
 3. Properties/category = Productivity; privacy policy URL =
    `https://walteryaron.github.io/Kright/privacy.html`.
 4. Paste **Notes for certification** from `microsoft-store.md` §1 (the keyboard-hook

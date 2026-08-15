@@ -2,8 +2,32 @@
 
 Everything needed to submit Kright (Windows) to the Microsoft Store via the
 **unpackaged EXE path** (Store Policy 10.2.9). This path keeps NetSparkle as the
-single update authority — the Store just lists the same signed installer we ship
-on GitHub, so there is no separate Store build and no update drift.
+single update authority — the Store links the very same signed installer binary,
+so there is no separate Store build and no update drift.
+
+### Two URLs, two jobs
+
+The same `KrightSetup-X.Y.Z.exe` is reachable at two addresses:
+
+| Purpose | URL | Owned by |
+|---|---|---|
+| **Store submission** ("provide a link to my installer") | `https://krightdownloads.blob.core.windows.net/releases/KrightSetup-X.Y.Z.exe` | Azure Blob Storage |
+| **Auto-update** (NetSparkle appcast enclosure) | `https://github.com/walteryaron/Kright/releases/download/vX.Y.Z/KrightSetup-X.Y.Z.exe` | GitHub Releases |
+
+The appcast URL comes from `$dlPrefix` in `scripts/gen-appcast.ps1`. Note what the
+Ed25519 `sparkle:signature` actually covers: `netsparkle-generate-appcast` signs
+the file passed to `--binaries`, while `--base-url` only writes the enclosure
+address. **The signature is over the installer bytes, not the URL** — so the two
+hosts could be unified onto one, provided the file served is byte-identical to the
+one that was signed.
+
+They are kept separate today for practical reasons, not cryptographic ones: the
+Store submission was validated against the blob copy, and GitHub Releases is the
+free, already-wired host for updates. The real rule is narrower — **never point the
+appcast at a separately rebuilt binary.** A rebuild of the same version produces
+different bytes, and the signature will not match. If you do consolidate,
+regenerate the appcast with `gen-appcast.ps1 -Version X.Y.Z` (changing `$dlPrefix`)
+rather than hand-editing the URL in `appcast-win.xml`.
 
 Publisher / account: **Walter Technologies LTD** (Company account). The Partner Center
 publisher name, the Azure Trusted Signing validated organization name, and the
@@ -154,9 +178,13 @@ via Settings → Apps (Policy 10.2.7).
 - [ ] Signed release build: `.\build-installer.ps1 -Sign`; `signtool verify` passes.
 - [ ] Installer + `Kright.exe` both show a valid signature chaining to a Microsoft
       Trusted Root, signed by **Walter Technologies LTD**.
-- [ ] GitHub Release created; versioned installer URL is immutable.
+- [ ] GitHub Release created (feeds the NetSparkle appcast); its versioned installer
+      URL is immutable.
+- [ ] Same signed installer uploaded to Azure Blob (`krightdownloads/releases/`);
+      that versioned URL is what the Store submission points at.
 - [ ] Privacy policy hosted; URL ready.
 - [ ] Partner Center **Company** account (Walter Technologies LTD) verified.
 - [x] Silent install tested (`/VERYSILENT`) — validated 2026-08-15, see §1 "Install verification".
-- [ ] Submission uses "provide a link to my installer" → the versioned GitHub URL.
+- [ ] Submission uses "provide a link to my installer" → the versioned **Azure Blob**
+      URL (not the GitHub one — see "Two URLs, two jobs" at the top).
 - [ ] Certification notes (section 1) pasted, with the privacy URL filled in.
