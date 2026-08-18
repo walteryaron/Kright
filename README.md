@@ -10,6 +10,7 @@
 [![macOS](https://img.shields.io/badge/macOS-Swift%20%2B%20SwiftUI-FA7343?logo=swift&logoColor=white)](Mac/)
 [![Windows](https://img.shields.io/badge/Windows-C%23%20.NET%208-512BD4?logo=dotnet&logoColor=white)](Windows/)
 [![Release](https://img.shields.io/github/v/release/walteryaron/Kright?label=release&color=brightgreen)](https://github.com/walteryaron/Kright/releases)
+[![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Kright-0078D4)](https://apps.microsoft.com/detail/XPFD0Z8630DDSF)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 <img src="assets/demo.gif" alt="Kright fixing wrong-layout text in place" width="574" />
@@ -38,10 +39,12 @@ Grab the latest **signed** build — no build tools required:
 |----------|----------|
 | **macOS** 13+ | [**Kright.dmg**](https://github.com/walteryaron/Kright/releases/latest/download/Kright.dmg) |
 | **Windows** 10+ | [**Latest installer (.exe)**](https://github.com/walteryaron/Kright/releases/latest) |
+| **Windows** 10+ · Microsoft Store | [**Get it from the Microsoft Store**](https://apps.microsoft.com/detail/XPFD0Z8630DDSF) |
 
-Or browse [all releases](https://github.com/walteryaron/Kright/releases). Once
-installed, Kright **keeps itself up to date automatically** (signed in-app
-updates — see the [changelog](CHANGELOG.md)).
+The Store hands you the *same* signed installer as the direct download — there is no
+separate Store build. Or browse [all releases](https://github.com/walteryaron/Kright/releases).
+Once installed, Kright **keeps itself up to date automatically** whichever way you
+got it (signed in-app updates — see the [changelog](CHANGELOG.md)).
 
 ## Features
 
