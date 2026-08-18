@@ -18,11 +18,16 @@
 #
 # Release flow:
 #   1) Bump MARKETING_VERSION (+ CURRENT_PROJECT_VERSION) in Mac/project.yml,
-#      then `xcodegen generate`.
+#      then `xcodegen generate`. Bump it HERE, not in the .xcodeproj — project.yml
+#      is the source of truth, and a regen silently reverts a version set only in
+#      the generated project (that drift shipped once, in 1.1.0).
 #   2) ./scripts/build-dmg.sh                      # signed + notarized DMG
 #   3) gh release create vX.Y.Z … && gh release upload vX.Y.Z build/Kright.dmg
 #   4) ./scripts/gen-appcast.sh X.Y.Z              # updates appcast.xml
-#   5) git add appcast.xml && git commit && git push   # publishes the feed
+#   5) Point the macOS row of the README download table at the new tag. The link is
+#      version-pinned because /releases/latest/download/Kright.dmg 404s while the
+#      newest tag is a Windows-only release.
+#   6) git add appcast.xml README.md && git commit && git push   # publishes the feed
 set -euo pipefail
 
 cd "$(dirname "$0")/.."                 # Mac/
