@@ -19,6 +19,28 @@ BUILD="$ROOT/build"
 DD="$BUILD/dd"
 STAGE="$BUILD/dmg"
 DMG="$BUILD/Kright.dmg"
+
+# Building needs full Xcode. If xcode-select points at the Command Line Tools,
+# xcodebuild fails with "tool 'xcodebuild' requires Xcode" — and `xcrun notarytool`
+# quietly fails the same way, which would skip notarization. So resolve a real
+# Xcode up front, before anything below shells out to either.
+if ! xcodebuild -version >/dev/null 2>&1; then
+  for candidate in /Applications/Xcode.app /Applications/Xcode-beta.app; do
+    if [ -x "$candidate/Contents/Developer/usr/bin/xcodebuild" ]; then
+      export DEVELOPER_DIR="$candidate/Contents/Developer"
+      echo "▸ xcode-select points at $(xcode-select -p 2>/dev/null) — using $candidate for this build."
+      echo "  (make it permanent: sudo xcode-select -s $candidate)"
+      break
+    fi
+  done
+fi
+if ! xcodebuild -version >/dev/null 2>&1; then
+  echo "✗ Full Xcode is required to build; the Command Line Tools alone can't." >&2
+  echo "  Install Xcode from the App Store, then: sudo xcode-select -s /Applications/Xcode.app" >&2
+  echo "  Already installed elsewhere? Point DEVELOPER_DIR at it:" >&2
+  echo "      DEVELOPER_DIR=/path/to/Xcode.app/Contents/Developer $0" >&2
+  exit 1
+fi
 # Override these via env vars for your own Apple Developer account.
 APPLE_ID="${KRIGHT_APPLE_ID:-<your-apple-id-email>}"
 TEAM_ID="${KRIGHT_TEAM_ID:-<your-team-id>}"
