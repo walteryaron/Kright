@@ -87,7 +87,14 @@ KrightSetup-<version>.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
 No windows should appear; app installs to `%LOCALAPPDATA%\Programs\Kright`.
 
 ## Microsoft Store submission
-Once the Partner Center company account (**Walter Technologies LTD**) is approved:
+
+**Live since 2026-08-18** — Store ID `XPFD0Z8630DDSF`,
+<https://apps.microsoft.com/detail/XPFD0Z8630DDSF>. Ship the next version through
+Partner Center's **Update app** button; don't reopen the published submission to
+browse it ("View app" is the wizard in edit mode). Full record, including the
+reusable IARC Global Rating ID, in `microsoft-store.md`.
+
+The steps that got it there, kept for the next submission:
 1. Reserve app name **Kright**.
 2. Packages → "provide a link to my installer" → the **versioned Azure Blob URL**
    (`https://krightdownloads.blob.core.windows.net/releases/KrightSetup-X.Y.Z.exe`).
@@ -100,10 +107,15 @@ Once the Partner Center company account (**Walter Technologies LTD**) is approve
 4. Paste **Notes for certification** from `microsoft-store.md` §1 (the keyboard-hook
    "not a keylogger" explanation — critical; reviewers flag hook apps).
 5. Age rating = everyone. Submit.
+6. Upload the installer to the blob container — and leave older published versions
+   there, since the live listing links the version-pinned URL it was submitted with.
 
 ## Guardrails
-- Publisher name must read exactly **`Walter Technologies LTD`** across: installer
-  `AppPublisher`, Azure signing identity, and Partner Center. Keep them identical.
+- Publisher name must read exactly **`Walter Technologies LTD`** in the installer's
+  `AppPublisher` and the Azure signing identity. Keep them identical.
+- Known exception, do not "fix" it in code: the **Partner Center publisher display
+  name** went live as `Walter Apps LTD` (not a registered entity). Renaming it needs
+  a Microsoft support ticket, not a repo change.
 - Never commit real secrets. `trusted-signing.json` holds only account/profile
   names (no keys) — auth is via `az login`, so it is safe to commit.
 - All changes to `main` land via PR.

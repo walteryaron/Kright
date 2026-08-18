@@ -5,6 +5,32 @@ Everything needed to submit Kright (Windows) to the Microsoft Store via the
 single update authority — the Store links the very same signed installer binary,
 so there is no separate Store build and no update drift.
 
+### Live listing — published 2026-08-18
+
+Kright is live in the Store. Identifiers needed for future submissions and for
+linking to the listing:
+
+| | |
+|---|---|
+| **Store ID** | `XPFD0Z8630DDSF` |
+| **Partner Center ID** | `e49b6405-bdcc-48f2-8bd9-863b62c07386` |
+| **Web listing** | <https://apps.microsoft.com/detail/XPFD0Z8630DDSF> |
+| **Store deep link** | `ms-windows-store://pdp/?productid=XPFD0Z8630DDSF` |
+| **IARC Global Rating ID** | `3961cc58-f4f5-8616-8170-3f72b0bc57b1` |
+
+The IARC ID is reusable: enter it on any other IARC-licensed storefront instead of
+re-taking the questionnaire. A fresh questionnaire is only required if an update
+would change an answer — for Kright that means adding in-app purchases, accounts or
+user-generated content, ads, analytics, or location sharing.
+
+Ship the next version through Partner Center's **Update app** button. Do not reopen
+the published submission just to look at it — "View app" opens the wizard in *edit*
+mode with live Save buttons, and saving there can spawn a draft submission.
+
+Note that `displaycatalog.mp.microsoft.com` returns no product for this Store ID.
+That is expected for unpackaged EXE/MSI listings; verify a submission went live by
+fetching the `apps.microsoft.com` page instead.
+
 ### Two URLs, two jobs
 
 The same `KrightSetup-X.Y.Z.exe` is reachable at two addresses:
@@ -21,6 +47,11 @@ address. **The signature is over the installer bytes, not the URL** — so the t
 hosts could be unified onto one, provided the file served is byte-identical to the
 one that was signed.
 
+⚠️ **The blob copy of a published version can never be deleted.** The live Store
+listing links the *version-pinned* blob URL, so removing that file breaks the Store
+download for real users. Keep every submitted version's blob in place, not just the
+newest one.
+
 They are kept separate today for practical reasons, not cryptographic ones: the
 Store submission was validated against the blob copy, and GitHub Releases is the
 free, already-wired host for updates. The real rule is narrower — **never point the
@@ -29,9 +60,15 @@ different bytes, and the signature will not match. If you do consolidate,
 regenerate the appcast with `gen-appcast.ps1 -Version X.Y.Z` (changing `$dlPrefix`)
 rather than hand-editing the URL in `appcast-win.xml`.
 
-Publisher / account: **Walter Technologies LTD** (Company account). The Partner Center
-publisher name, the Azure Trusted Signing validated organization name, and the
-installer's `AppPublisher` must all read exactly `Walter Technologies LTD`.
+Publisher / account: **Walter Technologies LTD** (Company account). The Azure Trusted
+Signing validated organization name and the installer's `AppPublisher` both read
+exactly `Walter Technologies LTD`.
+
+⚠️ The **Partner Center publisher display name does not** — it went live as
+`Walter Apps LTD`, which is not a registered entity. The listing therefore shows
+`Walter Apps LTD` as the publisher and `Walter Technologies LTD` as the developer.
+Self-service rename is currently rejected ("This company name is not available");
+it needs a support ticket. Keep every *other* place reading `Walter Technologies LTD`.
 
 ---
 
@@ -194,6 +231,8 @@ via Settings → Apps (Policy 10.2.7).
       URL is immutable.
 - [ ] Same signed installer uploaded to Azure Blob (`krightdownloads/releases/`);
       that versioned URL is what the Store submission points at.
+- [ ] Previously published versions' blobs left in place (the live listing still
+      links the version it was submitted with).
 - [ ] Privacy policy hosted; URL ready.
 - [ ] Partner Center **Company** account (Walter Technologies LTD) verified.
 - [x] Silent install tested (`/VERYSILENT`) — validated 2026-08-15, see §1 "Install verification".
