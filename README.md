@@ -37,11 +37,17 @@ Grab the latest **signed** build — no build tools required:
 
 | Platform | Download |
 |----------|----------|
-| **macOS** 13+ | [**Kright.dmg**](https://github.com/walteryaron/Kright/releases/latest/download/Kright.dmg) |
-| **Windows** 10+ | [**Latest installer (.exe)**](https://github.com/walteryaron/Kright/releases/latest) |
+| **macOS** 13+ | [**Kright.dmg**](https://github.com/walteryaron/Kright/releases/download/v1.1.0/Kright.dmg) — 1.1.0 |
+| **Windows** 10+ | [**Latest installer (.exe)**](https://github.com/walteryaron/Kright/releases/latest) — 1.1.1 |
 | **Windows** 10+ · Microsoft Store | [**Get it from the Microsoft Store**](https://apps.microsoft.com/detail/XPFD0Z8630DDSF) |
 
-The Store hands you the *same* signed installer as the direct download — there is no
+<!-- The macOS link is pinned to its release tag on purpose: releases aren't always
+     cross-platform (v1.1.1 is Windows-only), so a /releases/latest/download/Kright.dmg
+     link 404s whenever the newest tag has no DMG. Bump it when a macOS build ships —
+     see the release flow in Mac/scripts/gen-appcast.sh. -->
+
+The two platforms version independently, so the numbers above don't always match. The
+Store hands you the *same* signed installer as the direct download — there is no
 separate Store build. Or browse [all releases](https://github.com/walteryaron/Kright/releases).
 Once installed, Kright **keeps itself up to date automatically** whichever way you
 got it (signed in-app updates — see the [changelog](CHANGELOG.md)).
